@@ -1,0 +1,48 @@
+# Phase 0 skeleton: FastAPI gateway + PostgreSQL (credits/quota) + Redis (cache-dodging class).
+# `docker compose up --build` yields a running, vulnerable-by-construction LLM-SaaS testbed.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: metering
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d metering"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # Async SQLAlchemy URL (note the +asyncpg driver).
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/metering
+      REDIS_URL: redis://redis:6379/0
+      # Default flaw-class posture. Flip per-class at runtime via POST /admin/config.
+      CLASS6_CREDIT_RACE: vulnerable
+    ports:
+      - "8000:8000"
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+
+volumes:
+  pgdata:

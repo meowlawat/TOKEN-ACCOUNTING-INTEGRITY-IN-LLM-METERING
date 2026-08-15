@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Experiment outputs: keep the directory, ignore generated artifacts.
+results/*.json
+results/*.csv
+results/*.png
+!results/.gitkeep

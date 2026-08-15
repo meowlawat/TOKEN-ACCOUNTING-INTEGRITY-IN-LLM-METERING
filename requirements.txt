@@ -1,0 +1,17 @@
+# Core gateway
+fastapi>=0.115,<0.116
+uvicorn[standard]>=0.30,<0.35
+pydantic>=2.7,<3
+pydantic-settings>=2.3,<3
+
+# Database (async) + cache
+sqlalchemy[asyncio]>=2.0.30,<2.1
+asyncpg>=0.30,<0.31
+redis>=5.0,<6
+
+# Attack harness / experiment client
+httpx[http2]>=0.27,<0.29
+numpy>=1.26
+
+# Config
+python-dotenv>=1.0
