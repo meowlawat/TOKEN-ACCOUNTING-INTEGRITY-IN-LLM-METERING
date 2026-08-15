@@ -22,8 +22,10 @@ from datetime import datetime
 from decimal import Decimal
 
 from sqlalchemy import (
+    JSON,
     Boolean,
     DateTime,
+    Float,
     ForeignKey,
     Integer,
     Numeric,
@@ -125,6 +127,81 @@ class UsageRecord(Base):
     committed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     refunded: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+
+# --------------------------------------------------------------------------- #
+# M-mechanism tables (M1 metering-commit timing, M2 usage-record authority).
+# Kept separate from the B0 tables above so the validated baseline is untouched.
+# --------------------------------------------------------------------------- #
+class MTrial(Base):
+    """One M1/M2 experiment repetition: pins architecture + starting conditions."""
+
+    __tablename__ = "m_trials"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    account_id: Mapped[int] = mapped_column(
+        ForeignKey("accounts.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    mechanism: Mapped[str] = mapped_column(String(8), nullable=False)      # m1 | m2
+    architecture: Mapped[str] = mapped_column(String(32), nullable=False)
+    price_tier: Mapped[str] = mapped_column(String(16), nullable=False)
+    model_seed: Mapped[int] = mapped_column(Integer, nullable=False)
+    prompt: Mapped[str] = mapped_column(Text, nullable=False)
+    prices: Mapped[dict] = mapped_column(JSON, nullable=False)
+    params: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    initial_balance: Mapped[Decimal] = mapped_column(Money, nullable=False)
+    final_balance: Mapped[Decimal | None] = mapped_column(Money, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    finalized_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class MRecord(Base):
+    """Per-request ledger row for an M1/M2 request (server-authoritative truth)."""
+
+    __tablename__ = "m_records"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    trial_id: Mapped[str | None] = mapped_column(
+        ForeignKey("m_trials.id", ondelete="CASCADE"), index=True, nullable=True
+    )
+    account_id: Mapped[int] = mapped_column(
+        ForeignKey("accounts.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    request_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    mechanism: Mapped[str] = mapped_column(String(8), nullable=False)
+    architecture: Mapped[str] = mapped_column(String(32), nullable=False)
+
+    # Token truth (server-observed).
+    tokens_generated: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    tokens_delivered: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    tokens_billed: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+    # Money (exact Decimal). authoritative_cost = C(r) for the value the client obtained.
+    authoritative_cost: Mapped[Decimal] = mapped_column(Money, nullable=False, default=0)
+    committed_debit: Mapped[Decimal] = mapped_column(Money, nullable=False, default=0)
+    refund: Mapped[Decimal] = mapped_column(Money, nullable=False, default=0)
+    net_debit: Mapped[Decimal] = mapped_column(Money, nullable=False, default=0)
+    leak: Mapped[Decimal] = mapped_column(Money, nullable=False, default=0)
+
+    balance_before: Mapped[Decimal | None] = mapped_column(Money, nullable=True)
+    balance_after: Mapped[Decimal | None] = mapped_column(Money, nullable=True)
+
+    served: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    completed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    invariant_ok: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    detection_level: Mapped[str] = mapped_column(String(4), nullable=False, default="D0")
+
+    # M1-specific.
+    abort_pct: Mapped[float | None] = mapped_column(Float, nullable=True)
+    # M2-specific.
+    manipulation: Mapped[str | None] = mapped_column(String(32), nullable=True)
+
+    extra: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

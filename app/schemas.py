@@ -149,3 +149,94 @@ class DbInfo(BaseModel):
     server_version: str
     transaction_isolation: str
     default_transaction_isolation: str
+
+
+# --------------------------------------------------------------------------- #
+# M-mechanism schemas (M1 commit timing, M2 usage authority)
+# --------------------------------------------------------------------------- #
+class MTrialCreate(BaseModel):
+    account_id: int
+    mechanism: str = Field(..., pattern="^(m1|m2)$")
+    architecture: str
+    price_tier: str = "medium"
+    prompt: str = Field(..., min_length=1)
+    seed: int | None = None
+    initial_credits: float = 1000.0
+    params: dict = Field(default_factory=dict)
+
+
+class MTrialOut(BaseModel):
+    trial_id: str
+    account_id: int
+    mechanism: str
+    architecture: str
+    price_tier: str
+    model_seed: int
+    prices: dict
+    prompt: str
+    initial_balance: Decimal
+
+
+class UsageIn(BaseModel):
+    input_tokens: int = 0
+    output_tokens: int = 0
+    cached_input_tokens: int = 0
+    reasoning_tokens: int = 0
+    declared_total: int | None = None
+
+
+class M1Request(BaseModel):
+    prompt: str = Field(..., min_length=1)
+    seed: int | None = None
+    request_id: str | None = None
+    trial_id: str | None = None
+
+
+class M2Request(BaseModel):
+    prompt: str = Field(..., min_length=1)
+    seed: int | None = None
+    request_id: str | None = None
+    trial_id: str | None = None
+    manipulation: str = "honest"
+    client_usage: UsageIn | None = None  # declared usage (may be manipulated)
+
+
+class MRecordOut(BaseModel):
+    request_id: str
+    mechanism: str
+    architecture: str
+    tokens_generated: int
+    tokens_delivered: int
+    tokens_billed: int
+    authoritative_cost: Decimal
+    committed_debit: Decimal
+    refund: Decimal
+    net_debit: Decimal
+    leak: Decimal
+    balance_before: Decimal | None
+    balance_after: Decimal | None
+    served: bool
+    completed: bool
+    invariant_ok: bool
+    detection_level: str
+    abort_pct: float | None
+    manipulation: str | None
+    extra: dict
+
+
+class MTrialAudit(BaseModel):
+    trial_id: str
+    mechanism: str
+    architecture: str
+    price_tier: str
+    initial_balance: Decimal
+    final_balance: Decimal | None
+    balance_delta: Decimal | None
+    net_debit_total: Decimal
+    reconciled: bool | None
+    record_count: int
+    served_count: int
+    total_authoritative_cost: Decimal
+    total_leak: Decimal
+    invariant_violations: int
+    rows: list[MRecordOut]

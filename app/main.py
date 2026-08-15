@@ -80,10 +80,15 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="LLM Metering-Evasion Testbed",
-    version="0.2.0",
+    version="0.3.0",
     summary="Vulnerable-by-construction LLM-SaaS gateway for client-side metering-evasion research.",
     lifespan=lifespan,
 )
+
+# M1 (metering-commit timing) and M2 (usage-record authority) endpoints.
+from .m_routes import router as m_router  # noqa: E402
+
+app.include_router(m_router)
 
 
 # --------------------------------------------------------------------------- #
