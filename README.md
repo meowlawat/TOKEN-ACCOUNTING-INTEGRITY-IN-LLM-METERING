@@ -8,19 +8,29 @@ taxonomy, threat model, and ethics guardrails.
 > **Ethics (hard rule):** everything here targets only the locally-built testbed.
 > Never point the attack harness at any third-party, live, or production system.
 
-## Status — class-6 publication-grade foundation
+## Status — full study (B0 baseline + M1 + M2; M3 killed)
 
-- [x] Repo structure + `docker-compose.yml` (FastAPI + PostgreSQL + Redis)
-- [x] Deterministic mock-LLM streaming stub (zero GPU, reproducible)
-- [x] Metered `/complete` + credits, **per-request auditable ledger**, trials table
-- [x] **Class 6 baseline** (credit-decrement race) — vulnerable + hardened, with the
-      DB-level lost-update mechanism verified (not just asserted)
-- [x] Mechanical `$-leak` (never inferred from final balance), separated metrics,
-      programmatic safety-invariant checks, concurrency sweep, statistical summarizer
-      with 95% CIs, and a controls/invariants regression suite
+- [x] Repo, `docker-compose.yml` (FastAPI + PostgreSQL + Redis), deterministic mock LLM
+- [x] **B0 — credit/quota-decrement race** (baseline): per-request ledger, mechanical
+      `$-leak`, DB-level lost-update verified, concurrency sweep, CIs, 19/19 controls
+- [x] **M1 — metering-commit timing**: real SSE streaming + client abort, 4 architectures
+      (`pre_debit`, `reserve_reconcile`, `post_completion`, `reserve_refund_on_abort`),
+      leak-vs-abort curve, defense + overhead
+- [x] **M2 — usage-record authority**: 6 architectures (client → server-authoritative),
+      8 realistic usage manipulations, leakage-efficiency + detection spectrum (D0–D3)
+- [x] Integrity gates (independent re-derivation + accounting conservation) on every
+      trial; figures/tables/power-analysis regenerate from raw data; paper compiles
+- [x] **M3 — inference-cache billing: KILLED** at its decision gate (`paper/m3_decision.md`)
 
-Classes 1–5 (the novel contribution) are not implemented yet — the next milestone
-is Phase 1 (lit review, freeze taxonomy, novelty gate).
+Phase 1 novelty audit + Phase 2 measurement are complete; see `FINAL_RESEARCH_REPORT.md`,
+`paper/main.pdf`, and `paper/*.md`. Contribution framing = systematization + measurement
++ defense (the mechanisms are known reframes, not new primitives).
+
+## Reproduce everything
+
+```bash
+bash scripts/reproduce_all.sh          # or: powershell scripts/reproduce_all.ps1
+```
 
 ## Quickstart
 

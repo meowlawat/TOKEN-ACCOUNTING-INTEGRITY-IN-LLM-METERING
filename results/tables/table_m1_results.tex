@@ -1,0 +1,39 @@
+\begin{table}[t]
+\centering
+\caption{M1 metering-commit timing: leak vs. abort (medium tier, 10 reps).}
+\label{tab:m1}
+\begin{tabular}{lrrrrrr}
+\toprule
+architecture & abort\% & delivered & mean leak & req ASR & inv.viol & detect \\
+\midrule
+pre\_debit & 0 & 1 & 0.0000 & 0.00 & 0.00 & n/a \\
+pre\_debit & 10 & 7 & 0.0000 & 0.00 & 0.00 & n/a \\
+pre\_debit & 25 & 17 & 0.0000 & 0.00 & 0.00 & n/a \\
+pre\_debit & 50 & 34 & 0.0000 & 0.00 & 0.00 & n/a \\
+pre\_debit & 75 & 52 & 0.0000 & 0.00 & 0.00 & n/a \\
+pre\_debit & 90 & 62 & 0.0000 & 0.00 & 0.00 & n/a \\
+pre\_debit & 100 & 69 & 0.0000 & 0.00 & 0.00 & n/a \\
+reserve\_reconcile & 0 & 1 & 0.0000 & 0.00 & 0.00 & n/a \\
+reserve\_reconcile & 10 & 7 & 0.0000 & 0.00 & 0.00 & n/a \\
+reserve\_reconcile & 25 & 17 & 0.0000 & 0.00 & 0.00 & n/a \\
+reserve\_reconcile & 50 & 34 & 0.0000 & 0.00 & 0.00 & n/a \\
+reserve\_reconcile & 75 & 52 & 0.0000 & 0.00 & 0.00 & n/a \\
+reserve\_reconcile & 90 & 62 & 0.0000 & 0.00 & 0.00 & n/a \\
+reserve\_reconcile & 100 & 69 & 0.0000 & 0.00 & 0.00 & n/a \\
+post\_completion & 0 & 1 & 0.0045 & 1.00 & 1.00 & D0 \\
+post\_completion & 10 & 7 & 0.0135 & 1.00 & 1.00 & D0 \\
+post\_completion & 25 & 17 & 0.0285 & 1.00 & 1.00 & D0 \\
+post\_completion & 50 & 34 & 0.0540 & 1.00 & 1.00 & D0 \\
+post\_completion & 75 & 52 & 0.0810 & 1.00 & 1.00 & D0 \\
+post\_completion & 90 & 62 & 0.0960 & 1.00 & 1.00 & D0 \\
+post\_completion & 100 & 69 & 0.0000 & 0.00 & 0.00 & n/a \\
+reserve\_refund\_on\_abort & 0 & 1 & 0.0045 & 1.00 & 1.00 & D0 \\
+reserve\_refund\_on\_abort & 10 & 7 & 0.0135 & 1.00 & 1.00 & D0 \\
+reserve\_refund\_on\_abort & 25 & 17 & 0.0285 & 1.00 & 1.00 & D0 \\
+reserve\_refund\_on\_abort & 50 & 34 & 0.0540 & 1.00 & 1.00 & D0 \\
+reserve\_refund\_on\_abort & 75 & 52 & 0.0810 & 1.00 & 1.00 & D0 \\
+reserve\_refund\_on\_abort & 90 & 62 & 0.0960 & 1.00 & 1.00 & D0 \\
+reserve\_refund\_on\_abort & 100 & 69 & 0.0000 & 0.00 & 0.00 & n/a \\
+\bottomrule
+\end{tabular}
+\end{table}

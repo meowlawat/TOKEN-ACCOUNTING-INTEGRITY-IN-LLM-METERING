@@ -78,11 +78,11 @@ Revised taxonomy (honest provider, dishonest client, goal = underpay):
   billed token count; LLM hook = tokenization nondeterminism. Mirror of Token Inflation's
   measured provider over-report margin (~50.85%). Reviewer will cite: CWE-807, Token Inflation.
   Defense: server-side authoritative recount.
-- **M3 — Inference-cache billing evasion** *(reframe of old Class 3; SURVIVES, WEAK / low
-  confidence — candidate to cut)* — inference vs billing idempotency; cache authorization vs
-  correctness. Reviewer will cite: Stripe idempotency, Auditing Prompt Caching (ICML 2025,
-  privacy not billing), semantic-cache gateways (cache hit = 0 tokens). Overlaps solved
-  idempotency + authorization.
+- **M3 — Inference-cache billing evasion** *(reframe of old Class 3; **KILLED at the Phase 2
+  decision gate** — see `paper/m3_decision.md`)* — reduces to solved billing idempotency
+  (Stripe), generic cache authorization (overlaps killed Class 5), and a billing-policy choice
+  (semantic-cache hits bill 0 by design). No residual LLM-specific accounting-integrity
+  violation distinct from M2. **Not implemented.**
 - **B0 — Credit/quota-decrement race** *(KNOWN BASELINE — not a contribution; was Class 6,
   now ABSORBS old Class 4)* — non-atomic check+decrement TOCTOU on a credit/quota counter,
   incl. shared/multi-tenant pools. Cite: Kettle single-packet attack (PortSwigger, 2023) +
@@ -94,10 +94,26 @@ Revised taxonomy (honest provider, dishonest client, goal = underpay):
 - ~~Class 5 (Entitlement-metadata tampering)~~ → **removed**. Textbook OWASP API3:2023
   (BOPLA / mass assignment) + API1:2023 (BOLA). Non-LLM. Type D (rebrand).
 
-**Novelty gate result: PASS (conditional)** — 3 distinct, experimentally-testable
-LLM-specific mechanisms (M1, M2, M3) with a bounded literature gap; but PASS is
-*conditional* on the systematization/measurement framing and is robust to losing M3
-(M1 + M2 + B0 remain a viable focused paper). **Note (correction from Phase 0):** the
+**Phase 2 result (2026-08-15): M1 + M2 IMPLEMENTED and MEASURED; M3 KILLED at gate.**
+The taxonomy narrowed to **2 novel reframes (M1, M2) + 1 baseline (B0)**. Real data
+(integrity-gated, all trials reconcile): M1 — vulnerable commit-timing archs
+(`post_completion`, `reserve_refund_on_abort`) leak the value of tokens delivered before
+the commit, peaking at abort~90% then collapsing to $0 at completion (request-ASR 1.0,
+invariant violated); safe archs (`pre_debit`, `reserve_reconcile`) leak $0. M2 —
+client-authoritative billing leaks up to 0.58 (90% output under-report) / 0.74
+(total/subtotal mismatch under flat total pricing) leakage efficiency, and the
+exploitable manipulation set depends on the billing basis; server-authoritative archs
+(`server_recount`, `hybrid_reconcile`, `upstream`) leak 0 across all 8 manipulations.
+Defense overhead: M1 reserve-reconcile +9.8 ms; M2 recount +0.1 ms (mock; tokenizer cost
+NOT captured — key limitation). Impl: `app/architectures/`, `app/accounting/`,
+`app/m_routes.py`; experiments `run_m1/run_m2/run_overhead`, summarizers, `regression_m`
+(16/16), figures/tables/power_analysis. Paper: `paper/main.tex` → `paper/main.pdf`
+(compiled with tectonic). Contribution framing = systematization + measurement + defense,
+NOT new primitives. Do NOT implement M3.
+
+**Novelty gate (Phase 1) result: PASS (conditional)** — was 3 mechanisms; after the M3
+kill it is **2 novel reframes (M1, M2) + baseline B0**, still PASS under the
+systematization/measurement framing. **Note (correction from Phase 0):** the
 earlier CLAUDE.md line citing "the 2025 *Computers & Security* race-condition
 methodology paper" was **not verified** in the Phase 1 search and should not be cited;
 use Kettle (2023) + CVE-2026-31873 (2026) for the baseline instead.

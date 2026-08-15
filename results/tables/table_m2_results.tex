@@ -1,0 +1,59 @@
+\begin{table}[t]
+\centering
+\caption{M2 usage-record authority: leakage efficiency by manipulation (medium tier, 10 reps).}
+\label{tab:m2}
+\begin{tabular}{lrrrrr}
+\toprule
+architecture & manipulation & leak eff. & req ASR & inv.viol & detect \\
+\midrule
+client & honest & 0.00 & 0.00 & 0.00 & n/a \\
+client & under\_report\_output\_50 & 0.32 & 1.00 & 1.00 & D0 \\
+client & under\_report\_output\_90 & 0.58 & 1.00 & 1.00 & D0 \\
+client & under\_report\_input\_50 & 0.01 & 1.00 & 1.00 & D0 \\
+client & drop\_reasoning & 0.32 & 1.00 & 1.00 & D0 \\
+client & inflate\_cached & 0.31 & 1.00 & 1.00 & D0 \\
+client & total\_mismatch & 0.00 & 0.00 & 0.00 & n/a \\
+client & rounding\_shave & 0.04 & 1.00 & 1.00 & D0 \\
+client\_logged & honest & 0.00 & 0.00 & 0.00 & n/a \\
+client\_logged & under\_report\_output\_50 & 0.32 & 1.00 & 1.00 & D1 \\
+client\_logged & under\_report\_output\_90 & 0.58 & 1.00 & 1.00 & D1 \\
+client\_logged & under\_report\_input\_50 & 0.01 & 1.00 & 1.00 & D1 \\
+client\_logged & drop\_reasoning & 0.32 & 1.00 & 1.00 & D1 \\
+client\_logged & inflate\_cached & 0.31 & 1.00 & 1.00 & D1 \\
+client\_logged & total\_mismatch & 0.00 & 0.00 & 0.00 & n/a \\
+client\_logged & rounding\_shave & 0.04 & 1.00 & 1.00 & D1 \\
+client\_total & honest & 0.00 & 0.00 & 0.00 & n/a \\
+client\_total & under\_report\_output\_50 & 0.27 & 1.00 & 1.00 & D0 \\
+client\_total & under\_report\_output\_90 & 0.53 & 1.00 & 1.00 & D0 \\
+client\_total & under\_report\_input\_50 & 0.00 & 0.00 & 0.00 & n/a \\
+client\_total & drop\_reasoning & 0.27 & 1.00 & 1.00 & D0 \\
+client\_total & inflate\_cached & 0.00 & 0.00 & 0.00 & n/a \\
+client\_total & total\_mismatch & 0.74 & 1.00 & 1.00 & D0 \\
+client\_total & rounding\_shave & 0.00 & 0.00 & 0.00 & n/a \\
+upstream & honest & 0.00 & 0.00 & 0.00 & n/a \\
+upstream & under\_report\_output\_50 & 0.00 & 0.00 & 0.00 & n/a \\
+upstream & under\_report\_output\_90 & 0.00 & 0.00 & 0.00 & n/a \\
+upstream & under\_report\_input\_50 & 0.00 & 0.00 & 0.00 & n/a \\
+upstream & drop\_reasoning & 0.00 & 0.00 & 0.00 & n/a \\
+upstream & inflate\_cached & 0.00 & 0.00 & 0.00 & n/a \\
+upstream & total\_mismatch & 0.00 & 0.00 & 0.00 & n/a \\
+upstream & rounding\_shave & 0.00 & 0.00 & 0.00 & n/a \\
+server\_recount & honest & 0.00 & 0.00 & 0.00 & n/a \\
+server\_recount & under\_report\_output\_50 & 0.00 & 0.00 & 0.00 & n/a \\
+server\_recount & under\_report\_output\_90 & 0.00 & 0.00 & 0.00 & n/a \\
+server\_recount & under\_report\_input\_50 & 0.00 & 0.00 & 0.00 & n/a \\
+server\_recount & drop\_reasoning & 0.00 & 0.00 & 0.00 & n/a \\
+server\_recount & inflate\_cached & 0.00 & 0.00 & 0.00 & n/a \\
+server\_recount & total\_mismatch & 0.00 & 0.00 & 0.00 & n/a \\
+server\_recount & rounding\_shave & 0.00 & 0.00 & 0.00 & n/a \\
+hybrid\_reconcile & honest & 0.00 & 0.00 & 0.00 & n/a \\
+hybrid\_reconcile & under\_report\_output\_50 & 0.00 & 0.00 & 0.00 & n/a \\
+hybrid\_reconcile & under\_report\_output\_90 & 0.00 & 0.00 & 0.00 & n/a \\
+hybrid\_reconcile & under\_report\_input\_50 & 0.00 & 0.00 & 0.00 & n/a \\
+hybrid\_reconcile & drop\_reasoning & 0.00 & 0.00 & 0.00 & n/a \\
+hybrid\_reconcile & inflate\_cached & 0.00 & 0.00 & 0.00 & n/a \\
+hybrid\_reconcile & total\_mismatch & 0.00 & 0.00 & 0.00 & n/a \\
+hybrid\_reconcile & rounding\_shave & 0.00 & 0.00 & 0.00 & n/a \\
+\bottomrule
+\end{tabular}
+\end{table}
