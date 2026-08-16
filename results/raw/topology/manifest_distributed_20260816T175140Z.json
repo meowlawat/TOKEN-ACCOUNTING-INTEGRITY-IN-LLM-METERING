@@ -1,0 +1,50 @@
+{
+  "experiment": "topology_validation",
+  "topology": "distributed",
+  "base_url": "http://localhost:8002",
+  "generated_at": "20260816T175140Z",
+  "reduced_matrix": true,
+  "serving_processes_observed": {
+    "gwA-8": 7,
+    "gwB-8": 2,
+    "gwA-9": 5,
+    "gwB-9": 10
+  },
+  "distinct_processes": 4,
+  "stages": [
+    {
+      "stage": "B0",
+      "exit_code": 0,
+      "output": "results\\raw\\topology\\b0_distributed_20260816T175140Z.json",
+      "ok": true,
+      "tail": [
+        "[hardened   c= 50] reps=10 mean_served= 10.0 leaking_trials=0/10",
+        "",
+        "raw results written to E:\\se paper\\results\\raw\\topology\\b0_distributed_20260816T175140Z.json  (40 trials)"
+      ]
+    },
+    {
+      "stage": "M1",
+      "exit_code": 0,
+      "output": "results\\raw\\topology\\m1_distributed_20260816T175140Z.json",
+      "ok": true,
+      "tail": [
+        "[m1 reserve_refund_on_abort  c= 50 abort=   90% attacker] recs= 20 leaking= 20 rps=  52.3 recon=True",
+        "",
+        "raw M1 results -> E:\\se paper\\results\\raw\\topology\\m1_distributed_20260816T175140Z.json  (24 cells)"
+      ]
+    },
+    {
+      "stage": "M2",
+      "exit_code": 0,
+      "output": "results\\raw\\topology\\m2_distributed_20260816T175140Z.json",
+      "ok": true,
+      "tail": [
+        "[m2 hybrid_reconcile c= 50 total_mismatch        ] recs= 20 leaking=  0 rps=  204.9 p95=   90.8ms err=0 recon=True",
+        "",
+        "raw M2 results -> E:\\se paper\\results\\raw\\topology\\m2_distributed_20260816T175140Z.json  (36 cells)"
+      ]
+    }
+  ],
+  "all_ok": true
+}

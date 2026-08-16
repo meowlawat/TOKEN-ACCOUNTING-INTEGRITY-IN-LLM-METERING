@@ -1,0 +1,31 @@
+\begin{table}[t]
+\centering
+\small
+\caption{Cross-backend validation. The same cases run against a mutable balance row and an append-only ledger with a derived balance, behind one semantic interface. Identical outcomes indicate the results do not depend on the balance-storage architecture.}
+\label{tab:backendgen}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{llrrrrr}
+\toprule
+case & metric & mutable & ledger & viol (mut) & viol (led) & verdict \\
+\midrule
+B0/hardened/c10 & leak & 0.000000 & 0.000000 & 0 & 0 & IDENTICAL \\
+B0/hardened/c50 & leak & 0.000000 & 0.000000 & 0 & 0 & IDENTICAL \\
+B0/vulnerable/c10 & leak & 0.949500 & 0.949500 & 9 & 9 & IDENTICAL \\
+B0/vulnerable/c50 & leak & 5.169500 & 5.169500 & 49 & 49 & IDENTICAL \\
+M1/no\_reserve\_settle/abort50 & leak\_per\_request & 0.000000 & 0.000000 & 0 & 0 & IDENTICAL \\
+M1/no\_reserve\_settle/abort90 & leak\_per\_request & 0.000000 & 0.000000 & 0 & 0 & IDENTICAL \\
+M1/post\_completion/abort50 & leak\_per\_request & 0.054500 & 0.054500 & 10 & 10 & IDENTICAL \\
+M1/post\_completion/abort90 & leak\_per\_request & 0.095000 & 0.095000 & 10 & 10 & IDENTICAL \\
+M1/reserve\_reconcile/abort50 & leak\_per\_request & 0.000000 & 0.000000 & 0 & 0 & IDENTICAL \\
+M1/reserve\_reconcile/abort90 & leak\_per\_request & 0.000000 & 0.000000 & 0 & 0 & IDENTICAL \\
+M1/reserve\_refund\_on\_abort/abort50 & leak\_per\_request & 0.054500 & 0.054500 & 10 & 10 & IDENTICAL \\
+M1/reserve\_refund\_on\_abort/abort90 & leak\_per\_request & 0.095000 & 0.095000 & 10 & 10 & IDENTICAL \\
+M2/client/under\_report\_output\_90 & efficiency & 0.5942492012779552 & 0.5942492012779552 & 10 & 10 & IDENTICAL \\
+M2/client\_logged/under\_report\_output\_90 & efficiency & 0.5942492012779552 & 0.5942492012779552 & 10 & 10 & IDENTICAL \\
+M2/client\_total/total\_mismatch & efficiency & 0.7412140575079872 & 0.7412140575079872 & 10 & 10 & IDENTICAL \\
+M2/hybrid\_reconcile/total\_mismatch & efficiency & 0.0 & 0.0 & 0 & 0 & IDENTICAL \\
+M2/server\_recount/under\_report\_output\_90 & efficiency & 0.0 & 0.0 & 0 & 0 & IDENTICAL \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

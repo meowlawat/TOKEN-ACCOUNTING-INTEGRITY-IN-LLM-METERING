@@ -1,0 +1,72 @@
+# PHASE 2 topology: client -> load balancer -> gateway A / gateway B -> shared PG + Redis.
+#
+# Purpose: determine whether the accounting behaviour depends on process/node locality.
+# Two SEPARATE gateway containers (distinct network identities, distinct process trees,
+# distinct connection pools) share one database and one Redis. No Kubernetes.
+#
+#   docker compose -f docker-compose.distributed.yml up --build -d
+#   (load balancer on :8002; control remains on :8000, multi-worker on :8001)
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: metering
+    volumes:
+      - pgdata_dist:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d metering"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  gateway_a: &gw
+    build: .
+    depends_on:
+      db: {condition: service_healthy}
+      redis: {condition: service_healthy}
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/metering
+      REDIS_URL: redis://redis:6379/0
+      CLASS6_CREDIT_RACE: vulnerable
+      TIKTOKEN_CACHE_DIR: /tokcache/tiktoken
+      HF_HOME: /tokcache/hf
+      HF_HUB_OFFLINE: "1"
+      TRANSFORMERS_OFFLINE: "1"
+      GATEWAY_NAME: gwA
+    volumes:
+      - ./tokenizer_cache:/tokcache:ro
+    # Two workers per instance x two instances = 4 processes across 2 network nodes.
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2
+
+  gateway_b:
+    <<: *gw
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/metering
+      REDIS_URL: redis://redis:6379/0
+      CLASS6_CREDIT_RACE: vulnerable
+      TIKTOKEN_CACHE_DIR: /tokcache/tiktoken
+      HF_HOME: /tokcache/hf
+      HF_HUB_OFFLINE: "1"
+      TRANSFORMERS_OFFLINE: "1"
+      GATEWAY_NAME: gwB
+
+  lb:
+    image: nginx:1.27-alpine
+    depends_on: [gateway_a, gateway_b]
+    ports:
+      - "8002:80"
+    volumes:
+      - ./deploy/nginx.distributed.conf:/etc/nginx/conf.d/default.conf:ro
+
+volumes:
+  pgdata_dist:

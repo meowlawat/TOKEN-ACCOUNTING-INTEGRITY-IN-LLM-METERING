@@ -43,6 +43,13 @@ from .schemas import (
 router = APIRouter()
 
 
+def _worker_id() -> str:
+    """Identify the serving process (evidence that load spread across workers)."""
+    import os
+    return f"{os.environ.get('GATEWAY_NAME', 'gw')}-{os.getpid()}"
+
+
+
 # --------------------------------------------------------------------------- #
 # Helpers
 # --------------------------------------------------------------------------- #
@@ -88,8 +95,9 @@ async def create_m_trial(body: MTrialCreate, session: AsyncSession = Depends(get
     prices = Prices.tier(body.price_tier)
     initial = D(body.initial_credits).quantize(CENTS)
 
-    credit = await session.get(Credit, body.account_id)
-    credit.balance = initial
+    # Set the starting balance THROUGH the active backend so the append-only
+    # backend resets its entries rather than mutating a row it never uses.
+    await ledger.set_balance(session, body.account_id, initial)
 
     trial = MTrial(
         id=uuid.uuid4().hex,
@@ -294,7 +302,8 @@ async def _settle_m1(*, account_id, trial_id, request_id, arch, prices, input_to
             net_debit=net_debit, leak=leak, balance_before=balance_before, balance_after=balance_after,
             served=served, completed=completed, invariant_ok=invariant_ok,
             detection_level=("D3" if arch.safe else "D0"), abort_pct=abort_pct, manipulation=None,
-            extra={"n_out": n_out, "est_full_cost": str(est_full_cost),
+            extra={"worker": _worker_id(),
+                   "n_out": n_out, "est_full_cost": str(est_full_cost),
                    "delivered_cost": str(delivered_cost), "reserved": str(reserved),
                    # Timing instrumentation (monotonic ns, same process clock).
                    "stream_start_ns": state.get("stream_start_ns"),
@@ -390,7 +399,8 @@ async def m2_complete(
         net_debit=net_debit, leak=leak, balance_before=balance_before, balance_after=balance_after,
         served=True, completed=True, invariant_ok=invariant_ok, detection_level=detection,
         abort_pct=None, manipulation=req.manipulation,
-        extra={"declared": declared.as_dict(), "true": true_usage.as_dict(),
+        extra={"worker": _worker_id(),
+               "declared": declared.as_dict(), "true": true_usage.as_dict(),
                "corrected": corrected, "billed_cost": str(billed_cost)},
     )
     session.add(rec)

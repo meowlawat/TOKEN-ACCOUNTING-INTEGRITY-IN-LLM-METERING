@@ -1,0 +1,37 @@
+{
+  "experiment": "topology_validation",
+  "topology": "multiworker",
+  "base_url": "http://localhost:8001",
+  "generated_at": "20260816T174053Z",
+  "reduced_matrix": true,
+  "serving_processes_observed": {
+    "mw-9": 22,
+    "mw-8": 2
+  },
+  "distinct_processes": 2,
+  "stages": [
+    {
+      "stage": "M1",
+      "exit_code": 0,
+      "output": "results\\raw\\topology\\m1_multiworker_20260816T174053Z.json",
+      "ok": true,
+      "tail": [
+        "[m1 reserve_refund_on_abort  c= 50 abort=   90% attacker] recs= 20 leaking= 20 rps=  52.2 recon=True",
+        "",
+        "raw M1 results -> E:\\se paper\\results\\raw\\topology\\m1_multiworker_20260816T174053Z.json  (24 cells)"
+      ]
+    },
+    {
+      "stage": "M2",
+      "exit_code": 0,
+      "output": "results\\raw\\topology\\m2_multiworker_20260816T174053Z.json",
+      "ok": true,
+      "tail": [
+        "[m2 hybrid_reconcile c= 50 total_mismatch        ] recs= 20 leaking=  0 rps=  214.3 p95=   88.9ms err=0 recon=True",
+        "",
+        "raw M2 results -> E:\\se paper\\results\\raw\\topology\\m2_multiworker_20260816T174053Z.json  (36 cells)"
+      ]
+    }
+  ],
+  "all_ok": true
+}

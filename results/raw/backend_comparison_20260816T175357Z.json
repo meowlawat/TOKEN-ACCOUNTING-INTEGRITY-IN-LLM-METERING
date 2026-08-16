@@ -1,0 +1,306 @@
+{
+  "experiment": "accounting_backend_comparison",
+  "schema_version": 1,
+  "generated_at": "20260816T175357Z",
+  "environment": {
+    "python": "3.13.5",
+    "platform": "Windows-11-10.0.26200-SP0"
+  },
+  "db_info": {
+    "server_version": "PostgreSQL 16.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit",
+    "transaction_isolation": "read committed",
+    "default_transaction_isolation": "read committed"
+  },
+  "purpose": "Determine whether accounting-security outcomes depend on the balance storage architecture (mutable row vs append-only derived ledger).",
+  "parameters": {
+    "reps": 10,
+    "prompt": "backend generality probe for accounting security architecture",
+    "seed": 1337,
+    "n_out": 68,
+    "backends": [
+      "mutable",
+      "ledger"
+    ]
+  },
+  "results": {
+    "mutable": [
+      {
+        "case": "M2/client/under_report_output_90",
+        "leak": "0.930000",
+        "efficiency": 0.5942492012779552,
+        "invariant_violations": 10,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M2/client_logged/under_report_output_90",
+        "leak": "0.930000",
+        "efficiency": 0.5942492012779552,
+        "invariant_violations": 10,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M2/client_total/total_mismatch",
+        "leak": "1.160000",
+        "efficiency": 0.7412140575079872,
+        "invariant_violations": 10,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M2/server_recount/under_report_output_90",
+        "leak": "0.000000",
+        "efficiency": 0.0,
+        "invariant_violations": 0,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M2/hybrid_reconcile/total_mismatch",
+        "leak": "0.000000",
+        "efficiency": 0.0,
+        "invariant_violations": 0,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M1/post_completion/abort50",
+        "leak_per_request": "0.054500",
+        "leak": "0.545000",
+        "invariant_violations": 10,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M1/post_completion/abort90",
+        "leak_per_request": "0.095000",
+        "leak": "0.950000",
+        "invariant_violations": 10,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M1/reserve_refund_on_abort/abort50",
+        "leak_per_request": "0.054500",
+        "leak": "0.545000",
+        "invariant_violations": 10,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M1/reserve_refund_on_abort/abort90",
+        "leak_per_request": "0.095000",
+        "leak": "0.950000",
+        "invariant_violations": 10,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M1/reserve_reconcile/abort50",
+        "leak_per_request": "0.000000",
+        "leak": "0.000000",
+        "invariant_violations": 0,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M1/reserve_reconcile/abort90",
+        "leak_per_request": "0.000000",
+        "leak": "0.000000",
+        "invariant_violations": 0,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M1/no_reserve_settle/abort50",
+        "leak_per_request": "0.000000",
+        "leak": "0.000000",
+        "invariant_violations": 0,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M1/no_reserve_settle/abort90",
+        "leak_per_request": "0.000000",
+        "leak": "0.000000",
+        "invariant_violations": 0,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "B0/vulnerable/c10",
+        "served": 10,
+        "affordable": 5,
+        "leak": "0.949500",
+        "invariant_violations": 9,
+        "reconciled": true
+      },
+      {
+        "case": "B0/vulnerable/c50",
+        "served": 50,
+        "affordable": 5,
+        "leak": "5.169500",
+        "invariant_violations": 49,
+        "reconciled": true
+      },
+      {
+        "case": "B0/hardened/c10",
+        "served": 5,
+        "affordable": 5,
+        "leak": "0.000000",
+        "invariant_violations": 0,
+        "reconciled": true
+      },
+      {
+        "case": "B0/hardened/c50",
+        "served": 5,
+        "affordable": 5,
+        "leak": "0.000000",
+        "invariant_violations": 0,
+        "reconciled": true
+      }
+    ],
+    "ledger": [
+      {
+        "case": "M2/client/under_report_output_90",
+        "leak": "0.930000",
+        "efficiency": 0.5942492012779552,
+        "invariant_violations": 10,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M2/client_logged/under_report_output_90",
+        "leak": "0.930000",
+        "efficiency": 0.5942492012779552,
+        "invariant_violations": 10,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M2/client_total/total_mismatch",
+        "leak": "1.160000",
+        "efficiency": 0.7412140575079872,
+        "invariant_violations": 10,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M2/server_recount/under_report_output_90",
+        "leak": "0.000000",
+        "efficiency": 0.0,
+        "invariant_violations": 0,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M2/hybrid_reconcile/total_mismatch",
+        "leak": "0.000000",
+        "efficiency": 0.0,
+        "invariant_violations": 0,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M1/post_completion/abort50",
+        "leak_per_request": "0.054500",
+        "leak": "0.545000",
+        "invariant_violations": 10,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M1/post_completion/abort90",
+        "leak_per_request": "0.095000",
+        "leak": "0.950000",
+        "invariant_violations": 10,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M1/reserve_refund_on_abort/abort50",
+        "leak_per_request": "0.054500",
+        "leak": "0.545000",
+        "invariant_violations": 10,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M1/reserve_refund_on_abort/abort90",
+        "leak_per_request": "0.095000",
+        "leak": "0.950000",
+        "invariant_violations": 10,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M1/reserve_reconcile/abort50",
+        "leak_per_request": "0.000000",
+        "leak": "0.000000",
+        "invariant_violations": 0,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M1/reserve_reconcile/abort90",
+        "leak_per_request": "0.000000",
+        "leak": "0.000000",
+        "invariant_violations": 0,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M1/no_reserve_settle/abort50",
+        "leak_per_request": "0.000000",
+        "leak": "0.000000",
+        "invariant_violations": 0,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "M1/no_reserve_settle/abort90",
+        "leak_per_request": "0.000000",
+        "leak": "0.000000",
+        "invariant_violations": 0,
+        "reconciled": true,
+        "records": 10
+      },
+      {
+        "case": "B0/vulnerable/c10",
+        "served": 10,
+        "affordable": 5,
+        "leak": "0.949500",
+        "invariant_violations": 9,
+        "reconciled": true
+      },
+      {
+        "case": "B0/vulnerable/c50",
+        "served": 50,
+        "affordable": 5,
+        "leak": "5.169500",
+        "invariant_violations": 49,
+        "reconciled": true
+      },
+      {
+        "case": "B0/hardened/c10",
+        "served": 5,
+        "affordable": 5,
+        "leak": "0.000000",
+        "invariant_violations": 0,
+        "reconciled": true
+      },
+      {
+        "case": "B0/hardened/c50",
+        "served": 5,
+        "affordable": 5,
+        "leak": "0.000000",
+        "invariant_violations": 0,
+        "reconciled": true
+      }
+    ]
+  },
+  "case_count": 17,
+  "differences": [],
+  "identical": true
+}

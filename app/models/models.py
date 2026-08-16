@@ -62,8 +62,31 @@ class Credit(Base):
         ForeignKey("accounts.id", ondelete="CASCADE"), primary_key=True
     )
     balance: Mapped[Decimal] = mapped_column(Money, nullable=False, default=Decimal("0"))
+    # Anchor for the append-only backend: the balance there is DERIVED as
+    # opening_balance + SUM(ledger_entries.delta) and `balance` is left untouched.
+    opening_balance: Mapped[Decimal] = mapped_column(Money, nullable=False, default=Decimal("0"))
 
     account: Mapped["Account"] = relationship(back_populates="credit")
+
+
+class LedgerEntry(Base):
+    """Immutable accounting movement (append-only backend).
+
+    Never updated or deleted by the accounting path; the balance is the sum of these
+    rows over the account's opening balance.
+    """
+
+    __tablename__ = "ledger_entries"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    account_id: Mapped[int] = mapped_column(
+        ForeignKey("accounts.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    delta: Mapped[Decimal] = mapped_column(Money, nullable=False)  # +credit / -debit
+    kind: Mapped[str] = mapped_column(String(16), nullable=False)  # reserve|debit|refund
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
 
 
 class Trial(Base):

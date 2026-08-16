@@ -18,6 +18,7 @@ the safety invariant are auditable from persisted data alone.
 
 from __future__ import annotations
 
+import os
 import secrets
 import uuid
 from contextlib import asynccontextmanager
@@ -25,9 +26,11 @@ from decimal import Decimal
 
 import redis.asyncio as aioredis
 from fastapi import Depends, FastAPI, Header, HTTPException
-from sqlalchemy import delete, func, select
+from sqlalchemy import delete, func, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from .accounting import backends as acct_backends
+from .accounting import ledger as acct_ledger
 from .config import Mode, settings
 from .db import Base, engine, get_session
 from .llm import mock
@@ -53,21 +56,50 @@ from .schemas import (
 
 _CENTS = Decimal("0.000001")
 
+# Shared-state key for the B0 runtime posture. Must be shared (not per-process) so
+# that every gateway worker in a multi-worker or multi-instance deployment agrees.
+POSTURE_KEY = "tai:posture:class6_credit_race"
+
+# Advisory-lock key serializing concurrent schema creation across workers.
+SCHEMA_LOCK_KEY = 0x7A1_ACC7
+
+# Identifies which OS process served a request, so cross-topology experiments can
+# confirm that load actually spread across workers/instances.
+WORKER_ID = f"{os.environ.get('GATEWAY_NAME', 'gw')}-{os.getpid()}"
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Create tables, initialize runtime posture, and open the Redis connection."""
+    """Create tables, initialize runtime posture, and open the Redis connection.
+
+    Schema creation is serialized with a PostgreSQL advisory lock. Without it, a
+    multi-worker deployment has every worker run ``create_all`` concurrently at boot
+    and the losers crash with ``UniqueViolationError`` on ``pg_class`` -- observed
+    directly when first bringing up the 4-worker topology. The lock is transaction
+    scoped, so it is released automatically when the block exits.
+    """
     async with engine.begin() as conn:
+        await conn.execute(text("SELECT pg_advisory_xact_lock(:k)"), {"k": SCHEMA_LOCK_KEY})
         await conn.run_sync(Base.metadata.create_all)
 
+    # Per-process fallback copy of the runtime posture. In a MULTI-WORKER deployment
+    # this is NOT sufficient: `POST /admin/config` would reach only one worker, so the
+    # posture must live in shared state. We therefore keep the authoritative value in
+    # Redis and use this dict only when Redis is unavailable (single-worker fallback).
     app.state.mode = {"class6_credit_race": settings.class6_credit_race}
 
     app.state.redis = aioredis.from_url(settings.redis_url, decode_responses=True)
     try:
         await app.state.redis.ping()
         app.state.redis_ok = True
+        # Seed the shared posture only if no worker has set it yet (SETNX semantics),
+        # so restarting a worker never silently reverts a running experiment.
+        await app.state.redis.setnx(POSTURE_KEY, settings.class6_credit_race.value)
     except Exception:  # noqa: BLE001 - Redis is optional for class 6
         app.state.redis_ok = False
+
+    # Share the accounting-backend selector across workers/instances.
+    acct_ledger.configure(app.state.redis if app.state.redis_ok else None)
 
     yield
 
@@ -175,7 +207,25 @@ async def _account_out(session: AsyncSession, account: Account) -> AccountOut:
 @app.get("/health")
 async def health(session: AsyncSession = Depends(get_session)) -> dict:
     await session.execute(select(1))
-    return {"status": "ok", "db": "ok", "redis": "ok" if app.state.redis_ok else "down"}
+    return {"status": "ok", "db": "ok", "redis": "ok" if app.state.redis_ok else "down",
+            "worker": WORKER_ID}
+
+
+@app.get("/admin/accounting-backend")
+async def get_accounting_backend() -> dict:
+    """Which accounting backend is active (shared across all workers)."""
+    return {"backend": await acct_ledger.active_backend(),
+            "available": list(acct_backends.VALID), "worker": WORKER_ID}
+
+
+@app.post("/admin/accounting-backend")
+async def set_accounting_backend(body: dict) -> dict:
+    """Switch the accounting backend for every worker (testbed only)."""
+    name = body.get("backend", "")
+    if name not in acct_backends.VALID:
+        raise HTTPException(400, f"backend must be one of {acct_backends.VALID}")
+    await acct_ledger.set_backend(name)
+    return {"backend": await acct_ledger.active_backend()}
 
 
 @app.get("/admin/db-info", response_model=DbInfo)
@@ -195,16 +245,37 @@ async def db_info(session: AsyncSession = Depends(get_session)) -> DbInfo:
     )
 
 
+async def current_posture() -> Mode:
+    """Read the B0 posture from SHARED state so every worker agrees.
+
+    Redis is authoritative; the per-process copy is only a fallback for a
+    single-worker deployment with Redis unavailable.
+    """
+    if getattr(app.state, "redis_ok", False):
+        try:
+            v = await app.state.redis.get(POSTURE_KEY)
+            if v:
+                return Mode(v)
+        except Exception:  # noqa: BLE001
+            pass
+    return app.state.mode["class6_credit_race"]
+
+
 @app.get("/admin/config", response_model=ConfigOut)
 async def get_config() -> ConfigOut:
-    return ConfigOut(class6_credit_race=app.state.mode["class6_credit_race"])
+    return ConfigOut(class6_credit_race=await current_posture())
 
 
 @app.post("/admin/config", response_model=ConfigOut)
 async def set_config(update: ConfigUpdate) -> ConfigOut:
     if update.class6_credit_race is not None:
         app.state.mode["class6_credit_race"] = update.class6_credit_race
-    return ConfigOut(class6_credit_race=app.state.mode["class6_credit_race"])
+        if getattr(app.state, "redis_ok", False):
+            try:
+                await app.state.redis.set(POSTURE_KEY, update.class6_credit_race.value)
+            except Exception:  # noqa: BLE001
+                pass
+    return ConfigOut(class6_credit_race=await current_posture())
 
 
 @app.post("/admin/reset-db", status_code=200)
@@ -226,7 +297,8 @@ async def create_account(
     account = Account(name=body.name, plan=body.plan, api_key=secrets.token_hex(16))
     session.add(account)
     await session.flush()
-    session.add(Credit(account_id=account.id, balance=Decimal(str(body.balance))))
+    session.add(Credit(account_id=account.id, balance=Decimal(str(body.balance)),
+                       opening_balance=Decimal(str(body.balance))))
     await session.commit()
     await session.refresh(account)
     return await _account_out(session, account)
@@ -304,7 +376,7 @@ async def create_trial(
     credit = await session.get(Credit, body.account_id)
     credit.balance = initial_balance
 
-    posture: Mode = app.state.mode["class6_credit_race"]
+    posture: Mode = await current_posture()
     trial = Trial(
         id=uuid.uuid4().hex,
         account_id=body.account_id,
@@ -478,7 +550,7 @@ async def complete(
         prompt_tokens, est_completion, settings.price_prompt_per_1k, settings.price_completion_per_1k
     )
 
-    mode: Mode = app.state.mode["class6_credit_race"]
+    mode: Mode = await current_posture()
     if mode is Mode.hardened:
         return await _complete_hardened(
             session, account, req, seed, request_id, prompt_tokens, est_cost

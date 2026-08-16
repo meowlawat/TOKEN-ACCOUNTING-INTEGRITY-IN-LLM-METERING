@@ -1,0 +1,225 @@
+{
+  "topology_files": {
+    "single": {
+      "m1": "m1_20260816T123351Z.json",
+      "m2": "m2_20260816T123522Z.json",
+      "b0": "class6_20260816T123031Z.json"
+    },
+    "multiworker": {
+      "m1": "m1_multiworker_20260816T174211Z.json",
+      "m2": "m2_multiworker_20260816T174211Z.json",
+      "b0": "b0_multiworker_20260816T174211Z.json"
+    },
+    "distributed": {
+      "m1": "m1_distributed_20260816T175140Z.json",
+      "m2": "m2_distributed_20260816T175140Z.json",
+      "b0": "b0_distributed_20260816T175140Z.json"
+    }
+  },
+  "topology_cells_compared": 96,
+  "topology_mismatches": [],
+  "topology_all_consistent": true,
+  "backend_cases_compared": 17,
+  "backend_identical": true,
+  "backend_differences": [],
+  "b0_by_topology": {
+    "single": {
+      "vulnerable/c1": {
+        "dollar_leak_mean": 0.0,
+        "served_mean": 1.0,
+        "reconciled": true,
+        "n": 30
+      },
+      "vulnerable/c2": {
+        "dollar_leak_mean": 0.099,
+        "served_mean": 2.0,
+        "reconciled": true,
+        "n": 30
+      },
+      "vulnerable/c5": {
+        "dollar_leak_mean": 0.396,
+        "served_mean": 5.0,
+        "reconciled": true,
+        "n": 30
+      },
+      "vulnerable/c10": {
+        "dollar_leak_mean": 0.891,
+        "served_mean": 10.0,
+        "reconciled": true,
+        "n": 30
+      },
+      "vulnerable/c20": {
+        "dollar_leak_mean": 1.881,
+        "served_mean": 20.0,
+        "reconciled": true,
+        "n": 30
+      },
+      "vulnerable/c30": {
+        "dollar_leak_mean": 2.871,
+        "served_mean": 30.0,
+        "reconciled": true,
+        "n": 30
+      },
+      "vulnerable/c50": {
+        "dollar_leak_mean": 4.851,
+        "served_mean": 50.0,
+        "reconciled": true,
+        "n": 30
+      },
+      "hardened/c1": {
+        "dollar_leak_mean": 0.0,
+        "served_mean": 1.0,
+        "reconciled": true,
+        "n": 30
+      },
+      "hardened/c2": {
+        "dollar_leak_mean": 0.0,
+        "served_mean": 2.0,
+        "reconciled": true,
+        "n": 30
+      },
+      "hardened/c5": {
+        "dollar_leak_mean": 0.0,
+        "served_mean": 5.0,
+        "reconciled": true,
+        "n": 30
+      },
+      "hardened/c10": {
+        "dollar_leak_mean": 0.0,
+        "served_mean": 10.0,
+        "reconciled": true,
+        "n": 30
+      },
+      "hardened/c20": {
+        "dollar_leak_mean": 0.0,
+        "served_mean": 10.0,
+        "reconciled": true,
+        "n": 30
+      },
+      "hardened/c30": {
+        "dollar_leak_mean": 0.0,
+        "served_mean": 10.0,
+        "reconciled": true,
+        "n": 30
+      },
+      "hardened/c50": {
+        "dollar_leak_mean": 0.0,
+        "served_mean": 10.0,
+        "reconciled": true,
+        "n": 30
+      }
+    },
+    "multiworker": {
+      "vulnerable/c1": {
+        "dollar_leak_mean": 0.0,
+        "served_mean": 1.0,
+        "reconciled": true,
+        "n": 20
+      },
+      "vulnerable/c2": {
+        "dollar_leak_mean": 0.099,
+        "served_mean": 2.0,
+        "reconciled": true,
+        "n": 20
+      },
+      "vulnerable/c5": {
+        "dollar_leak_mean": 0.396,
+        "served_mean": 5.0,
+        "reconciled": true,
+        "n": 20
+      },
+      "vulnerable/c10": {
+        "dollar_leak_mean": 0.891,
+        "served_mean": 10.0,
+        "reconciled": true,
+        "n": 20
+      },
+      "vulnerable/c20": {
+        "dollar_leak_mean": 1.8809999999999998,
+        "served_mean": 20.0,
+        "reconciled": true,
+        "n": 20
+      },
+      "vulnerable/c30": {
+        "dollar_leak_mean": 2.871,
+        "served_mean": 30.0,
+        "reconciled": true,
+        "n": 20
+      },
+      "vulnerable/c50": {
+        "dollar_leak_mean": 4.851,
+        "served_mean": 50.0,
+        "reconciled": true,
+        "n": 20
+      },
+      "hardened/c1": {
+        "dollar_leak_mean": 0.0,
+        "served_mean": 1.0,
+        "reconciled": true,
+        "n": 20
+      },
+      "hardened/c2": {
+        "dollar_leak_mean": 0.0,
+        "served_mean": 2.0,
+        "reconciled": true,
+        "n": 20
+      },
+      "hardened/c5": {
+        "dollar_leak_mean": 0.0,
+        "served_mean": 5.0,
+        "reconciled": true,
+        "n": 20
+      },
+      "hardened/c10": {
+        "dollar_leak_mean": 0.0,
+        "served_mean": 10.0,
+        "reconciled": true,
+        "n": 20
+      },
+      "hardened/c20": {
+        "dollar_leak_mean": 0.0,
+        "served_mean": 10.0,
+        "reconciled": true,
+        "n": 20
+      },
+      "hardened/c30": {
+        "dollar_leak_mean": 0.0,
+        "served_mean": 10.0,
+        "reconciled": true,
+        "n": 20
+      },
+      "hardened/c50": {
+        "dollar_leak_mean": 0.0,
+        "served_mean": 10.0,
+        "reconciled": true,
+        "n": 20
+      }
+    },
+    "distributed": {
+      "vulnerable/c10": {
+        "dollar_leak_mean": 0.891,
+        "served_mean": 10.0,
+        "reconciled": true,
+        "n": 10
+      },
+      "vulnerable/c50": {
+        "dollar_leak_mean": 4.851,
+        "served_mean": 50.0,
+        "reconciled": true,
+        "n": 10
+      },
+      "hardened/c10": {
+        "dollar_leak_mean": 0.0,
+        "served_mean": 10.0,
+        "reconciled": true,
+        "n": 10
+      },
+      "hardened/c50": {
+        "dollar_leak_mean": 0.0,
+        "served_mean": 10.0,
+        "reconciled": true,
+        "n": 10
+      }
+    }
+  }
+}
