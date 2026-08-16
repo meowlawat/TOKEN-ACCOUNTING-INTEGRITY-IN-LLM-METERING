@@ -1,0 +1,19 @@
+\begin{table}[t]
+\centering
+\small
+\caption{M1 architecture matrix. Solvency (served value must not exceed the affordable balance) and accounting integrity (delivered value must not exceed the net committed debit) are ORTHOGONAL: reservation provides the former and abort-safe finalization the latter, and neither substitutes for the other.}
+\label{tab:m1matrix}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{llrr}
+\toprule
+architecture & Property A: solvency & Property B: accounting integrity & how the violated property fails \\
+\midrule
+pre\_debit & HOLDS & HOLDS & - \\
+reserve\_reconcile & HOLDS & HOLDS & - \\
+reserve\_refund\_on\_abort & VIOLATED & VIOLATED & served 6/6 on a 2-request budget \\
+no\_reserve\_settle & VIOLATED & HOLDS & served 6/6 on a 2-request budget; balance -0.320000 \\
+post\_completion & VIOLATED & VIOLATED & served 6/6 on a 2-request budget \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

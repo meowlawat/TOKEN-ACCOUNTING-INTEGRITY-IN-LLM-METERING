@@ -66,6 +66,9 @@ python -m experiments.power_analysis
 python -m experiments.statistical_analysis
 python -m experiments.build_claim_matrix
 
+Write-Host "== 8b. provenance manifest =="
+python -m experiments.build_manifest --status PASS
+
 Write-Host "== 9. compile paper (optional) =="
 if (Get-Command tectonic -ErrorAction SilentlyContinue) {
   Push-Location paper; tectonic main.tex; tectonic main.tex; Pop-Location

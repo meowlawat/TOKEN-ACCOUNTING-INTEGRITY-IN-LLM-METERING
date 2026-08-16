@@ -16,3 +16,8 @@ results/*.png
 
 # Tokenizer artifact cache (populate via scripts/populate_tokenizer_cache.sh)
 tokenizer_cache/
+
+# LaTeX build artifacts
+paper/main.log
+paper/*.aux
+paper/*.out

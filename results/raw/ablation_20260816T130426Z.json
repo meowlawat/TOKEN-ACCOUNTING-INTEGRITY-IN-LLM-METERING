@@ -1,7 +1,7 @@
 {
   "experiment": "architectural_ablation",
   "schema_version": 1,
-  "generated_at": "20260816T115623Z",
+  "generated_at": "20260816T130426Z",
   "environment": {
     "python": "3.13.5",
     "platform": "Windows-11-10.0.26200-SP0"

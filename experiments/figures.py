@@ -57,7 +57,8 @@ def fig_m1_abort_curve(m1: dict) -> None:
         ax.errorbar(xs, ys, yerr=errs, marker="o", ms=4, lw=1.8, ls=ls, color=PAL[i % len(PAL)], label=arch)
     ax.set_xlabel("abort point (% of stream delivered before disconnect)")
     ax.set_ylabel("mean leak per request ($, medium tier)")
-    ax.set_title(f"M1: leakage vs. abort timing (concurrency={base_c})")
+    n = cells[0]["n_records"] if cells else 0
+    ax.set_title(f"M1: leakage vs. abort timing (concurrency={base_c}, n={n} requests/cell)")
     ax.legend(fontsize=8, frameon=False)
     fig.savefig(FIG / "fig_m1_abort_curve.png")
     plt.close(fig)
@@ -151,8 +152,11 @@ def fig_m2_efficiency_heatmap(m2: dict) -> None:
         for j in range(len(manips)):
             ax.text(j, i, f"{M[i, j]:.2f}", ha="center", va="center",
                     color="white" if M[i, j] > 0.5 else "black", fontsize=6.5)
-    ax.set_title("M2: leakage efficiency (fraction of value evaded) — medium tier")
-    fig.colorbar(im, ax=ax, shrink=0.8, label="leakage efficiency")
+    n = cells[0]["n_records"] if cells else 0
+    ax.set_title("M2: leakage efficiency (fraction of delivered value evaded)\n"
+                 f"medium tier, concurrency={base_c}, n={n} requests/cell "
+                 "— under-payment only; overcharge plotted as 0", fontsize=9)
+    fig.colorbar(im, ax=ax, shrink=0.8, label="leakage efficiency (under-payment only)")
     fig.savefig(FIG / "fig_m2_efficiency_heatmap.png")
     plt.close(fig)
 
@@ -167,7 +171,8 @@ def fig_b0_concurrency(b0: dict) -> None:
         ax.plot(xs, ys, marker="o", ms=5, lw=1.8, color=PAL[i], label=posture)
     ax.set_xlabel("concurrency (simultaneous requests)")
     ax.set_ylabel("mean $-leak per trial (medium-equiv.)")
-    ax.set_title("B0 baseline: credit-decrement race leakage vs. concurrency")
+    reps = cells[0]["reps"] if cells and "reps" in cells[0] else 30
+    ax.set_title(f"B0 baseline: credit-decrement race leakage vs. concurrency (n={reps} trials/cell)")
     ax.legend(frameon=False)
     fig.savefig(FIG / "fig_b0_concurrency.png")
     plt.close(fig)

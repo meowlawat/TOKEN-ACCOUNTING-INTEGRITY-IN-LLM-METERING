@@ -20,6 +20,21 @@ PAPER = ROOT / "paper"
 RESULTS = ROOT / "results"
 
 # kind: DIRECTLY MEASURED | INFERRED | LITERATURE-SUPPORTED | HYPOTHESIS | UNSUPPORTED
+
+DEFAULT_CONFIDENCE = {
+    "DIRECTLY MEASURED": "high",
+    "INFERRED": "medium",
+    "LITERATURE-SUPPORTED": "medium (bounded negative)",
+    "HYPOTHESIS": "n/a (scope statement)",
+    "UNSUPPORTED": "none",
+}
+DEFAULT_LIMITATION = {
+    "DIRECTLY MEASURED": "single-host testbed; mock generator unless stated",
+    "INFERRED": "derived from measurements, not directly observed",
+    "LITERATURE-SUPPORTED": "targeted search; does not establish non-existence",
+    "HYPOTHESIS": "explicitly not claimed as a result",
+    "UNSUPPORTED": "must be deleted",
+}
 CLAIMS = [
     # ---- taxonomy / model -------------------------------------------------
     dict(id="C01", section="Taxonomy",
@@ -212,11 +227,14 @@ def main() -> None:
             "claim_id": c["id"], "section": c["section"], "claim": c["claim"],
             "classification": kind, "source": c["source"],
             "result_file": c["result_file"], "metric": c["metric"],
-            "verification": status, "note": note,
+            "verification": status,
+            "confidence": c.get("confidence", DEFAULT_CONFIDENCE.get(kind, "medium")),
+            "limitation": c.get("limitation", DEFAULT_LIMITATION.get(kind, "")),
+            "note": note,
         })
 
     cols = ["claim_id", "section", "claim", "classification", "source", "result_file",
-            "metric", "verification", "note"]
+            "metric", "verification", "confidence", "limitation", "note"]
     with (PAPER / "claim_evidence_matrix.csv").open("w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=cols)
         w.writeheader()
@@ -227,11 +245,12 @@ def main() -> None:
           "Classifications: **DIRECTLY MEASURED** / **INFERRED** / **LITERATURE-SUPPORTED** / "
           "**HYPOTHESIS** / **UNSUPPORTED**. Any row that fails artifact verification is "
           "reclassified UNSUPPORTED and must be deleted from the paper.\n",
-          "| id | section | claim | class | evidence | metric | verified |",
-          "|---|---|---|---|---|---|---|"]
+          "| id | section | claim | class | evidence | metric | verified | confidence | limitation |",
+          "|---|---|---|---|---|---|---|---|---|"]
     for r in rows:
         md.append(f"| {r['claim_id']} | {r['section']} | {r['claim']} | **{r['classification']}** "
-                  f"| `{r['result_file']}` | {r['metric']} | {r['verification']} |")
+                  f"| `{r['result_file']}` | {r['metric']} | {r['verification']} "
+                  f"| {r['confidence']} | {r['limitation']} |")
     counts: dict[str, int] = {}
     for r in rows:
         counts[r["classification"]] = counts.get(r["classification"], 0) + 1

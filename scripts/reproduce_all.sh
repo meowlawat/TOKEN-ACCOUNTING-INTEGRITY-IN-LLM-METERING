@@ -68,6 +68,9 @@ python -m experiments.power_analysis
 python -m experiments.statistical_analysis
 python -m experiments.build_claim_matrix
 
+echo "== 8b. provenance manifest =="
+python -m experiments.build_manifest --status PASS
+
 echo "== 9. compile paper (optional) =="
 if command -v tectonic >/dev/null 2>&1; then
   ( cd paper && tectonic main.tex && tectonic main.tex )

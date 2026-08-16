@@ -10,27 +10,49 @@ taxonomy, threat model, and ethics guardrails.
 
 ## Status — full study (B0 baseline + M1 + M2; M3 killed)
 
+**Thesis:** LLM metering creates an accounting-security boundary spanning **state
+synchronization** (B0), **economic commitment timing** (M1), and **usage authority**
+(M2). M1/M2 are type-B *systematization/reframing* contributions; **B0 is a known
+baseline**. No new attack primitives are claimed.
+
 - [x] Repo, `docker-compose.yml` (FastAPI + PostgreSQL + Redis), deterministic mock LLM
-- [x] **B0 — credit/quota-decrement race** (baseline): per-request ledger, mechanical
-      `$-leak`, DB-level lost-update verified, concurrency sweep, CIs, 19/19 controls
-- [x] **M1 — metering-commit timing**: real SSE streaming + client abort, 4 architectures
-      (`pre_debit`, `reserve_reconcile`, `post_completion`, `reserve_refund_on_abort`),
-      leak-vs-abort curve, defense + overhead
-- [x] **M2 — usage-record authority**: 6 architectures (client → server-authoritative),
-      8 realistic usage manipulations, leakage-efficiency + detection spectrum (D0–D3)
-- [x] Integrity gates (independent re-derivation + accounting conservation) on every
-      trial; figures/tables/power-analysis regenerate from raw data; paper compiles
+- [x] **Formal model**: request-lifecycle state machine + accounting model
+      (`paper/accounting_state_model.{md,tex}`), localizing each mechanism to a transition
+- [x] **B0 — credit/quota-decrement race** (baseline): per-request ledger, DB-level
+      lost-update verified, concurrency sweep, 19/19 controls
+- [x] **M1 — metering-commit timing**: real SSE streaming + client abort, **5**
+      architectures (`pre_debit`, `reserve_reconcile`, `post_completion`,
+      `reserve_refund_on_abort`, `no_reserve_settle`), leak-vs-abort curve,
+      controlled-concurrency sweep (1–100)
+- [x] **M2 — usage-record authority**: 6 architectures, 8 usage manipulations, formal
+      `P(T(U))` analysis, detection spectrum (D0–D3), concurrency sweep
+- [x] **Architectural ablation**: which primitive closes which property
+      (finalization ⇒ integrity; reservation ⇒ solvency; recount must be the *billing basis*)
+- [x] **Real-tokenizer + gateway + local real-model** cost measurement (three levels)
+- [x] **Harness validation**: fault injection (gates fail closed) + metamorphic properties
+- [x] **Independent implementation** cross-check (`defenses/m2_independent_checker.py`)
+- [x] **Lifecycle failure injection** (9 modes) and **statistical analysis** (scipy/statsmodels)
 - [x] **M3 — inference-cache billing: KILLED** at its decision gate (`paper/m3_decision.md`)
 
-Phase 1 novelty audit + Phase 2 measurement are complete; see `FINAL_RESEARCH_REPORT.md`,
-`paper/main.pdf`, and `paper/*.md`. Contribution framing = systematization + measurement
-+ defense (the mechanisms are known reframes, not new primitives).
+See `FINAL_RESEARCH_REPORT.md`, `paper/main.pdf`, `paper/claim_evidence_matrix.md`.
+
+Defense write-ups: `defenses/credit_decrement.py` (B0),
+`defenses/m1_commit_timing.py` (M1), `defenses/m2_usage_authority.py` (M2),
+`defenses/m2_independent_checker.py` (independent reference checker).
 
 ## Reproduce everything
 
 ```bash
+# one-time, needs network: fetch tokenizer artifacts into a local cache
+bash scripts/populate_tokenizer_cache.sh
+
 bash scripts/reproduce_all.sh          # or: powershell scripts/reproduce_all.ps1
 ```
+
+The pipeline runs every regression, sweep, benchmark, ablation, failure-injection,
+validation and analysis stage, regenerates all figures/tables from raw data, and
+compiles `paper/main.pdf`. Host needs `httpx numpy matplotlib scipy statsmodels
+tiktoken transformers tokenizers sentencepiece torch`; `tectonic` is optional (PDF only).
 
 ## Quickstart
 

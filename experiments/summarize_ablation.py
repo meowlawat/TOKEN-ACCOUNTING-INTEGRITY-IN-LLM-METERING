@@ -110,7 +110,43 @@ def summarize_ablation(d: dict) -> dict:
                 "M2 ablation: performing a recount is not sufficient; it must be used as the "
                 "billing basis. client\\_logged computes the recount and still leaks.",
                 "tab:m2abl")
-    return {"m1_rows": rows, "m2_rows": rows2}
+
+    # ---- M1 two-property matrix: Solvency vs Accounting integrity ---------- #
+    # Property A (Solvency):  served_value must not exceed the affordable balance.
+    #   Probe: budget for exactly 2 requests, 6 issued -> serving >2 violates solvency,
+    #   as does driving the balance negative.
+    # Property B (Accounting integrity): delivered_value <= net_committed_debit.
+    matrix = []
+    for arch in dict.fromkeys(r["architecture"] for r in d["m1_factorial"]):
+        cells = [r for r in d["m1_factorial"] if r["architecture"] == arch]
+        integ_ok = sum(c["invariant_violations"] for c in cells) == 0
+        s = solv.get(arch, {})
+        served, k = s.get("served"), s.get("affordable", 2)
+        overserved = (served is not None and served > k)
+        negative = bool(s.get("went_negative"))
+        solvency_ok = not (overserved or negative)
+        why = []
+        if overserved:
+            why.append(f"served {served}/{s.get('requests', 6)} on a {k}-request budget")
+        if negative:
+            why.append(f"balance {s.get('final_balance')}")
+        matrix.append([
+            arch,
+            "HOLDS" if solvency_ok else "VIOLATED",
+            "HOLDS" if integ_ok else "VIOLATED",
+            "; ".join(why) if why else "-",
+        ])
+    write_table("table_m1_property_matrix",
+                ["architecture", "Property A: solvency", "Property B: accounting integrity",
+                 "how the violated property fails"],
+                matrix,
+                "M1 architecture matrix. Solvency (served value must not exceed the affordable "
+                "balance) and accounting integrity (delivered value must not exceed the net "
+                "committed debit) are ORTHOGONAL: reservation provides the former and "
+                "abort-safe finalization the latter, and neither substitutes for the other.",
+                "tab:m1matrix")
+
+    return {"m1_rows": rows, "m2_rows": rows2, "m1_property_matrix": matrix}
 
 
 def summarize_failures(d: dict) -> dict:

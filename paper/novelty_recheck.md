@@ -1,4 +1,12 @@
-# Novelty Recheck (post-implementation, §28)
+# Novelty Recheck (post-implementation)
+
+> **Note:** this is the *first* of two post-hoc novelty audits, run immediately after
+> M1/M2 were implemented. The **final** audit — run after all experiments and used to
+> set the paper's related-work framing — is
+> [`novelty_reattack.md`](./novelty_reattack.md), which supersedes this document where
+> they differ and adds a fourth adversary axis (dishonest intermediary). Both are kept
+> as a record of what was known at each point.
+
 
 **Date:** 2026-08-15 (same session as the Phase 1 audit; performed after implementing
 M1/M2 to catch anything the first pass missed on the strongest survivors).
