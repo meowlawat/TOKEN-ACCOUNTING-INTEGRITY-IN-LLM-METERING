@@ -1,12 +1,12 @@
 {
   "manifest_version": 1,
-  "generated_at": "2026-08-16T16:41:13Z",
+  "generated_at": "2026-08-16T16:42:01Z",
   "reproduction_status": "PASS",
   "runtime_seconds": 3378.0,
   "runtime_human": "56.3 min",
   "git": {
-    "commit": "56e290520d33ca205be3b774cc83c545b761df45",
-    "short": "56e2905",
+    "commit": "edc7fc46c5c6077cd202d3732ed955744e04d303",
+    "short": "edc7fc4",
     "branch": "master",
     "dirty": false
   },
