@@ -3,6 +3,7 @@
 \small
 \caption{M1 ablation: abort-inclusive finalization closes the integrity violation; reservation independently provides the solvency (funds) guarantee. Both are needed for a correct design.}
 \label{tab:m1abl}
+\resizebox{\linewidth}{!}{%
 \begin{tabular}{llrrrrr}
 \toprule
 architecture & reservation & abort-finalization & worst leak/req & integrity & served (budget 2) & solvency \\
@@ -14,4 +15,5 @@ no\_reserve\_settle & no & yes & +0.0000 & held & 6/6 & NEGATIVE \\
 post\_completion & no & no & +0.0845 & VIOLATED & 6/6 & ok \\
 \bottomrule
 \end{tabular}
+}
 \end{table}

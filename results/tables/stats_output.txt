@@ -39,37 +39,128 @@ B0 BASELINE — CREDIT-DECREMENT RACE   (source: class6_20260815T111610Z.summary
   between a synchronization defect and an accounting-design defect.
 
 ==============================================================================
-TOKENIZER MICROBENCHMARK   (source: tokenizer_overhead_20260815T115624Z.json)
+M1 — METERING-COMMIT TIMING   (source: m1_20260816T111541Z.summary.json)
+==============================================================================
+
+------------------------------------------------------------------------------
+1.1 Architecture effect on leak-per-request (attacker arm)
+------------------------------------------------------------------------------
+  vulnerable n=50 mean=0.052827 sd=0.0337635
+  safe       n=50 mean=0.000000 sd=0
+  Cohen's d = 2.213   Cliff's delta = 1.000
+  Mann-Whitney U=2500.0, p=2.72e-20
+
+------------------------------------------------------------------------------
+1.2 Concurrency effect on leak-per-request (the negative result)
+------------------------------------------------------------------------------
+  post_completion            c=1:0.052800 c=5:0.052800 c=20:0.052905 c=50:0.052920 c=100:0.052845
+                             range=0.00012 (0.2270% of mean)
+  pre_debit                  c=1:0.000000 c=5:0.000000 c=20:0.000000 c=50:0.000000 c=100:0.000000
+                             range=0 (0.0000% of mean)
+  reserve_reconcile          c=1:0.000000 c=5:0.000000 c=20:0.000000 c=50:0.000000 c=100:0.000000
+                             range=0 (0.0000% of mean)
+  reserve_refund_on_abort    c=1:0.052800 c=5:0.052800 c=20:0.052800 c=50:0.052800 c=100:0.052800
+                             range=0 (0.0000% of mean)
+  Kruskal-Wallis H=0.030, p=1
+  Practical effect: max between-concurrency difference = 6e-05
+  eta^2 (variance explained by concurrency) = 0.0000
+
+------------------------------------------------------------------------------
+1.3 Leakage vs abort position (is leak driven by delivered value?)
+------------------------------------------------------------------------------
+  post_completion: leak~abort%   r=0.9998 p=1.28e-40
+  post_completion: leak~delivered r=1.0000 p=0
+  post_completion: OLS leak = 0.00150000*delivered + 0.003000 (R^2=1.0000)  -> $/token delivered
+  reserve_refund_on_abort: leak~abort%   r=0.9998 p=2.4e-40
+  reserve_refund_on_abort: leak~delivered r=1.0000 p=0
+  reserve_refund_on_abort: OLS leak = 0.00150000*delivered + 0.003000 (R^2=1.0000)  -> $/token delivered
+
+------------------------------------------------------------------------------
+1.4 Honest-client control (must be zero everywhere)
+------------------------------------------------------------------------------
+  n=20 max=0 — control holds: True
+
+==============================================================================
+M2 — USAGE-RECORD AUTHORITY   (source: m2_20260816T111723Z.summary.json)
+==============================================================================
+
+------------------------------------------------------------------------------
+2.1 Authority placement effect on leakage efficiency
+------------------------------------------------------------------------------
+  client-authoritative n=105 mean=0.2374 sd=0.2279
+  server-authoritative n=105 mean=0.0000 sd=0
+  Cohen's d = 1.473   Cliff's delta = 0.762
+  Server-authoritative group is exactly 0 in every cell (structural, not sampled).
+  Mann-Whitney U=9712.5, p=4.09e-28 (client-auth > server-auth)
+  bootstrap 95% CI for mean client-auth leakage efficiency: [0.1944, 0.2809]
+
+------------------------------------------------------------------------------
+2.2 Concurrency effect (negative result)
+------------------------------------------------------------------------------
+  client               c=1:0.2276 c=5:0.2276 c=20:0.2276 c=50:0.2276 c=100:0.2276   range=0
+  client_logged        c=1:0.2276 c=5:0.2276 c=20:0.2276 c=50:0.2276 c=100:0.2276   range=0
+  client_total         c=1:0.2569 c=5:0.2569 c=20:0.2569 c=50:0.2569 c=100:0.2569   range=0
+  hybrid_reconcile     c=1:0.0000 c=5:0.0000 c=20:0.0000 c=50:0.0000 c=100:0.0000   range=0
+  server_recount       c=1:0.0000 c=5:0.0000 c=20:0.0000 c=50:0.0000 c=100:0.0000   range=0
+  upstream             c=1:0.0000 c=5:0.0000 c=20:0.0000 c=50:0.0000 c=100:0.0000   range=0
+
+------------------------------------------------------------------------------
+2.3 Pricing-basis x manipulation interaction (category vs flat-total)
+------------------------------------------------------------------------------
+  drop_reasoning           category=0.324  flat_total=0.266  delta=-0.058
+  inflate_cached           category=0.313  flat_total=0.000  delta=-0.313
+  rounding_shave           category=0.036  flat_total=0.000  delta=-0.036
+  total_mismatch           category=0.000  flat_total=0.741  delta=+0.741
+  under_report_input_50    category=0.014  flat_total=0.000  delta=-0.014
+  under_report_output_50   category=0.324  flat_total=0.266  delta=-0.058
+  under_report_output_90   category=0.583  flat_total=0.525  delta=-0.058
+  INTERPRETATION: a manipulation's success is conditional on the billing basis;
+  the two bases have different exploitable sets (see 'total_mismatch' vs others).
+
+------------------------------------------------------------------------------
+2.4 Defense overhead under load (p95 latency, mock recount)
+------------------------------------------------------------------------------
+  client               c=100: p95=102.3 ms
+  client_logged        c=100: p95=111.7 ms
+  client_total         c=100: p95=104.9 ms
+  hybrid_reconcile     c=100: p95=95.8 ms
+  server_recount       c=100: p95=97.7 ms
+  upstream             c=100: p95=95.8 ms
+  safe vs client-auth p95 latency: Mann-Whitney U=4641, p=0.693, Cliff's delta=-0.033
+  means: safe=81.8 ms, client-auth=84.8 ms (difference is not practically meaningful; both dominated by queueing)
+
+==============================================================================
+TOKENIZER MICROBENCHMARK   (source: tokenizer_overhead_20260816T120624Z.json)
 ==============================================================================
 
 ------------------------------------------------------------------------------
 3.1 Per-token cost by engine (is cost linear in token count?)
 ------------------------------------------------------------------------------
-  tiktoken/cl100k_base     log-log slope=0.999 (1.0=linear) R^2=1.0000  us/token 0.707-0.722
-  tiktoken/o200k_base      log-log slope=1.000 (1.0=linear) R^2=1.0000  us/token 0.605-0.623
-  hf-fast/auto             log-log slope=1.083 (1.0=linear) R^2=0.9990  us/token 1.638-2.364
-  hf-fast/llama            log-log slope=1.140 (1.0=linear) R^2=0.9984  us/token 1.305-2.692
-  sentencepiece/llama      log-log slope=1.035 (1.0=linear) R^2=0.9999  us/token 2.213-2.617
+  tiktoken/cl100k_base     log-log slope=0.997 (1.0=linear) R^2=1.0000  us/token 0.712-0.728
+  tiktoken/o200k_base      log-log slope=1.006 (1.0=linear) R^2=1.0000  us/token 0.607-0.630
+  hf-fast/auto             log-log slope=1.076 (1.0=linear) R^2=0.9988  us/token 1.638-2.360
+  hf-fast/llama            log-log slope=1.117 (1.0=linear) R^2=0.9996  us/token 1.285-2.255
+  sentencepiece/llama      log-log slope=1.034 (1.0=linear) R^2=1.0000  us/token 2.201-2.601
   Slope ~1.0 => cost scales linearly with input length; operators can budget it as
   tokens x per-token constant.
 
 ------------------------------------------------------------------------------
 3.2 Engine effect at 16384 tokens (natural)
 ------------------------------------------------------------------------------
-  tiktoken/cl100k_base     p50=   11.68 ms   x1.00 vs tiktoken/cl100k_base
-  tiktoken/o200k_base      p50=   10.05 ms   x0.86 vs tiktoken/cl100k_base
-  hf-fast/auto             p50=   38.21 ms   x3.27 vs tiktoken/cl100k_base
-  hf-fast/llama            p50=   34.24 ms   x2.93 vs tiktoken/cl100k_base
-  sentencepiece/llama      p50=   41.89 ms   x3.59 vs tiktoken/cl100k_base
+  tiktoken/cl100k_base     p50=   11.84 ms   x1.00 vs tiktoken/cl100k_base
+  tiktoken/o200k_base      p50=   10.21 ms   x0.86 vs tiktoken/cl100k_base
+  hf-fast/auto             p50=   35.41 ms   x2.99 vs tiktoken/cl100k_base
+  hf-fast/llama            p50=   33.70 ms   x2.85 vs tiktoken/cl100k_base
+  sentencepiece/llama      p50=   41.37 ms   x3.49 vs tiktoken/cl100k_base
 
 ------------------------------------------------------------------------------
 3.3 Workload effect (same token count, different text)
 ------------------------------------------------------------------------------
-  tiktoken/cl100k_base     natural=2.89ms  code=2.86ms  high_entropy=1.42ms   max/min=2.04x
-  tiktoken/o200k_base      natural=2.54ms  code=2.46ms  high_entropy=1.51ms   max/min=1.68x
-  hf-fast/auto             natural=7.48ms  code=4.07ms  high_entropy=2.80ms   max/min=2.68x
-  hf-fast/llama            natural=6.54ms  code=3.46ms  high_entropy=2.06ms   max/min=3.17x
-  sentencepiece/llama      natural=10.32ms  code=6.30ms  high_entropy=5.11ms   max/min=2.02x
+  tiktoken/cl100k_base     natural=2.92ms  code=2.88ms  json=2.75ms  high_entropy=1.41ms   max/min=2.07x
+  tiktoken/o200k_base      natural=2.53ms  code=2.47ms  json=2.33ms  high_entropy=1.49ms   max/min=1.70x
+  hf-fast/auto             natural=7.05ms  code=4.06ms  json=3.26ms  high_entropy=2.67ms   max/min=2.64x
+  hf-fast/llama            natural=6.52ms  code=3.40ms  json=2.55ms  high_entropy=1.92ms   max/min=3.39x
+  sentencepiece/llama      natural=9.86ms  code=6.26ms  json=5.43ms  high_entropy=5.08ms   max/min=1.94x
   At a FIXED token count, workload changes cost by up to the ratio shown: text with
   more characters per token requires scanning more input.
 

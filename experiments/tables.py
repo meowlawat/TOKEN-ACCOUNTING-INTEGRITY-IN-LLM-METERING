@@ -30,13 +30,23 @@ def _write(name: str, header: list[str], rows: list[list[str]], caption: str, la
     # latex
     cols = "l" + "r" * (len(header) - 1)
     def esc(s):
-        return str(s).replace("%", r"\%").replace("_", r"\_").replace("$", r"\$")
-    tex = [r"\begin{table}[t]", r"\centering", f"\\caption{{{caption}}}", f"\\label{{{label}}}",
-           f"\\begin{{tabular}}{{{cols}}}", r"\toprule",
-           " & ".join(esc(h) for h in header) + r" \\", r"\midrule"]
+        return (str(s).replace("\\", "").replace("_", r"\_").replace("%", r"\%")
+                .replace("&", r"\&").replace("$", r"\$").replace("#", r"\#"))
+    # Wrap wide tables in \resizebox so they cannot overflow the text block.
+    widest = max([sum(len(str(c)) for c in r) for r in rows] + [sum(len(h) for h in header)]) if rows else 0
+    wide = len(header) >= 6 or widest > 70
+    tex = [r"\begin{table}[t]", r"\centering", r"\small",
+           f"\\caption{{{esc(caption)}}}", f"\\label{{{label}}}"]
+    if wide:
+        tex.append(r"\resizebox{\linewidth}{!}{%")
+    tex += [f"\\begin{{tabular}}{{{cols}}}", r"\toprule",
+            " & ".join(esc(h) for h in header) + r" \\", r"\midrule"]
     for r in rows:
         tex.append(" & ".join(esc(x) for x in r) + r" \\")
-    tex += [r"\bottomrule", r"\end{tabular}", r"\end{table}"]
+    tex += [r"\bottomrule", r"\end{tabular}"]
+    if wide:
+        tex.append(r"}")
+    tex.append(r"\end{table}")
     (TAB / f"{name}.tex").write_text("\n".join(tex) + "\n", encoding="utf-8")
 
 

@@ -33,16 +33,29 @@ def _esc(s) -> str:
 
 
 def write_table(name: str, header: list[str], rows: list[list[str]], caption: str, label: str):
+    """Emit Markdown + LaTeX. Wide tables are wrapped in \\resizebox so they never
+    overflow the text block (fixing overfull \\hbox at the GENERATOR, not by hand)."""
     TAB.mkdir(parents=True, exist_ok=True)
     md = ["| " + " | ".join(header) + " |", "|" + "|".join(["---"] * len(header)) + "|"]
     md += ["| " + " | ".join(str(c) for c in r) + " |" for r in rows]
     (TAB / f"{name}.md").write_text("\n".join(md) + "\n", encoding="utf-8")
+
     cols = "l" * 2 + "r" * (len(header) - 2) if len(header) > 2 else "l" * len(header)
+    # Heuristic: estimate rendered width; wrap anything likely to overflow.
+    widest = max([sum(len(str(c)) for c in r) for r in rows] + [sum(len(h) for h in header)])
+    wide = len(header) >= 6 or widest > 70
+
     tex = [r"\begin{table}[t]", r"\centering", r"\small", f"\\caption{{{_esc(caption)}}}",
-           f"\\label{{{label}}}", f"\\begin{{tabular}}{{{cols}}}", r"\toprule",
-           " & ".join(_esc(h) for h in header) + r" \\", r"\midrule"]
+           f"\\label{{{label}}}"]
+    if wide:
+        tex.append(r"\resizebox{\linewidth}{!}{%")
+    tex += [f"\\begin{{tabular}}{{{cols}}}", r"\toprule",
+            " & ".join(_esc(h) for h in header) + r" \\", r"\midrule"]
     tex += [" & ".join(_esc(c) for c in r) + r" \\" for r in rows]
-    tex += [r"\bottomrule", r"\end{tabular}", r"\end{table}"]
+    tex += [r"\bottomrule", r"\end{tabular}"]
+    if wide:
+        tex.append(r"}")
+    tex.append(r"\end{table}")
     (TAB / f"{name}.tex").write_text("\n".join(tex) + "\n", encoding="utf-8")
 
 

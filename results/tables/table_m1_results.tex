@@ -1,7 +1,9 @@
 \begin{table}[t]
 \centering
+\small
 \caption{M1 metering-commit timing: leak vs. abort (medium tier, concurrency=1).}
 \label{tab:m1}
+\resizebox{\linewidth}{!}{%
 \begin{tabular}{lrrrrrr}
 \toprule
 architecture & abort\% & delivered & leak/req & req ASR & inv.viol & detect \\
@@ -32,4 +34,5 @@ reserve\_refund\_on\_abort & 90 & 62 & 0.0960 & 1.00 & 1.00 & D0 \\
 reserve\_refund\_on\_abort & 100 & 69 & 0.0000 & 0.00 & 0.00 & n/a \\
 \bottomrule
 \end{tabular}
+}
 \end{table}

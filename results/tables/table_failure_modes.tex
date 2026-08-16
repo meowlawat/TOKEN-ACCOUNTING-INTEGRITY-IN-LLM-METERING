@@ -3,6 +3,7 @@
 \small
 \caption{Lifecycle failure injection. Every invariant violation occurs on a vulnerable architecture; the hardened architectures survive all injected failures, and a recount-engine failure is fail-closed.}
 \label{tab:failmodes}
+\resizebox{\linewidth}{!}{%
 \begin{tabular}{llrrrrrr}
 \toprule
 id & failure injected & architecture & delivered & net debit & refund & leakage & invariant \\
@@ -24,4 +25,5 @@ F6 & delayed/out-of-order usage metadata & server\_recount & yes & 0.6725 & 0.00
 F4 & tokenizer/recount engine unavailable & bench/server\_recount & no & 0.0000 & 0.0000 & 0.0000 & HELD \\
 \bottomrule
 \end{tabular}
+}
 \end{table}

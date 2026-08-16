@@ -4,12 +4,15 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,calc}
 \usepackage{url}
 \usepackage[hidelinks]{hyperref}
 \graphicspath{{../results/figures/}}
 
-\title{Token-Accounting Integrity: Systematizing and Evaluating\\
-Client-Side Metering Evasion in LLM-Powered Applications}
+\title{Token-Accounting Integrity:\\
+Characterizing Client-Side Under-Payment in LLM Metering Architectures}
 \author{(anonymized for review)}
 \date{}
 
@@ -17,210 +20,297 @@ Client-Side Metering Evasion in LLM-Powered Applications}
 \maketitle
 
 \begin{abstract}
-LLM applications bill by metering token and inference consumption. Existing security
-work on LLM billing runs in two directions: a dishonest \emph{provider} over-charging an
-honest client (CoIn; Invisible Tokens, Visible Bills; Token Inflation), and a third
-party inflating a \emph{victim}'s bill (Denial-of-Wallet; LLMjacking). The inverse---a
-legitimate but dishonest \emph{client} exploiting LLM-billing-specific weaknesses to
-under-pay---has no taxonomy, benchmark, or measured defense evaluation. We do not claim
-new attack primitives; the enabling mechanisms already exist as scattered
-deployed-gateway bugs, generic weaknesses, and payment folklore. Instead we
-\emph{systematize} client-side metering evasion around a single safety invariant---%
-\emph{no served inference without a committed, non-refunded, server-authoritative
-debit}---and \emph{measure} it on a reproducible, vulnerable-by-construction testbed
-(FastAPI + PostgreSQL + Redis + a deterministic mock model, no GPU). We operationalize
-two LLM-relevant accounting dimensions---metering-commit timing (M1) and usage-record
-authority (M2)---across representative architectures, using a generic credit-decrement
-race (B0) as a known baseline. We quantify leakage, attack-success rate, detectability,
-and defense overhead, with per-request-ledger integrity gates. Aborting a stream just
-before a post-hoc commit yields up to the full request cost for free (invariant
-violated at abort points before completion; zero after); a client-authoritative usage
-record leaks up to 58--74\% of the true inference value depending on the billing basis;
-and in every case a server-authoritative defense reduces leakage to zero at modest
-cost. All figures regenerate from raw data.
+Usage-based billing is the default commercial model for LLM inference, yet the
+\emph{accounting} pipeline that turns delivered tokens into money is itself a
+security boundary. Existing work on LLM billing studies two directions: a dishonest
+\emph{provider} over-charging an honest client, and a third party inflating a
+\emph{victim's} bill. We study the remaining direction --- an honest provider and a
+dishonest \emph{client} that seeks inference value while under-paying --- and argue
+it is best understood not as a list of attacks but as a single accounting boundary
+spanning three architectural dimensions: \textbf{state synchronization} (is the
+authorize-and-decrement transition atomic?), \textbf{commitment timing} (is the
+charge irrevocable before value is delivered?), and \textbf{usage authority} (who
+determines the billed quantity?). We do not claim new attack primitives; the
+enabling mechanisms are known individually. Our contribution is to model these
+dimensions as transitions of a request-lifecycle state machine, build a reproducible
+vulnerable-by-construction testbed, and measure them under integrity gates that
+independently re-derive every reported number. Across 2{,}000+ instrumented
+requests we find that per-request leakage from commitment-timing and usage-authority
+defects is \emph{invariant} to concurrency, whereas the synchronization defect is
+\emph{created} by it --- a structural distinction confirmed by an architectural
+ablation showing that different primitives close different properties: abort-inclusive
+finalization closes the integrity violation while reservation independently provides
+the solvency guarantee, and performing a server-side recount is insufficient unless it
+is also used as the billing basis. A local real-model experiment bounds the cost of the
+strongest defense at $\approx$0.015\% of end-to-end inference time, contradicting the
+apparent expense of the same defense measured against a zero-cost mock generator.
 \end{abstract}
 
 \section{Introduction}
-Usage-based billing has become the default commercial model for LLM APIs and agents.
-Because the billed unit---the token---is produced by opaque, streamed, non-deterministic
-inference, the \emph{accounting} pipeline (authorize, meter, commit a charge) is itself
-security-sensitive. Recent work studies dishonest \emph{providers} inflating that
-accounting against honest users, and availability attacks that drain a victim's budget.
-We study the missing quadrant: an honest provider and a \emph{dishonest client} that
-seeks metered inference while under-paying (Table~\ref{tab:quadrant}).
+Because the billed unit --- the token --- is produced by opaque, streamed, and
+long-running inference, the pipeline that authorizes, meters, and commits a charge is
+security-relevant. Recent work studies dishonest \emph{providers} inflating that
+accounting against honest users~\cite{coin,invisible,tokeninflation}, and
+availability/economic attacks that drain a victim's budget~\cite{dow,llmjacking}.
+Both assume the client is honest or impersonated. We study the missing quadrant
+(Table~\ref{tab:quadrant}): a legitimate but dishonest client that under-pays.
 
-We are deliberately adversarial about our own novelty. The underlying mechanisms are
-\emph{known}: a deployed LLM gateway already refunds pre-consumed quota when a final
-usage block is missing after disconnect (new-api \#5235); ``never trust client input''
-is CWE-807 and is already mitigated against encoding-induced ``silent zero-debit'' in a
-metered-token proxy (aperture \#247); and concurrent quota-decrement races are a classic
-web-race primitive with a recent CVE (Tyk CVE-2026-31873). Our contribution is not to
-discover these but to (i) place them in a taxonomy unified by one safety invariant,
-(ii) build a reproducible testbed and \emph{measure} their economic leakage, attack
-success, and detectability across architectures, and (iii) evaluate server-side defenses
-and their overhead.
+We are deliberately adversarial about our own novelty. Each enabling mechanism is
+already known in isolation: a deployed LLM gateway already refunds pre-consumed quota
+when a final usage record is missing after a client
+disconnect~\cite{newapi5235}; ``never trust client input in a security decision'' is
+CWE-807, and a metered-token proxy already mitigates an encoding-induced ``silent
+zero-debit''~\cite{aperture247}; and concurrent quota-decrement races are a classic
+web-race primitive with a recent CVE~\cite{kettle,cve2026}. Our contribution is
+therefore \emph{systematization and measurement}, not discovery: we show these are
+three placements of one accounting boundary, localize each to a state transition, and
+quantify the integrity/performance trade-off of the defenses.
 
 \begin{table}[t]\centering
-\caption{Directions of LLM-billing security. This paper targets the shaded cell.}
+\caption{Directions of LLM-billing security. This paper targets the last cell.}
 \label{tab:quadrant}
 \begin{tabular}{lll}
 \toprule
  & Inflate cost & Evade cost \\
 \midrule
-Provider dishonest & CoIn / Invisible Tokens (covered) & --- \\
-Client dishonest & Denial-of-Wallet / LLMjacking (covered) & \textbf{this paper} \\
+Provider dishonest & CoIn, Invisible Tokens, Token Inflation & --- \\
+Client dishonest & Denial-of-Wallet, LLMjacking & \textbf{this paper} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
+\paragraph{Contributions.}
+\begin{enumerate}\itemsep2pt
+\item An \textbf{architectural taxonomy and accounting model} (\S\ref{sec:statemodel})
+that localizes synchronization (B0), commitment timing (M1), and usage authority (M2)
+to specific transitions of a request-lifecycle state machine, with a single integrity
+property $V(r)\le N(r)$.
+\item A \textbf{reproducible client-side under-payment benchmark}: a
+vulnerable-by-construction gateway, attack harness, and defense implementations, with
+integrity gates that re-derive every reported number from a per-request ledger and
+fail the build on any discrepancy.
+\item An \textbf{empirical characterization} of B0/M1/M2 across architectures,
+concurrency, token volume, abort position, price tier, tokenizer, and workload,
+including the negative result that M1/M2 leakage is concurrency-invariant.
+\item An \textbf{architectural ablation} identifying which enforcement primitive
+closes which property --- a stronger claim than ``the defense works''.
+\item An \textbf{integrity/performance trade-off} for authoritative recount, measured
+at three levels: standalone tokenizer, gateway end-to-end, and a local real-model
+experiment.
+\end{enumerate}
+
 \paragraph{Research questions.}
-\textbf{RQ1} How does the placement of metering authority and financial commitment
-affect client-side under-payment? \textbf{RQ2} How much inference value can a dishonest
-client obtain without authoritative billing, across architectures? \textbf{RQ3} Which
-failures are visible to the application's own logs/reconciliation? \textbf{RQ4} Which
-server-side defenses eliminate the violation, and at what cost?
+\textbf{RQ1} How does the placement of synchronization, commitment, and usage
+authority affect client-side under-payment? \textbf{RQ2} How much inference value can
+a dishonest client obtain without authoritative billing? \textbf{RQ3} Which failures
+are visible to the application's own logs and reconciliation? \textbf{RQ4} Which
+enforcement primitives close each violation, and at what cost?
 
 \section{Threat Model}
-Honest provider; dishonest client with valid credentials. The client fully controls its
-own requests: timing, concurrency, connection lifetime (it may abort at any moment), and
-any client-declared fields (e.g.\ a \texttt{usage} object). It cannot read/write other
-tenants' state, forge the provider's own upstream usage metadata, or break
-authentication (that would be LLMjacking). Success on request $r$: it receives inference
-value $C(r)$ but the account is net-charged less. All attacks run only against the local
-testbed; no third-party system is touched.
+Honest provider; dishonest client with valid credentials. Concretely, the attacker
+controls only: request payloads and any client-declared usage fields; permitted
+headers; request concurrency; the client connection lifecycle (it may abort at any
+moment); retries; and observation of its own responses and balance. It \emph{cannot}
+compromise TLS, access the database or Redis, read the gateway filesystem, compromise
+the inference backend, forge authenticated upstream/provider metadata, or alter server
+code. Every listed capability is exercised by the harness; none is granted that we do
+not use. This is an application-layer adversary, not a symbolic cryptographic one.
 
-\section{Formal Model}
-For request $r$ let $S(r)\in\{0,1\}$ be served, $C(r)$ the authoritative cost of the
-inference obtained, and $\mathrm{NetDebit}(r)=\text{committed}(r)-\text{refund}(r)$.
-Under-payment is
-\[
-\mathrm{Leak}(r)=S(r)\,C(r)-\mathrm{NetDebit}(r),\qquad
-\text{efficiency}=\frac{\max(\mathrm{Leak}(r),0)}{C(r)} .
-\]
-The safety invariant is $S(r)=1 \Rightarrow \mathrm{NetDebit}(r)\ge C(r)$, and the
-system must satisfy accounting conservation
-$\sum_r \mathrm{NetDebit}(r) = B_\text{init}-B_\text{final}$, which we assert on every
-trial as an integrity gate.
+Success on request $r$ means receiving value $V(r)$ while the account is net-charged
+less. All experiments run against a local testbed; no third-party system is contacted.
 
-\section{Taxonomy}
-All mechanisms violate the one invariant and differ in \emph{where} the integrity
-boundary sits in \emph{authorize $\to$ [commit timing] $\to$ inference $\to$ [usage
-authority] $\to$ [atomic decrement] $\to$ debit}.
-
-\paragraph{M1 --- Metering-commit timing.} When is the charge irrevocable relative to
-streamed delivery? Architectures: \texttt{pre\_debit} (safe), \texttt{reserve\_reconcile}
-(safe, recommended), \texttt{post\_completion} (leaks: no debit on abort),
-\texttt{reserve\_refund\_on\_abort} (leaks: refunds the whole reserve on a missing final
-usage block---the new-api \#5235 pattern).
-
-\paragraph{M2 --- Usage-record authority.} Who sets the billed quantity? Architectures
-span client-authoritative to server-authoritative: \texttt{client},
-\texttt{client\_logged}, \texttt{client\_total} (all leak), and \texttt{upstream},
-\texttt{server\_recount}, \texttt{hybrid\_reconcile} (safe), yielding a detection
-spectrum D0--D3.
-
-\paragraph{B0 --- Credit/quota-decrement race (baseline, known).} Non-atomic
-check-then-decrement TOCTOU; concurrency multiplies the allowance (Kettle;
-CVE-2026-31873). It answers the LLM-specificity control (Gate~C): B0 works unchanged
-against any non-LLM API; M1/M2 depend on streaming inference and token-usage semantics
-respectively.
-
-\paragraph{Killed.} M3 (inference-cache billing) was killed at its decision gate---it
-reduces to solved idempotency, generic cache authorization, and a billing-policy choice.
-Old classes 4 (quota race $\to$ B0) and 5 (entitlement tampering $\to$ OWASP API1/API3)
-were killed in the Phase~1 audit.
+\input{accounting_state_model}
 
 \section{Testbed and Methodology}
-FastAPI/uvicorn gateway, PostgreSQL~16 (\texttt{READ COMMITTED}), Redis~7, deterministic
-mock LLM streaming tokens as a pure function of (prompt, seed); Docker Compose on one
-commodity host. B0 tables are frozen from the validated baseline; M1/M2 use separate
-tables so the baseline cannot regress. Category-wise exact-\texttt{Decimal} pricing over
-\{input, output, cached, reasoning\} in three tiers (low/medium/high); leakage efficiency
-is tier-invariant. Sweeps: B0 concurrency $\{1,2,5,10,20,30,50\}\times30$; M1
-architecture$\times$abort\%$\{0..100\}\times$tier$\times10$ (840 records) via real SSE
-streams the client aborts; M2 architecture$\times$manipulation$\times$tier$\times10$
-(1440 records). Sample sizes are justified from measured dispersion: leak magnitude is
-deterministic (std $=0$), so proportion (Wilson) intervals bound precision. Every figure
-is re-derived from the per-request ledger and cross-checked against the stored value; all
-trials reconcile.
+FastAPI gateway, PostgreSQL~16 (\textsc{read committed}), Redis~7, a deterministic
+mock generator for reproducibility, and real tokenizers for the recount path; Docker
+Compose on one commodity host (16 logical CPUs, 16\,GB). Money is exact decimal
+(\texttt{NUMERIC(18,6)}). Category-wise pricing over \{input, output, cached,
+reasoning\} in three tiers; leakage \emph{efficiency} (fraction of true value evaded)
+is the price-invariant headline metric, and absolute dollars are labelled scenario
+values.
+
+\paragraph{Integrity gates.} Every summarizer independently recomputes each record's
+leak from primitives, checks the invariant flag for consistency, and verifies ledger
+conservation $\sum_r N(r) = B_{\text{init}}-B_{\text{final}}$ \emph{without} trusting
+the application's own bookkeeping. A violation fails the build. We validate the gates
+adversarially by fault injection: corrupting a leak value, a debit, a served flag, a
+balance, an invariant flag, or deleting a ledger row must each be detected
+(12/12 detected), alongside metamorphic properties (10/10; see
+\texttt{results/processed/metamorphic\_report.json}).
+
+\begin{sloppypar}
+\paragraph{Statistics.} All reported statistics are produced by the standalone script
+\texttt{statistical\_analysis.py} (scipy/statsmodels), which writes
+\texttt{stats\_output.txt}; the paper cites that file. Many conditions
+here are deterministic by construction (identical input, identical code path), giving
+exactly zero variance; for those we report the constant and complete separation rather
+than a p-value, and reserve nonparametric tests and bootstrap intervals for quantities
+that genuinely vary (latency, throughput, real-model timing).
+\end{sloppypar}
 
 \section{Results}
-Integrity: independent re-derivation passes with 0 problems over 420 B0 trials, 840 M1
-records, and 1440 M2 records; all trials reconcile; controls pass 19/19 (B0) and 16/16
-(M1/M2).
 
-\paragraph{B0 (Table~\ref{tab:b0}).} Vulnerable leaks for concurrency $\ge2$ (never at
-1); trial-ASR $=1.0$; the hardened atomic decrement leaks \$0 at all concurrency.
+\subsection{B0 --- synchronization (known baseline)}
+The non-atomic check-then-decrement leaks only when concurrency $\ge 2$: mean
+\$-leak is $0$ at $c{=}1$ and grows exactly linearly, slope $0.099$ per additional
+concurrent request with $R^2=1.0000$ ($p=1.9\times10^{-50}$). The hardened atomic
+compare-and-decrement leaks \$0 at every level (Table~\ref{tab:b0},
+Fig.~\ref{fig:b0}).
 
-\paragraph{M1 (Fig.~\ref{fig:m1}, Table~\ref{tab:m1}).} The vulnerable architectures
-have request-ASR $1.00$ and invariant-violation $1.00$ at every abort point before
-completion; leak rises monotonically with delivered tokens (mean \$0.054 at 50\%,
-\$0.096 at 90\%, medium tier) and collapses to \$0 at completion. Safe architectures leak
-\$0 everywhere. ``Debit after completion'' and ``refund the reserve on abort'' are the
-same failure.
+\subsection{M1 --- commitment timing}
+Leakage tracks the value delivered before the (missing) commit: it rises monotonically
+with abort position and collapses to zero at completion, when the debit finally fires
+(Fig.~\ref{fig:m1}, Table~\ref{tab:m1}). Both vulnerable architectures --- ``debit only
+after completion'' and ``refund the whole reservation on abort'' --- are economically
+identical.
 
-\paragraph{M2 (Fig.~\ref{fig:m2}, Table~\ref{tab:m2}).} Client-authoritative billing
-leaks; leakage efficiency reaches $0.58$ for a 90\% output under-report and $0.74$ for a
-total/subtotal mismatch under flat total pricing. Crucially, the \emph{exploitable
-manipulation set depends on the billing basis} (category vs total). Every
-server-authoritative architecture drives leakage efficiency to $0.00$ across all eight
-manipulations (detection D3).
+\paragraph{Concurrency is not the mechanism.} Holding request volume constant, leak per
+request is invariant across $c\in\{1,5,20,50,100\}$ to four decimal places, and
+request-ASR is exactly $1.0$ (vulnerable) or $0.0$ (safe) at every level
+(Table~\ref{tab:m1conc}, Fig.~\ref{fig:m1conc}). The honest-client control arm leaks
+zero everywhere. M1 is a per-request accounting-design defect, not a race.
 
-\paragraph{Defense overhead (RQ4).} \texttt{reserve\_reconcile} adds $+9.8$\,ms mean over
-\texttt{post\_completion} (two extra atomic writes); \texttt{server\_recount} adds
-$+0.1$\,ms over \texttt{client} in the testbed---with the caveat that the mock makes the
-recount nearly free (a production tokenizer pass is the real, unmeasured cost).
+\subsection{M2 --- usage authority}
+Client-authoritative billing leaks for most manipulations, and \emph{which}
+manipulation succeeds depends on the billing basis: under category pricing a
+total/subtotal mismatch is inert, while under flat-total pricing it becomes the
+strongest attack (Table~\ref{tab:m2}, Fig.~\ref{fig:m2}). Every server-authoritative
+architecture drives leakage efficiency to $0.000$ across all manipulations, and is
+likewise concurrency-invariant (Table~\ref{tab:m2conc}).
+
+\subsection{Architectural ablation: which primitive closes what?}
+Removing one primitive at a time (Tables~\ref{tab:m1abl},~\ref{tab:m2abl}) yields the
+paper's sharpest architectural result:
+\begin{itemize}\itemsep1pt
+\item \textbf{M1:} \emph{abort-inclusive finalization} closes the integrity violation
+--- with or without a reservation. \emph{Reservation} closes a \emph{different}
+property: without it the balance goes negative under a constrained budget (solvency),
+even though integrity holds. Neither primitive substitutes for the other.
+\item \textbf{M2:} performing a recount is \emph{not} sufficient. The
+\texttt{client\_logged} architecture computes an authoritative recount and still leaks
+at efficiency $0.595$, because billing still uses the client's number. The recount must
+be \emph{used as the billing basis}.
+\end{itemize}
+
+\subsection{Lifecycle failure modes}
+Beyond the scripted attack, we inject nine lifecycle failures (disconnect at $t{=}0$
+and mid-stream, truncated stream, settle-window race, missing / delayed / duplicated
+usage metadata, and a recount-engine failure). Every invariant violation falls on a
+vulnerable architecture; the hardened architectures survive all of them, and a
+recount-engine failure is \emph{fail-closed} --- the request is rejected and nothing is
+served or billed (Table~\ref{tab:failmodes}).
+
+\subsection{Detectability}
+Detection is a second defense axis (Table~\ref{tab:detect}). Under
+\texttt{client}-authoritative billing the leak is invisible (D0): the ledger faithfully
+records the client's lie. Merely \emph{logging} a server recount moves the same leak to
+D1 --- recoverable by a post-hoc reconciliation pass --- at negligible cost, and
+reconciling in-request reaches D3. This gives operators who cannot re-architect billing
+an immediate, cheap intermediate step.
+
+\subsection{Cost of authoritative recount (RQ4)}
+We measure the strongest defense at three levels, because they answer different
+questions.
+\begin{enumerate}\itemsep1pt
+\item \textbf{Standalone tokenizer} (Fig.~\ref{fig:toklat}): cost is linear in input
+length (log--log slope $0.999$--$1.14$, $R^2\ge0.998$), so it budgets as
+tokens\,$\times$\,a per-token constant. Engine choice matters by $2.9$--$3.6\times$ at
+16{,}384 tokens; at a fixed token count, workload changes cost by up to
+$3.2\times$.
+\item \textbf{Gateway end-to-end with a \emph{mock} generator}: recount is nearly free
+at $\le$1{,}024 tokens ($\ge0.96\times$ throughput) but costs heavily at 16{,}384
+tokens ($0.05$--$0.76\times$). Tokenization time explains this
+(Spearman $\rho=-0.868$, $p=1.3\times10^{-5}$).
+\item \textbf{Local real-model experiment} (external validity): with \emph{real}
+autoregressive generation, the recount is
+$\mathbf{0.012\%}$--$\mathbf{0.016\%}$ of end-to-end time at every context size
+(bootstrap 95\% CIs in \texttt{stats\_output.txt}); measured throughput ratios scatter
+around $1.0$ ($0.89$--$1.05$) with signs that flip across workloads, i.e.\ within
+timing noise.
+\end{enumerate}
+The apparent expense in (2) is an artifact of the mock generator costing
+\emph{nothing}: when generation is free, tokenization is the whole request. Under real
+inference the same defense is negligible. We report all three rather than the most
+convenient one.
 
 \input{../results/tables/table_b0_baseline.tex}
 \input{../results/tables/table_m1_results.tex}
+\input{../results/tables/table_m1_concurrency.tex}
 \input{../results/tables/table_m2_results.tex}
+\input{../results/tables/table_m2_concurrency.tex}
+\input{../results/tables/table_m1_ablation.tex}
+\input{../results/tables/table_m2_ablation.tex}
+\input{../results/tables/table_failure_modes.tex}
+\input{../results/tables/table_detectability.tex}
 \input{../results/tables/table_defense_summary.tex}
 
 \begin{figure}[t]\centering
-\includegraphics[width=0.72\linewidth]{fig_m1_abort_curve.png}
-\caption{M1: leakage vs.\ abort timing. Vulnerable architectures peak just before the
+\includegraphics[width=0.70\linewidth]{fig_m1_abort_curve.png}
+\caption{M1: leakage vs.\ abort position. Vulnerable architectures peak just before the
 commit and collapse to \$0 at completion; safe architectures stay at \$0.}
 \label{fig:m1}
 \end{figure}
 
 \begin{figure}[t]\centering
+\includegraphics[width=0.95\linewidth]{fig_m1_concurrency.png}
+\caption{M1 negative result: with request volume held constant, per-request leakage and
+request-ASR are invariant to concurrency.}
+\label{fig:m1conc}
+\end{figure}
+
+\begin{figure}[t]\centering
 \includegraphics[width=0.92\linewidth]{fig_m2_efficiency_heatmap.png}
-\caption{M2: leakage efficiency (fraction of value evaded) by architecture $\times$
-manipulation (medium tier). Server-authoritative rows are all zero.}
+\caption{M2: leakage efficiency by architecture $\times$ manipulation. Server-authoritative
+rows are uniformly zero; the exploitable set differs between category and flat-total
+pricing.}
 \label{fig:m2}
 \end{figure}
 
 \begin{figure}[t]\centering
-\includegraphics[width=0.6\linewidth]{fig_b0_concurrency.png}
-\caption{B0 baseline: credit-decrement race leakage vs.\ concurrency.}
+\includegraphics[width=0.60\linewidth]{fig_b0_concurrency.png}
+\caption{B0 baseline: leakage is created by concurrency (contrast with M1/M2).}
 \label{fig:b0}
 \end{figure}
 
-\section{Defense Evaluation}
-Each vulnerable architecture is paired with a server-side primitive: atomic
-compare-and-decrement (B0), reserve-then-reconcile in a cancellation-shielded settlement
-(M1), and server-authoritative recount (M2). Under every defense the invariant-violation
-rate and leakage efficiency are zero across the full attack catalogue. Detection is a
-second axis: logging a recount moves M2 from D0 (invisible) to D1 (reconcilable), and
-request-time reconciliation reaches D3---a cheap, deployable intermediate step for
-operators who cannot yet re-architect billing.
+\begin{figure}[t]\centering
+\includegraphics[width=0.98\linewidth]{tokenizer_latency.png}
+\caption{Standalone tokenizer recount latency by engine, workload, and input length
+(log--log). This is \emph{not} a gateway throughput result.}
+\label{fig:toklat}
+\end{figure}
 
-\section{Discussion, Threats to Validity, Disclosure}
-The mechanisms are type-B reframes, not new primitives; the contribution is
-systematization + measurement + defense, and we use bounded novelty language throughout.
-Principal threats: the mock model makes the M2 recount defense nearly free (production
-tokenizer cost unmeasured); single-node PostgreSQL and HTTP/1.1; M1/M2 are not evaluated
-under concurrency (B0's axis). The ``no prior systematic study'' claim is a bounded
-negative from targeted search, not a proof of non-existence. No third-party system was
-tested; cited artifacts (new-api \#5235, aperture \#247, CVE-2026-31873) were already
-public.
+\section{Discussion and Threats to Validity}
+The mechanisms are reframings of known issues, not new primitives; we state this
+throughout and use bounded language for the literature gap (``we found no prior work in
+our targeted corpus'', never ``nobody has studied this''). Principal threats: the
+generator is a mock in all but the external-validity experiment, and that experiment
+uses a small model on CPU --- it bounds a \emph{ratio}, and says nothing about any
+commercial provider; the gateway runs a single uvicorn worker, so its recount numbers
+are an upper bound; measurements are single-node over loopback, and high-concurrency
+gateway ratios are noisy (repeat spread up to 17\%), so only low-concurrency columns are
+treated as defensible; and the price tiers are synthetic, which is why leakage efficiency
+rather than dollars is the headline. A full list is in
+\texttt{paper/threats\_to\_validity.md}.
 
 \section{Conclusion}
-Client-side metering evasion in LLM applications is a coherent, measurable problem in the
-one billing quadrant prior work leaves open. Two LLM-relevant dimensions---when billing
-commits and who authoritatively counts usage---plus a generic race baseline, all reduce
-to a single safety invariant, and all are closed by moving the authoritative,
-irrevocable accounting event server-side. We release the testbed, harness, defenses, and
-data so operators can measure their own gateways.
+Client-side under-payment in LLM metering is best modelled not as a list of attacks but
+as one accounting boundary with three placements: synchronization, commitment timing,
+and usage authority. Localizing each to a state transition predicts --- and our
+measurements confirm --- that only the synchronization defect is concurrency-created,
+and that different primitives close integrity and solvency. The defenses are ordinary;
+the contribution is knowing precisely which one is load-bearing, and what it costs.
+
+\begin{thebibliography}{9}\small
+\bibitem{coin} G. Sun et al. CoIn: Counting the Invisible Reasoning Tokens in Commercial Opaque LLM APIs. arXiv:2505.13778, 2025.
+\bibitem{invisible} G. Sun et al. Invisible Tokens, Visible Bills. arXiv:2505.18471, 2025.
+\bibitem{tokeninflation} S. Hoque et al. Token Inflation: How Dishonest Providers Can Overcharge for LLM Usage. arXiv:2605.30040, 2026.
+\bibitem{dow} OWASP. LLM10: Unbounded Consumption (Denial of Wallet). OWASP Top 10 for LLM Applications, 2025.
+\bibitem{llmjacking} Sysdig Threat Research Team. LLMjacking: stolen cloud credentials used for LLM inference, 2024.
+\bibitem{newapi5235} QuantumNous/new-api issue \#5235: streaming requests may refund all pre-consumed quota when final usage is missing after client disconnect, 2026.
+\bibitem{aperture247} lightninglabs/aperture PR \#247: metered draw-down of prepaid L402 tokens; strip \texttt{Accept-Encoding} to prevent a silent zero-debit, 2026.
+\bibitem{kettle} J. Kettle. The single-packet attack: making remote race-conditions `local'. PortSwigger Research, 2023.
+\bibitem{cve2026} CVE-2026-31873: Tyk API Gateway non-atomic quota check/decrement race, 2026.
+\end{thebibliography}
 
 \end{document}

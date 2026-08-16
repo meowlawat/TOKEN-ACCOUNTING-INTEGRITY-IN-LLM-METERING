@@ -10,6 +10,7 @@ localized to a specific transition, establishing that the taxonomy is
 
 \begin{figure}[t]
 \centering
+\resizebox{\linewidth}{!}{%
 \begin{tikzpicture}[
   node distance=8mm and 12mm,
   every node/.style={font=\scriptsize},
@@ -47,7 +48,8 @@ localized to a specific transition, establishing that the taxonomy is
 
 \node[align=left, anchor=north west] at ($(created.south west)+(0,-14mm)$) {%
   \color{black!60}Shaded = value delivered\quad Darker = economic commitment};
-\end{tikzpicture}
+\end{tikzpicture}%
+}
 \caption{Request lifecycle. Value exposure begins at the first delivered token
 (\textsc{streaming}); economic commitment is final only at \textsc{reconciled}. The
 interval between them is the exposure window that M1 exploits. B0 corrupts the
@@ -105,6 +107,7 @@ concurrency-invariant.
 \begin{table}[t]\centering
 \caption{Structural distinction between the three mechanisms.}
 \label{tab:structural}
+\resizebox{\linewidth}{!}{%
 \begin{tabular}{llll}
 \toprule
 Mechanism & Defective element & Needs concurrency? & Closed by \\
@@ -113,7 +116,8 @@ B0 & transition atomicity & \textbf{yes} ($\ge 2$) & atomic compare-and-decremen
 M1 & transition graph (abort path) & no & abort-inclusive finalization \\
 M2 & data authority at \textsc{accounted} & no & server-authoritative recount \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
 This predicts the empirical result: B0 leakage is \emph{created} by concurrency, while
