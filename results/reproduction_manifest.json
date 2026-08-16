@@ -1,14 +1,14 @@
 {
   "manifest_version": 1,
-  "generated_at": "2026-08-16T16:42:01Z",
+  "generated_at": "2026-08-16T17:03:02Z",
   "reproduction_status": "PASS",
   "runtime_seconds": 3378.0,
   "runtime_human": "56.3 min",
   "git": {
-    "commit": "edc7fc46c5c6077cd202d3732ed955744e04d303",
-    "short": "edc7fc4",
+    "commit": "bf2ee5b3956ebaecfa9ac1269214b680cead222d",
+    "short": "bf2ee5b",
     "branch": "master",
-    "dirty": false
+    "dirty": true
   },
   "environment": {
     "os": "Windows-11-10.0.26200-SP0",
@@ -391,8 +391,8 @@
       "bytes": 73984
     },
     "results/figures/gateway_recount_throughput.png": {
-      "sha256": "62bbe6ae675d1c0b0a0efdf015170ad7ddb385e113da1700c65fcb5f6e28de34",
-      "bytes": 103584
+      "sha256": "b4a83e8aab6cfb2ca9cb490e0dd2ee25d864e90857fd26c849787539bf797187",
+      "bytes": 109810
     },
     "results/figures/tokenizer_latency.png": {
       "sha256": "56eae1decf3843685ce6eb5d92a50e8a47cf49af06c126aad600df60a4d61c9f",
@@ -420,7 +420,7 @@
     }
   },
   "paper_pdf": {
-    "sha256": "9c4705267702f85b377b23681c16ca293499b419f7fae9e4d89bde2466696f6d",
-    "bytes": 510337
+    "sha256": "29d9f9465c70b3733ef5f72f0b078e9e58f9583b36c36ad0a9259815bfb15f23",
+    "bytes": 519965
   }
 }

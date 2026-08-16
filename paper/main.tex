@@ -20,31 +20,33 @@ Measuring Client-Side Under-Payment in LLM Metering Architectures}
 \maketitle
 
 \begin{abstract}
-Usage-based billing is the default commercial model for LLM inference, yet the
-accounting pipeline that converts delivered tokens into money is itself a security
-boundary. Prior work on LLM billing studies a dishonest \emph{provider} over-charging
-an honest client, a third party inflating a \emph{victim's} bill, and a dishonest
-\emph{intermediary} forging provenance. We study the remaining direction: an honest
-provider and a dishonest \emph{client} that seeks inference value while under-paying.
-We argue this is not a list of attacks but one accounting boundary with three
-placements --- \textbf{state synchronization}, \textbf{economic commitment timing}, and
-\textbf{usage authority} --- and we model each as a transition of a request-lifecycle
-state machine with a single integrity property, $V(r)\le N(r)$. We do not claim new
-attack primitives; the enabling mechanisms are individually known. On a
-vulnerable-by-construction testbed with integrity gates that independently re-derive
-every reported number, we measure all three across architectures, concurrency, abort
-position, price tier, tokenizer, and workload. Leakage from commitment-timing and
-usage-authority defects is \emph{invariant} to concurrency (identical to four decimal
-places from 1 to 100 concurrent requests), whereas the synchronization defect is
-\emph{created} by it (slope $0.099$ per additional concurrent request, $R^2=1.0000$).
-An ablation shows different primitives close different properties: abort-safe
-finalization closes accounting integrity while reservation independently provides
-solvency, and computing a server-side recount is insufficient unless it is also the
-billing basis --- an architecture that computes a correct recount and bills the client's
-number still leaks $58.3\%$ of the delivered value. A local real-model experiment bounds
-the strongest defense's cost at $0.014$--$0.019\%$ of end-to-end inference time,
-correcting a $0.05$--$0.76\times$ throughput figure measured against a zero-cost mock
-generator. All results regenerate from raw data in a 56-minute clean run.
+Usage-based billing is a security boundary in LLM inference: value is streamed to the
+client before accounting is necessarily finalized, and the charge depends on a
+multi-category usage record produced at runtime. We study client-side under-payment
+under an honest-provider threat model, and model this accounting-security boundary along
+three dimensions --- \textbf{state synchronization}, \textbf{commitment timing}, and
+\textbf{usage authority} --- unified by a single integrity property, $V(r)\le N(r)$, over
+a request-lifecycle model. \emph{We do not claim new attack primitives}: the enabling
+mechanisms are individually known, and the contribution is a systematic measurement and
+architectural analysis of them across representative metering designs, together with an
+ablation of the enforcement primitives. In controlled experiments the known
+synchronization race is \emph{created} by concurrency (slope $0.099$ per additional
+concurrent request, $R^2=1.0000$), whereas commitment-timing and usage-authority failures
+remain per-request phenomena: under fixed request volume in the tested architecture their
+per-request leakage was unchanged across concurrency levels 1--100. For commitment
+timing, an ablation shows that abort-safe finalization closes accounting-integrity
+violations while reservation independently provides solvency, and that neither
+substitutes for the other. For usage authority, computing an accurate server-side recount
+is insufficient unless that value becomes the billing basis: an architecture that
+recounts correctly, records the result, and still bills the client-declared number leaks
+$58.3\%$ of the delivered value. Server-authoritative billing eliminates the observed
+usage-authority leakage. Tokenizer cost is real, grows with input length, and varies by
+$2.9$--$3.6\times$ across engines; in the tested local SmolLM2-135M CPU configuration the
+recount accounted for $0.014$--$0.019\%$ of end-to-end inference time. All reported
+results regenerate from raw data through fail-closed integrity gates and a clean
+reproduction pipeline. These results position LLM metering as an accounting-security
+boundary whose synchronization, lifecycle, and authority choices determine both
+under-payment exposure and defense cost.
 \end{abstract}
 
 \section{Introduction}
@@ -126,6 +128,22 @@ refunded the difference. A refund is legitimate only when it releases the uncons
 portion, $F(r)\le \mathrm{Res}(r)-V(r)$; the vulnerable ``refund the whole reservation on
 abort'' architecture violates exactly this side condition.
 
+\paragraph{Two distinct properties.} Accounting integrity is not the only thing a
+metering system must provide, and conflating the two obscures the defense analysis. We
+therefore separate:
+\begin{description}\itemsep1pt
+\item[Accounting integrity] $V(r)\le N(r)$ --- the client is never net-charged less than
+the value it received.
+\item[Solvency] a request is served only when the system holds sufficient committed or
+reserved economic capacity to cover it under the system's policy.
+\end{description}
+These are orthogonal. A system can bill exactly for what it delivered while still serving
+clients who cannot pay (integrity holds, solvency fails), or hold funds and then release
+them (solvency machinery present, integrity fails). In the M1 dimension, \emph{reservation
+addresses solvency} and \emph{abort-safe finalization addresses accounting integrity};
+\S\ref{sec:m1} shows empirically that neither substitutes for the other
+(Table~\ref{tab:m1matrix}).
+
 \section{Background and Related Work}
 LLM APIs meter multi-category token vectors (input, output, cached, reasoning), stream
 output incrementally, and settle charges asynchronously. Provider-side auditing work
@@ -148,10 +166,24 @@ The three dimensions are experimentally distinguishable, not merely conceptual:
 \emph{concurrency-created}, and is labelled a \textbf{known baseline} used to validate
 the measurement rig and to provide a generic reference point; \textbf{M1} (commitment
 timing) is lifecycle-sensitive; \textbf{M2} (usage authority) is authority- and
-pricing-sensitive. Applying the LLM-specificity test explicitly --- \emph{would this
-attack work unchanged against a non-LLM API?} --- B0 answers \emph{yes} (hence baseline),
-while M1 depends on streamed, long-running delivery and M2 on multi-category token
-pricing, so both answer \emph{no}.
+pricing-sensitive.
+
+\paragraph{On LLM specificity.} We do \emph{not} claim these mechanisms are uniquely
+possible in LLM systems. Streaming responses, trusting client-supplied values, and racing
+a counter all occur elsewhere. What is specific to LLM inference is that a single request
+combines, in one metering boundary: progressive (streamed) value delivery;
+\emph{runtime-generated} usage that is not known when the request is authorized;
+multi-category token vectors (input, output, cached, reasoning); tokenizer- and
+provider-dependent usage semantics; pricing functions defined over those usage
+categories; and asynchronous reconciliation or settlement. The mechanisms are therefore
+not claimed as unique security primitives; rather, LLM inference combines the lifecycle,
+usage-authority and token-vector accounting conditions into one boundary, and it is that
+combination we systematize and measure. On this basis B0 remains a \emph{generic}
+baseline --- a shared-counter race that behaves identically in any metered API --- while
+M1 and M2 are LLM-relevant accounting dimensions: M1 is only interesting where value is
+delivered progressively over a long-running request, and M2 only where the billed
+quantity is a runtime-produced, multi-category vector priced by a category-sensitive
+function.
 
 The testbed is a FastAPI gateway over PostgreSQL~16 (\textsc{read committed}) and
 Redis~7, with a deterministic mock generator for reproducibility and \emph{real}
@@ -190,13 +222,14 @@ report both, and use under-payment for the security property.
 
 \begin{sloppypar}
 \paragraph{Statistics.} All statistics are produced by a standalone script
-(scipy/statsmodels) into \texttt{stats\_output.txt}, which the paper cites. Many
+(scipy/statsmodels) which writes a single output file that the paper cites. Many
 conditions here are deterministic by construction and have exactly zero variance; for
 those we report the constant and complete separation rather than a p-value, and reserve
 nonparametric tests and bootstrap intervals for quantities that genuinely vary.
 \end{sloppypar}
 
 \section{Results}
+\label{sec:results}
 
 \subsection{B0 --- synchronization (known baseline)}
 The non-atomic check-then-decrement leaks only when concurrency $\ge 2$: mean \$-leak is
@@ -207,6 +240,7 @@ level (Table~\ref{tab:b0}, Fig.~\ref{fig:b0}). B0 is not a contribution; it vali
 rig and provides the contrast used below.
 
 \subsection{M1 --- commitment timing}
+\label{sec:m1}
 Leakage tracks the value delivered before the missing commit, rising monotonically with
 abort position and collapsing to zero at completion when the debit finally fires: per
 request $0.0045$ at $\sim$1 token delivered, $0.0285$ at 25\%, $0.0540$ at 50\%,
@@ -227,11 +261,14 @@ but refunds it away, failing both. \textbf{Reservation and abort-safe finalizati
 orthogonal controls; neither substitutes for the other.}
 \end{sloppypar}
 
-\paragraph{Concurrency is not the mechanism.} Holding request volume constant, leak per
-request is $0.0528$ at $c=1,5,20,50$ and $100$ --- identical to four decimal places ---
-and request-ASR is exactly $1.000$ (vulnerable) or $0.000$ (safe) at every level
-(Table~\ref{tab:m1conc}, Fig.~\ref{fig:m1conc}). The honest-client control arm leaks
-zero everywhere.
+\paragraph{Concurrency is not the mechanism.} Under fixed request volume in the tested
+architecture, per-request leakage remained unchanged across concurrency levels
+$1$--$100$: leak per request measured $0.0528$ at $c=1,5,20,50$ and $100$ (identical to
+four decimal places), and request-ASR was exactly $1.000$ (vulnerable) or $0.000$ (safe)
+at every level (Table~\ref{tab:m1conc}, Fig.~\ref{fig:m1conc}). The honest-client control
+arm leaked zero everywhere. We do not claim invariance as a proven property of all
+systems under all loads; we report the measured behaviour of this architecture and, in
+\S\ref{sec:discussion}, the structural reason the state model predicts it.
 
 \subsection{M2 --- usage authority}
 Writing $U$ for the true usage vector, $P$ for the pricing function and $T$ for the
@@ -245,11 +282,26 @@ attacker ingenuity. Every server-authoritative architecture drives leakage effic
 $0.000$ across all manipulations, and M2 is likewise concurrency-invariant
 (Table~\ref{tab:m2conc}).
 
-\paragraph{Usage computation is not usage authority.} The decisive case is
-\texttt{client\_logged}: it \emph{computes} a correct server-side recount, logs it, and
-still leaks at efficiency $\mathbf{0.583}$, because billing continues to use the client's
-number (Table~\ref{tab:m2abl}). A correct recount that is not authoritative for billing
-buys detection, not prevention.
+\paragraph{Usage computation is not usage authority.} This is the central M2 result. The
+decisive case is \texttt{client\_logged}, which \emph{computes} a correct server-side
+recount, \emph{records} it, and nevertheless continues to use the client-declared number
+as the billing basis. Against a 90\% output under-report it leaks at efficiency
+$\mathbf{0.583}$ --- indistinguishable from the \texttt{client} architecture that never
+recounts at all (Table~\ref{tab:m2}). The ablation reproduces the effect independently
+with a different probe prompt, at $0.595$ (Table~\ref{tab:m2abl}); the two differ only
+because efficiency depends on the prompt's token mix, and both show the recount changing
+nothing. The implication is that
+\[
+\text{correct usage \emph{computation}} \;\;\not\Rightarrow\;\; \text{correct \emph{billing}},
+\]
+and the architectural property actually required is that \emph{the authoritative usage
+value used for billing must be derived from a trusted source}. Our ablation demonstrates
+that recounting without authority does not prevent the observed leakage; in the evaluated
+\texttt{client\_logged} architecture the recount provides evidence usable for detection or
+post-hoc reconciliation (level D1, \S\ref{sec:detect}) but does not prevent the leak. We
+do not claim this holds for every conceivable post-hoc enforcement design --- a system
+that acted on the recorded discrepancy before settling would behave differently --- only
+that computing the correct number is not by itself sufficient.
 
 \paragraph{Economic sensitivity.} Leakage efficiency is exactly invariant under uniform
 price scaling ($\times10$) and shifts by at most $0.012$ under a price-\emph{structure}
@@ -260,9 +312,19 @@ side effect of the same asymmetry is that flat-total pricing systematically
 \paragraph{Concurrency does not amplify these failures.}
 Increased concurrency is not itself a sufficient amplifier of client-side metering
 evasion. In the tested architecture, B0 exhibited a concurrency-created race, whereas M1
-and M2 remained primarily architectural accounting failures. Reporting this negative
-result matters: it means an operator cannot infer safety from low traffic, and cannot
-detect M1/M2 by watching for load spikes.
+and M2 remained primarily architectural accounting failures. This negative result follows
+a chain we can state explicitly: the \emph{state model predicts} that a defect in
+transition \emph{atomicity} depends on contention for shared state, while defects in the
+transition \emph{graph} (M1) or in \emph{data authority} (M2) are properties of an
+individual request; that prediction yields the architecture-level \emph{hypothesis} that
+only B0 should scale with concurrency; the \emph{controlled measurement} holds request
+volume constant so that volume cannot masquerade as vulnerability; and the
+\emph{observed distinction} matches. Concretely: B0 is concurrency-sensitive because
+shared authorization/debit state is raced; M1 is concurrency-independent in the tested
+design because the violation lies in the abort path of an individual lifecycle; and M2 is
+concurrency-independent in the tested design because the violation lies in the authority
+assigned to per-request usage data. Operationally this means an operator cannot infer
+safety from low traffic, and cannot detect M1/M2 by watching for load spikes.
 
 \subsection{Lifecycle failure modes}
 Beyond the scripted attack we inject nine lifecycle failures (disconnect at $t{=}0$ and
@@ -273,6 +335,7 @@ is \emph{fail-closed} --- the request is rejected and nothing is served or bille
 (Table~\ref{tab:failmodes}).
 
 \subsection{Detectability}
+\label{sec:detect}
 Detectability is orthogonal to exploitability: a failure can be exploitable and hidden,
 exploitable but reconcilable, or prevented outright. We classify D0 (no evidence), D1
 (post-hoc reconciliation only), D2 (logged discrepancy), D3 (prevented in real time).
@@ -365,15 +428,38 @@ throughput result.}
 \end{figure}
 
 \section{Discussion}
-Three placements of one accounting boundary behave differently under load, and the
-difference is predicted by \emph{which} element of the state machine is defective:
-transition atomicity (B0) is a shared-resource property and therefore concurrency-created,
-whereas the transition graph (M1) and data authority (M2) are per-request properties and
-therefore concurrency-invariant. The practical consequences are that (i) an operator
-cannot use traffic level as a proxy for exposure, (ii) integrity and solvency require
-different controls, and (iii) a correct recount is worthless for prevention unless it is
+\label{sec:discussion}
+Three dimensions of one accounting-security boundary behave differently under load, and
+the difference is predicted by \emph{which} element of the request lifecycle is
+defective: transition atomicity (B0) is a shared-resource property and was therefore
+concurrency-created, whereas the transition graph (M1) and data authority (M2) are
+per-request properties and showed no concurrency dependence in the tested design. The
+practical consequences are that (i) an operator cannot use traffic level as a proxy for
+exposure, (ii) integrity and solvency require different controls, and (iii) in the
+evaluated architectures a correct recount did not prevent leakage unless it was
 authoritative for billing. The defenses themselves are ordinary; the contribution is
 knowing precisely which one is load-bearing and what it costs.
+
+\paragraph{``Is this not just CWE-807 plus a race plus known streaming bugs?''}
+This is the objection we consider most likely, and it is partly correct --- which is why
+we state it ourselves. B0 \emph{is} a known generic race and is presented as a baseline,
+not a contribution. The enabling mechanisms behind M1 and M2 are individually known:
+trusting client-supplied values is CWE-807, and disconnect-related accounting gaps appear
+in a deployed gateway issue~\cite{newapi5235}, an operations writeup, and practitioner
+guidance~\cite{practice}. \textbf{We claim no novelty at the primitive level.} What the
+paper adds is: (i) a unified accounting model in which these otherwise-unrelated failures
+are the same integrity property violated at different points of one request lifecycle;
+(ii) a taxonomy that separates synchronization, lifecycle commitment, and usage authority
+as \emph{experimentally distinguishable} dimensions --- the concurrency contrast in
+\S\ref{sec:results} is evidence that the separation is real rather than editorial;
+(iii) an M1 ablation showing that solvency and accounting integrity are orthogonal and
+require different primitives, which is not derivable from ``there is a streaming bug'';
+(iv) an M2 ablation isolating computation from authority, where an architecture that
+recounts correctly still leaks $0.583$; and (v) a common measurement --- economic leakage,
+leakage efficiency, detectability, invariant violations, and defense overhead --- applied
+uniformly across all three dimensions, which no single prior source provides. We do not
+assert that practitioners believed a recount was sufficient; we show experimentally that
+in the evaluated architecture it was not.
 
 \section{Threats to Validity}
 \paragraph{Internal.} Single uvicorn worker, so gateway recount numbers are an upper
@@ -384,12 +470,23 @@ experiment; leakage that depends on delivered tokens is sensitive to disconnect 
 high concurrency (the within-cell standard deviation of delivered tokens is exactly zero
 at $c\le20$ and $\approx$0.011 at $c\in\{50,100\}$).
 
-\paragraph{Gateway measurements at $c\ge50$.} We exclude these from headline claims. The
-repeat spread reaches 17\% of the median and the no-recount baseline is itself
-non-monotonic, indicating client-side and event-loop saturation rather than server cost;
-single runs even produced ratios $>1$, which is physically impossible for added work, and
-motivated the switch to median-of-three repeats. Only $c=1$ and $c=10$ are treated as
-evidence.
+\paragraph{Two different high-concurrency questions.} It is important to separate
+\emph{accounting-integrity measurements} from \emph{gateway performance measurements},
+because only the latter are affected here.
+
+\emph{(a) Accounting integrity} was measured at $c=1,5,20,50$ and $100$ and \textbf{none
+of it was discarded}: leakage, leakage efficiency, request-ASR and invariant violations
+are deterministic functions of the ledger, not of throughput, and every trial passed
+ledger conservation at every concurrency level.
+
+\emph{(b) Gateway throughput ratios} at $c\ge50$ are excluded from headline performance
+claims because the benchmark host became the limiting factor. The repeat spread reaches
+17\% of the median, the no-recount baseline is itself non-monotonic, and single runs
+produced ratios $>1$ --- physically impossible for strictly-added work --- which is what
+motivated the switch to median-of-three repeats. These are symptoms of single-worker
+server and client/event-loop saturation, not of recount cost. Only $c=1$ and $c=10$ are
+treated as performance evidence; the excluded cells remain published in
+\texttt{results/} and summarized here rather than removed.
 
 \paragraph{Construct.} Synthetic price tiers; a token-count abstraction of ``inference
 value''; leakage normalized by delivered value; and a detectability scale that separates

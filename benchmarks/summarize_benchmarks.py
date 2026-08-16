@@ -220,7 +220,9 @@ def gateway_outputs(raw: dict) -> None:
         ax.set_xscale("log"); ax.set_title(f"{size} tokens"); ax.set_xlabel("concurrency")
     axes[0].set_ylabel("throughput ratio vs. no recount")
     axes[-1].legend(fontsize=6.5, frameon=False)
-    fig.suptitle("Gateway throughput cost of server-side recount (1.0 = free)", fontsize=10)
+    fig.suptitle("Gateway throughput cost of server-side recount (1.0 = free)\n"
+                 "median of 3 repeats; c>=50 is host-saturated and excluded from "
+                 "headline performance claims", fontsize=9)
     fig.savefig(FIG / "gateway_recount_throughput.png"); plt.close(fig)
 
 
