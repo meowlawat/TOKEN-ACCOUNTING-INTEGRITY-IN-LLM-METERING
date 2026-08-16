@@ -90,6 +90,12 @@ from .m_routes import router as m_router  # noqa: E402
 
 app.include_router(m_router)
 
+# Benchmark-only endpoints (real-tokenizer recount overhead). Optional: if the
+# tokenizer libraries are absent the router still loads; engines report unavailable.
+from .bench_routes import router as bench_router  # noqa: E402
+
+app.include_router(bench_router)
+
 
 # --------------------------------------------------------------------------- #
 # Helpers

@@ -51,25 +51,79 @@ def table_b0(b0: dict) -> None:
            rows, "B0 baseline: credit-decrement race (30 reps/cell).", "tab:b0")
 
 
+def _min_conc(cells):
+    v = [c.get("concurrency", 1) for c in cells]
+    return min(v) if v else 1
+
+
 def table_m1(m1: dict) -> None:
+    base = _min_conc(m1["cells"])
     rows = []
-    for c in [c for c in m1["cells"] if c["price_tier"] == "medium"]:
+    for c in [c for c in m1["cells"]
+              if c["price_tier"] == "medium" and c.get("concurrency", 1) == base]:
         rows.append([c["architecture"], f"{c['abort_bin']:.0f}", f"{c['tokens_delivered']['mean']:.0f}",
-                     f"{c['leak']['mean']:.4f}", f"{c['request_asr']['p']:.2f}",
+                     f"{c['leak_per_request']:.4f}", f"{c['request_asr']['p']:.2f}",
                      f"{c['invariant_violation_rate']:.2f}", c["detection"]])
     _write("table_m1_results",
-           ["architecture", "abort%", "delivered", "mean leak", "req ASR", "inv.viol", "detect"],
-           rows, "M1 metering-commit timing: leak vs. abort (medium tier, 10 reps).", "tab:m1")
+           ["architecture", "abort%", "delivered", "leak/req", "req ASR", "inv.viol", "detect"],
+           rows, f"M1 metering-commit timing: leak vs. abort (medium tier, concurrency={base}).",
+           "tab:m1")
+
+
+def table_m1_concurrency(m1: dict) -> None:
+    """Normalized per-request vulnerability across concurrency (workload held constant)."""
+    concs = sorted({c.get("concurrency", 1) for c in m1["cells"]})
+    if len(concs) < 2:
+        return
+    archs = sorted({c["architecture"] for c in m1["cells"]})
+    rows = []
+    for arch in archs:
+        row = [arch]
+        for cc in concs:
+            grp = [c for c in m1["cells"] if c["architecture"] == arch
+                   and c.get("concurrency", 1) == cc and c["client_type"] == "attacker"
+                   and c["price_tier"] == "medium"]
+            n = sum(g["n_records"] for g in grp)
+            val = sum(g["leak_per_request"] * g["n_records"] for g in grp) / n if n else 0.0
+            row.append(f"{val:.4f}")
+        rows.append(row)
+    _write("table_m1_concurrency", ["architecture"] + [f"c={c}" for c in concs], rows,
+           "M1: leak PER REQUEST vs concurrency (request volume held constant, attacker arm).",
+           "tab:m1conc")
 
 
 def table_m2(m2: dict) -> None:
+    base = _min_conc(m2["cells"])
     rows = []
-    for c in [c for c in m2["cells"] if c["price_tier"] == "medium"]:
+    for c in [c for c in m2["cells"]
+              if c["price_tier"] == "medium" and c.get("concurrency", 1) == base]:
         rows.append([c["architecture"], c["manipulation"], f"{c['leakage_efficiency']['mean']:.2f}",
                      f"{c['request_asr']['p']:.2f}", f"{c['invariant_violation_rate']:.2f}", c["detection"]])
     _write("table_m2_results",
            ["architecture", "manipulation", "leak eff.", "req ASR", "inv.viol", "detect"],
-           rows, "M2 usage-record authority: leakage efficiency by manipulation (medium tier, 10 reps).", "tab:m2")
+           rows, f"M2 usage-record authority: leakage efficiency by manipulation (medium tier, concurrency={base}).",
+           "tab:m2")
+
+
+def table_m2_concurrency(m2: dict) -> None:
+    concs = sorted({c.get("concurrency", 1) for c in m2["cells"]})
+    if len(concs) < 2:
+        return
+    archs = sorted({c["architecture"] for c in m2["cells"]})
+    rows = []
+    for arch in archs:
+        row = [arch]
+        for cc in concs:
+            grp = [c for c in m2["cells"] if c["architecture"] == arch
+                   and c.get("concurrency", 1) == cc and c["client_type"] == "attacker"
+                   and c["price_tier"] == "medium"]
+            n = sum(g["n_records"] for g in grp)
+            eff = sum(g["leakage_efficiency"]["mean"] * g["n_records"] for g in grp) / n if n else 0.0
+            row.append(f"{eff:.3f}")
+        rows.append(row)
+    _write("table_m2_concurrency", ["architecture"] + [f"c={c}" for c in concs], rows,
+           "M2: leakage efficiency vs concurrency (attacker arm; volume held constant).",
+           "tab:m2conc")
 
 
 def table_defense(m1: dict, m2: dict) -> None:
@@ -95,9 +149,13 @@ def main() -> None:
     if b0:
         table_b0(_load(b0))
     if m1:
-        table_m1(_load(m1))
+        _m1 = _load(m1)
+        table_m1(_m1)
+        table_m1_concurrency(_m1)
     if m2:
-        table_m2(_load(m2))
+        _m2 = _load(m2)
+        table_m2(_m2)
+        table_m2_concurrency(_m2)
     if m1 and m2:
         table_defense(_load(m1), _load(m2))
     print("tables written to", TAB)

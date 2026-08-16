@@ -13,3 +13,6 @@ results/*.json
 results/*.csv
 results/*.png
 !results/.gitkeep
+
+# Tokenizer artifact cache (populate via scripts/populate_tokenizer_cache.sh)
+tokenizer_cache/

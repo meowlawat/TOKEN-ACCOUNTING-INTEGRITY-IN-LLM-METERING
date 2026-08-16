@@ -10,20 +10,49 @@
   It is *not* an impersonator (that is LLMjacking / credential theft) and *not* trying
   to exhaust a victim's budget (that is Denial-of-Wallet).
 
-## Attacker capabilities (what a realistic malicious client controls)
+## Attacker model: concrete, application-layer
 
-- Full control of its own HTTP requests: timing, concurrency, connection lifetime
-  (it can disconnect/abort at any moment), request bodies, and any client-declared
-  fields (e.g. a `usage` object or a client-side token estimate).
-- It may send many requests, concurrently, and retry.
-- It observes only its own responses and its own balance/among its own account state.
+This is deliberately **not** a symbolic/cryptographic (Dolev-Yao) attacker. Nothing in
+this study depends on reasoning about cryptographic protocol messages; the adversary
+is an ordinary authenticated API client that behaves dishonestly at the application
+layer. Every capability below is **actually exercised by the attack harness** — we
+grant no capability we do not use.
 
-## Attacker limitations (explicitly NOT granted)
+### Capabilities (with the harness component that exercises each)
 
-- Cannot read or write another tenant's data or the provider's server-side state.
-- Cannot forge the provider's own upstream usage metadata (the provider is honest).
-- Cannot break authentication or steal credentials.
-- Cannot attack the network or other tenants; no side channels beyond its own timing.
+| # | Capability | Exercised by |
+|---|---|---|
+| C1 | Compose arbitrary **request payloads** to endpoints it is authorized to call, including any client-declared usage fields | `attacks/m2_usage_authority.py` (declared usage vector: under-report a subtotal, drop a category, reclassify to a discounted category, desynchronize total from subtotals, rounding shave) |
+| C2 | Set **permitted request headers** (its own API key, content type) | all harness modules |
+| C3 | Choose **request concurrency** and sustained offered load | `experiments/run_m1.py`, `run_m2.py` (worker-pool), `attacks/class6_credit_race.py` (burst) |
+| C4 | Control the **client connection lifecycle** — in particular, close/abort a streaming response at an arbitrary point | `attacks/m1_stream_abort.py` (abort after *k* delivered tokens) |
+| C5 | **Retry** and re-issue requests | worker pools re-issue; B0 burst repeats |
+| C6 | Observe **its own** responses, latencies, and its own account balance | all runners; `/admin/accounts/{id}` for its own account |
+
+### Explicitly NOT granted (and not needed)
+
+- **Cannot compromise TLS** or observe/modify other parties' traffic.
+- **Cannot access the database** directly (no SQL access, no Postgres credentials).
+- **Cannot access Redis internals.**
+- **Cannot access the gateway filesystem** or read server configuration/secrets.
+- **Cannot compromise the inference backend** or influence what the model generates
+  beyond supplying a normal prompt.
+- **Cannot forge authenticated upstream/provider usage metadata** — the provider is
+  honest by assumption; provider-side dishonesty is the orthogonal problem studied by
+  CoIn / Invisible Tokens / Token Inflation.
+- **Cannot alter server code**, configuration, or the metering architecture. (The
+  architecture is a *property of the deployment under test*, selected by the
+  experimenter to compare designs — never something the attacker chooses at runtime.)
+- **Cannot read or write another tenant's data**; no cross-tenant side channels.
+- **Cannot steal credentials or impersonate another principal** (that is LLMjacking).
+
+### Consequence for interpreting results
+
+Because the attacker holds only C1–C6, every leak measured in this study is
+attributable to an **accounting-design defect in the honest provider's own metering
+pipeline** — not to a compromise. That is what makes the defenses purely server-side:
+each one removes the defect without needing to authenticate or constrain the client
+any further.
 
 ## Goal and success condition
 

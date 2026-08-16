@@ -36,8 +36,16 @@ def _load(p: Path) -> dict:
     return json.loads(p.read_text(encoding="utf-8"))
 
 
+def _min_conc(cells: list[dict]) -> int:
+    vals = [c.get("concurrency", 1) for c in cells]
+    return min(vals) if vals else 1
+
+
 def fig_m1_abort_curve(m1: dict) -> None:
-    cells = [c for c in m1["cells"] if c["price_tier"] == "medium"]
+    """Leak vs abort timing at the LOWEST concurrency (isolates the timing effect)."""
+    base_c = _min_conc(m1["cells"])
+    cells = [c for c in m1["cells"]
+             if c["price_tier"] == "medium" and c.get("concurrency", 1) == base_c]
     archs = sorted({c["architecture"] for c in cells})
     fig, ax = plt.subplots(figsize=(6.2, 4.0))
     for i, arch in enumerate(archs):
@@ -49,14 +57,83 @@ def fig_m1_abort_curve(m1: dict) -> None:
         ax.errorbar(xs, ys, yerr=errs, marker="o", ms=4, lw=1.8, ls=ls, color=PAL[i % len(PAL)], label=arch)
     ax.set_xlabel("abort point (% of stream delivered before disconnect)")
     ax.set_ylabel("mean leak per request ($, medium tier)")
-    ax.set_title("M1: leakage vs. abort timing by commit-timing architecture")
+    ax.set_title(f"M1: leakage vs. abort timing (concurrency={base_c})")
     ax.legend(fontsize=8, frameon=False)
     fig.savefig(FIG / "fig_m1_abort_curve.png")
     plt.close(fig)
 
 
-def fig_m2_efficiency_heatmap(m2: dict) -> None:
+def fig_m1_concurrency(m1: dict) -> None:
+    """NORMALIZED leak per request vs concurrency: does per-request vulnerability scale?"""
+    cells = [c for c in m1["cells"] if c["price_tier"] == "medium"]
+    concs = sorted({c.get("concurrency", 1) for c in cells})
+    if len(concs) < 2:
+        return
+    archs = sorted({c["architecture"] for c in cells})
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10.0, 4.0))
+    for i, arch in enumerate(archs):
+        xs, ys, zs = [], [], []
+        for cc in concs:
+            grp = [c for c in cells if c["architecture"] == arch and c.get("concurrency", 1) == cc
+                   and c["client_type"] == "attacker"]
+            if not grp:
+                continue
+            n = sum(g["n_records"] for g in grp)
+            xs.append(cc)
+            ys.append(sum(g["leak_per_request"] * g["n_records"] for g in grp) / n if n else 0.0)
+            zs.append(sum(g["request_asr"]["p"] * g["n_records"] for g in grp) / n if n else 0.0)
+        if xs:
+            ax1.plot(xs, ys, marker="o", ms=5, lw=1.8, color=PAL[i % len(PAL)], label=arch)
+            ax2.plot(xs, zs, marker="o", ms=5, lw=1.8, color=PAL[i % len(PAL)], label=arch)
+    for ax, lab, ttl in ((ax1, "leak per request ($)", "Normalized leakage vs concurrency"),
+                         (ax2, "request ASR", "Per-request attack success vs concurrency")):
+        ax.set_xscale("log"); ax.set_xlabel("concurrency"); ax.set_ylabel(lab); ax.set_title(ttl)
+    ax2.set_ylim(-0.05, 1.05)
+    ax1.legend(fontsize=7, frameon=False)
+    fig.suptitle("M1: does concurrency change PER-REQUEST vulnerability? (volume held constant)",
+                 fontsize=10)
+    fig.savefig(FIG / "fig_m1_concurrency.png")
+    plt.close(fig)
+
+
+def fig_m2_concurrency(m2: dict) -> None:
+    """M2 leakage efficiency and defense latency vs concurrency."""
     cells = [c for c in m2["cells"] if c["price_tier"] == "medium"]
+    concs = sorted({c.get("concurrency", 1) for c in cells})
+    if len(concs) < 2:
+        return
+    archs = sorted({c["architecture"] for c in cells})
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10.0, 4.0))
+    for i, arch in enumerate(archs):
+        xs, ys, ls_ = [], [], []
+        for cc in concs:
+            grp = [c for c in cells if c["architecture"] == arch and c.get("concurrency", 1) == cc
+                   and c["client_type"] == "attacker"]
+            if not grp:
+                continue
+            n = sum(g["n_records"] for g in grp)
+            xs.append(cc)
+            ys.append(sum(g["leakage_efficiency"]["mean"] * g["n_records"] for g in grp) / n if n else 0.0)
+            lat = [g["latency_p95_ms"] for g in grp if g.get("latency_p95_ms")]
+            ls_.append(sum(lat) / len(lat) if lat else 0.0)
+        if xs:
+            ax1.plot(xs, ys, marker="o", ms=5, lw=1.8, color=PAL[i % len(PAL)], label=arch)
+            ax2.plot(xs, ls_, marker="o", ms=5, lw=1.8, color=PAL[i % len(PAL)], label=arch)
+    ax1.set_ylabel("leakage efficiency"); ax1.set_title("Accounting failure vs concurrency")
+    ax2.set_ylabel("p95 latency (ms)"); ax2.set_title("Defense cost vs concurrency (secondary)")
+    for ax in (ax1, ax2):
+        ax.set_xscale("log"); ax.set_xlabel("concurrency")
+    ax1.set_ylim(-0.05, 1.05)
+    ax1.legend(fontsize=7, frameon=False)
+    fig.suptitle("M2: concurrency vs accounting integrity and defense overhead", fontsize=10)
+    fig.savefig(FIG / "fig_m2_concurrency.png")
+    plt.close(fig)
+
+
+def fig_m2_efficiency_heatmap(m2: dict) -> None:
+    base_c = _min_conc(m2["cells"])
+    cells = [c for c in m2["cells"]
+             if c["price_tier"] == "medium" and c.get("concurrency", 1) == base_c]
     archs = m2["parameters"]["architectures"]
     manips = m2["parameters"]["manipulations"]
     M = np.zeros((len(archs), len(manips)))
@@ -128,9 +205,13 @@ def main() -> None:
     b0p = _latest("class6_*.summary.json", ROOT / "results")
     made = []
     if m1p:
-        m1 = _load(m1p); fig_m1_abort_curve(m1); made.append("fig_m1_abort_curve.png")
+        m1 = _load(m1p)
+        fig_m1_abort_curve(m1); made.append("fig_m1_abort_curve.png")
+        fig_m1_concurrency(m1); made.append("fig_m1_concurrency.png (if multi-concurrency)")
     if m2p:
-        m2 = _load(m2p); fig_m2_efficiency_heatmap(m2); made.append("fig_m2_efficiency_heatmap.png")
+        m2 = _load(m2p)
+        fig_m2_efficiency_heatmap(m2); made.append("fig_m2_efficiency_heatmap.png")
+        fig_m2_concurrency(m2); made.append("fig_m2_concurrency.png (if multi-concurrency)")
     if b0p:
         b0 = _load(b0p); fig_b0_concurrency(b0); made.append("fig_b0_concurrency.png")
     if m1p and m2p:

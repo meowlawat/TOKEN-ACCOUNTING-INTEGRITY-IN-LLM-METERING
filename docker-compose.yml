@@ -40,8 +40,16 @@ services:
       REDIS_URL: redis://redis:6379/0
       # Default flaw-class posture. Flip per-class at runtime via POST /admin/config.
       CLASS6_CREDIT_RACE: vulnerable
+      # Pre-populated tokenizer caches (mounted below) so the container never needs
+      # network access to run the real-tokenizer recount benchmark.
+      TIKTOKEN_CACHE_DIR: /tokcache/tiktoken
+      HF_HOME: /tokcache/hf
+      HF_HUB_OFFLINE: "1"
+      TRANSFORMERS_OFFLINE: "1"
     ports:
       - "8000:8000"
+    volumes:
+      - ./tokenizer_cache:/tokcache:ro
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000
 
 volumes:

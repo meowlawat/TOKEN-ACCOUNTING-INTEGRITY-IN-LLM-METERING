@@ -15,3 +15,11 @@ numpy>=1.26
 
 # Config
 python-dotenv>=1.0
+
+# Real tokenizers (server-side recount benchmark; see benchmarks/).
+# Tokenizer artifacts are supplied via a mounted, pre-populated cache so the
+# container performs no network access at request time.
+tiktoken>=0.13,<0.14
+transformers>=5.0,<6
+tokenizers>=0.22,<0.23
+sentencepiece>=0.2,<0.3

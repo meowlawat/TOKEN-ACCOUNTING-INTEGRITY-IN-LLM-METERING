@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import asyncio
 import secrets
+import time
 import uuid
 from decimal import Decimal
 
@@ -196,12 +197,15 @@ async def m1_stream(
         reserved = est_full_cost if ok else Decimal("0")
 
     delay_s = max(0.0, settings.mock_inter_token_delay_ms) / 1000.0
-    state = {"delivered": 0, "completed": False, "settled": False}
+    state = {"delivered": 0, "completed": False, "settled": False,
+             "stream_start_ns": time.perf_counter_ns(), "disconnect_ns": None,
+             "stream_end_ns": None, "settle_commit_ns": None}
 
     async def gen():
         try:
             for i in range(n_out):
                 if await request.is_disconnected():
+                    state["disconnect_ns"] = time.perf_counter_ns()
                     break
                 word = mock._det_int(f"{req.prompt}:{i}", seed, 0, 21)  # noqa: SLF001 - deterministic index
                 yield f"data: token_{word}\n\n".encode()
@@ -212,6 +216,7 @@ async def m1_stream(
                 state["completed"] = True
             yield b"data: [DONE]\n\n"
         finally:
+            state["stream_end_ns"] = time.perf_counter_ns()
             # Settle even if the task is being cancelled by the client disconnect.
             await asyncio.shield(
                 _settle_m1(
@@ -229,6 +234,7 @@ async def _settle_m1(*, account_id, trial_id, request_id, arch, prices, input_to
     if state["settled"]:
         return
     state["settled"] = True
+    settle_start_ns = time.perf_counter_ns()
     delivered = state["delivered"]
     completed = state["completed"]
 
@@ -280,9 +286,22 @@ async def _settle_m1(*, account_id, trial_id, request_id, arch, prices, input_to
             served=served, completed=completed, invariant_ok=invariant_ok,
             detection_level=("D3" if arch.safe else "D0"), abort_pct=abort_pct, manipulation=None,
             extra={"n_out": n_out, "est_full_cost": str(est_full_cost),
-                   "delivered_cost": str(delivered_cost), "reserved": str(reserved)},
+                   "delivered_cost": str(delivered_cost), "reserved": str(reserved),
+                   # Timing instrumentation (monotonic ns, same process clock).
+                   "stream_start_ns": state.get("stream_start_ns"),
+                   "disconnect_detected_ns": state.get("disconnect_ns"),
+                   "stream_end_ns": state.get("stream_end_ns"),
+                   "settle_start_ns": settle_start_ns,
+                   "stream_duration_ms": (
+                       (state["stream_end_ns"] - state["stream_start_ns"]) / 1e6
+                       if state.get("stream_end_ns") and state.get("stream_start_ns") else None),
+                   # cancellation -> accounting-commit interval (the exposure window)
+                   "cancel_to_commit_ms": (
+                       (time.perf_counter_ns() - state["disconnect_ns"]) / 1e6
+                       if state.get("disconnect_ns") else None)},
         ))
         await s.commit()
+        state["settle_commit_ns"] = time.perf_counter_ns()
 
 
 # --------------------------------------------------------------------------- #

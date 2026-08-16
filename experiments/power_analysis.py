@@ -32,8 +32,10 @@ def analyze(name, summary, leak_key="leak"):
     print(f"\n== {name} ==")
     stds = [c[leak_key]["std"] for c in summary["cells"]]
     max_std = max(stds) if stds else 0.0
-    n_used = summary["parameters"].get("reps")
-    print(f"  reps used per cell: {n_used}")
+    params = summary["parameters"]
+    n_used = params.get("requests_per_cell", params.get("reps"))
+    concs = params.get("concurrency")
+    print(f"  requests per cell: {n_used}" + (f"  | concurrency levels: {concs}" if concs else ""))
     print(f"  max observed per-record leak std across cells: {max_std:.6f}")
     if max_std == 0:
         print("  -> effect is DETERMINISTIC (zero variance); reps beyond a few only guard")

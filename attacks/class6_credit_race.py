@@ -1,8 +1,9 @@
 """Class 6 attack: limit-overrun race on credit decrement (KNOWN BASELINE).
 
-NOT a contribution. Implemented to validate the measurement rig end-to-end, and
-cited against Kettle's single-packet attack and the 2025 *Computers & Security*
-race-condition methodology.
+NOT a contribution. Implemented to validate the measurement rig end-to-end. Prior
+art (both verified in ``paper/phase1_sources.json``): Kettle's single-packet attack
+(PortSwigger Research, 2023) and CVE-2026-31873 (Tyk API Gateway, 2026, CVSS 7.5 —
+a non-atomic ``GET``-then-``DECR`` quota check/decrement race).
 
 Attack idea: an account whose balance covers exactly ``affordable`` requests fires
 a burst of ``concurrency`` identical `/complete` calls at once. Against the
