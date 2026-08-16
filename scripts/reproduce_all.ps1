@@ -23,16 +23,25 @@ Write-Host "== 4. B0 baseline =="
 python -m experiments.run_class6 --affordable 10 --concurrency 1 2 5 10 20 30 50 --reps 30
 python -m experiments.summarize_class6
 
-Write-Host "== 5. M1 metering-commit timing =="
-python -m experiments.run_m1 --reps 10
+Write-Host "== 5. M1 metering-commit timing (controlled concurrency) =="
+python -m experiments.run_m1 --concurrency 1 5 20 50 100 --requests-per-cell 20
 python -m experiments.summarize_m1
 
-Write-Host "== 6. M2 usage-record authority =="
-python -m experiments.run_m2 --reps 10
+Write-Host "== 6. M2 usage-record authority (controlled concurrency) =="
+python -m experiments.run_m2 --concurrency 1 5 20 50 100 --requests-per-cell 20
 python -m experiments.summarize_m2
 
-Write-Host "== 7. defense overhead (RQ4) =="
+Write-Host "== 7. defense overhead, mock path (RQ4) =="
 python -m experiments.run_overhead
+
+Write-Host "== 7b. REAL tokenizer benchmarks =="
+Write-Host "     (run scripts/populate_tokenizer_cache.sh once first, with network)"
+python -m benchmarks.tokenizer_overhead
+foreach ($S in 256, 1024, 4096, 16384) {
+  python -m benchmarks.gateway_recount_overhead --sizes $S --duration 5 --repeats 3 --out "results/raw/gw_part_$S.json"
+}
+python -m benchmarks.merge_gateway_parts
+python -m benchmarks.summarize_benchmarks
 
 Write-Host "== 8. figures, tables, power analysis =="
 python -m experiments.figures

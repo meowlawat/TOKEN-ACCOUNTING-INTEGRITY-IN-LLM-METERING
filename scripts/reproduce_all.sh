@@ -22,16 +22,27 @@ echo "== 4. B0 baseline (credit-decrement race) =="
 python -m experiments.run_class6 --affordable 10 --concurrency 1 2 5 10 20 30 50 --reps 30
 python -m experiments.summarize_class6
 
-echo "== 5. M1 metering-commit timing =="
-python -m experiments.run_m1 --reps 10
+echo "== 5. M1 metering-commit timing (with controlled concurrency) =="
+python -m experiments.run_m1 --concurrency 1 5 20 50 100 --requests-per-cell 20
 python -m experiments.summarize_m1
 
-echo "== 6. M2 usage-record authority =="
-python -m experiments.run_m2 --reps 10
+echo "== 6. M2 usage-record authority (with controlled concurrency) =="
+python -m experiments.run_m2 --concurrency 1 5 20 50 100 --requests-per-cell 20
 python -m experiments.summarize_m2
 
-echo "== 7. defense overhead (RQ4) =="
+echo "== 7. defense overhead, mock path (RQ4) =="
 python -m experiments.run_overhead
+
+echo "== 7b. REAL tokenizer benchmarks =="
+echo "     (requires: bash scripts/populate_tokenizer_cache.sh once, with network)"
+python -m benchmarks.tokenizer_overhead
+# gateway sweep is run per-size so each chunk stays short, then merged
+for S in 256 1024 4096 16384; do
+  python -m benchmarks.gateway_recount_overhead --sizes $S --duration 5 --repeats 3 \
+      --out results/raw/gw_part_$S.json
+done
+python -m benchmarks.merge_gateway_parts
+python -m benchmarks.summarize_benchmarks
 
 echo "== 8. figures, tables, power analysis =="
 python -m experiments.figures
