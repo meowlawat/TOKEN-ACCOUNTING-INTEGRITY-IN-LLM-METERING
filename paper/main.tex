@@ -67,16 +67,20 @@ three placements of one accounting boundary, localize each to a state transition
 quantify the integrity/performance trade-off of the defenses.
 
 \begin{table}[t]\centering
-\caption{Directions of LLM-billing security. This paper targets the last cell.}
+\caption{Adversary directions in LLM inference accounting. Prior work covers the first
+three; this paper studies the fourth.}
 \label{tab:quadrant}
-\begin{tabular}{lll}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{llll}
 \toprule
- & Inflate cost & Evade cost \\
+Adversary & Goal & Representative work & Studied here \\
 \midrule
-Provider dishonest & CoIn, Invisible Tokens, Token Inflation & --- \\
-Client dishonest & Denial-of-Wallet, LLMjacking & \textbf{this paper} \\
+Provider & over-charge an honest client & CoIn~\cite{coin}, Invisible Tokens~\cite{invisible}, Token Inflation~\cite{tokeninflation} & no \\
+Third party & inflate a \emph{victim's} bill & Denial-of-Wallet~\cite{dow}, LLMjacking~\cite{llmjacking} & no \\
+Intermediary & misroute / forge provenance & AEX~\cite{aex}, gateway-path provenance~\cite{gwprov} & no \\
+\textbf{Client} & \textbf{under-pay for received inference} & \textbf{---} & \textbf{yes} \\
 \bottomrule
-\end{tabular}
+\end{tabular}}
 \end{table}
 
 \paragraph{Contributions.}
@@ -311,6 +315,9 @@ the contribution is knowing precisely which one is load-bearing, and what it cos
 \bibitem{aperture247} lightninglabs/aperture PR \#247: metered draw-down of prepaid L402 tokens; strip \texttt{Accept-Encoding} to prevent a silent zero-debit, 2026.
 \bibitem{kettle} J. Kettle. The single-packet attack: making remote race-conditions `local'. PortSwigger Research, 2023.
 \bibitem{cve2026} CVE-2026-31873: Tyk API Gateway non-atomic quota check/decrement race, 2026.
+\bibitem{aex} Y. Guan. AEX: Non-Intrusive Multi-Hop Attestation and Provenance for LLM APIs. arXiv:2603.14283, 2026.
+\bibitem{gwprov} F. Wang and Z. Tian. Evidence-Bound Gateway-Path Provenance for Third-Party LLM Inference. arXiv:2606.22560, 2026.
+\bibitem{practice} Industry metering guidance: gateway as enforcement point vs.\ meter as accounting point; retries, partial failures and client disconnects must not cause double billing or token leakage, 2026.
 \end{thebibliography}
 
 \end{document}

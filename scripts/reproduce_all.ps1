@@ -43,10 +43,28 @@ foreach ($S in 256, 1024, 4096, 16384) {
 python -m benchmarks.merge_gateway_parts
 python -m benchmarks.summarize_benchmarks
 
-Write-Host "== 8. figures, tables, power analysis =="
+Write-Host "== 7c. architectural ablation, failure modes, cross-validation =="
+python -m experiments.run_ablation --reps 10
+python -m experiments.run_failure_modes --reps 5
+python -m experiments.run_cross_validation --reps 5
+python -m experiments.summarize_ablation
+
+Write-Host "== 7d. economic sensitivity (3 price tiers) =="
+python -m experiments.run_m2 --tiers low medium high --concurrency 1 --requests-per-cell 20 --out results/raw/m2_tiers.json
+python -m experiments.economic_analysis
+
+Write-Host "== 7e. local real-model external-validity experiment =="
+python -m benchmarks.real_model_recount --reps 5 --max-new-tokens 64
+
+Write-Host "== 7f. harness validation (fault injection + metamorphic) =="
+python -m experiments.metamorphic_checks
+
+Write-Host "== 8. figures, tables, statistics, claim matrix =="
 python -m experiments.figures
 python -m experiments.tables
 python -m experiments.power_analysis
+python -m experiments.statistical_analysis
+python -m experiments.build_claim_matrix
 
 Write-Host "== 9. compile paper (optional) =="
 if (Get-Command tectonic -ErrorAction SilentlyContinue) {

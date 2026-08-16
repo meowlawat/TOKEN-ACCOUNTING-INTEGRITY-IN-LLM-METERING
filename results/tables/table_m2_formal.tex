@@ -1,0 +1,30 @@
+\begin{table}[t]
+\centering
+\small
+\caption{M2 as a transformation on the usage vector. Whether a manipulation pays off is determined by whether the pricing basis reads the field T changes.}
+\label{tab:m2formal}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{llrrrr}
+\toprule
+architecture & pricing basis & manipulation T & vector change T(U) & leak eff. & why it succeeds / fails \\
+\midrule
+client & category & honest & unchanged & +0.000 & T is identity (honest) \\
+client & category & under\_report\_output\_50 & output:60->30, total:98->68 & +0.324 & T lowers a category the basis prices \\
+client & category & under\_report\_output\_90 & output:60->6, total:98->44 & +0.583 & T lowers a category the basis prices \\
+client & category & under\_report\_input\_50 & input:8->4, total:98->94 & +0.014 & T lowers a category the basis prices \\
+client & category & drop\_reasoning & reasoning:30->0, total:98->68 & +0.324 & T lowers a category the basis prices \\
+client & category & inflate\_cached & output:60->30, cached\_input:0->30 & +0.313 & T lowers a category the basis prices \\
+client & category & total\_mismatch & total:98->24 & +0.000 & T changes only the declared total; category basis never reads it \\
+client & category & rounding\_shave & input:8->7, output:60->57, total:98->94 & +0.036 & T lowers a category the basis prices \\
+client\_total & flat-total & honest & unchanged & -0.058 & T is identity (honest) \\
+client\_total & flat-total & under\_report\_output\_50 & output:60->30, total:98->68 & +0.266 & T lowers the declared total the basis prices \\
+client\_total & flat-total & under\_report\_output\_90 & output:60->6, total:98->44 & +0.525 & T lowers the declared total the basis prices \\
+client\_total & flat-total & under\_report\_input\_50 & input:8->4, total:98->94 & -0.014 & T's change is priced at (near) the same rate \\
+client\_total & flat-total & drop\_reasoning & reasoning:30->0, total:98->68 & +0.266 & T lowers the declared total the basis prices \\
+client\_total & flat-total & inflate\_cached & output:60->30, cached\_input:0->30 & -0.058 & T changes only subtotals; flat-total basis never reads them \\
+client\_total & flat-total & total\_mismatch & total:98->24 & +0.741 & T lowers the declared total the basis prices \\
+client\_total & flat-total & rounding\_shave & input:8->7, output:60->57, total:98->94 & -0.014 & T's change is priced at (near) the same rate \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

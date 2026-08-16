@@ -1,0 +1,43 @@
+# Claim-to-Evidence Matrix (Phase R)
+
+Every major paper claim, its classification, and the artifact that supports it.
+Classifications: **DIRECTLY MEASURED** / **INFERRED** / **LITERATURE-SUPPORTED** / **HYPOTHESIS** / **UNSUPPORTED**. Any row that fails artifact verification is reclassified UNSUPPORTED and must be deleted from the paper.
+
+| id | section | claim | class | evidence | metric | verified |
+|---|---|---|---|---|---|---|
+| C01 | Taxonomy | Client-side under-payment spans three architectural dimensions: state synchronization (B0), commitment timing (M1), usage authority (M2). | **INFERRED** | `paper/accounting_state_model.md` | structural argument + per-mechanism measurements | VERIFIED |
+| C02 | Taxonomy | Each mechanism localizes to a distinct state transition (AUTHORIZED->RESERVED; STREAMING->ABORTED; ACCOUNTED->RECONCILED). | **INFERRED** | `paper/accounting_state_model.tex` | state-machine derivation | VERIFIED |
+| C03 | Results/B0 | B0 leakage is created by concurrency: zero at c=1, linear thereafter (slope 0.099/request, R^2=1.0000, p=1.9e-50). | **DIRECTLY MEASURED** | `results/tables/stats_output.txt` | mean $-leak vs concurrency, OLS | VERIFIED |
+| C04 | Results/B0 | Hardened atomic compare-and-decrement leaks $0 at every tested concurrency. | **DIRECTLY MEASURED** | `results/tables/stats_output.txt` | mean $-leak, hardened posture | VERIFIED |
+| C05 | Results/M1 | M1 leakage rises monotonically with abort position and collapses to zero at completion. | **DIRECTLY MEASURED** | `results/tables/table_m1_results.md` | mean leak per request vs abort_bin | VERIFIED |
+| C06 | Results/M1 | M1 per-request leakage is invariant to concurrency (identical to 4 dp across c=1..100 with request volume held constant). | **DIRECTLY MEASURED** | `results/tables/table_m1_concurrency.md` | leak_per_request by concurrency | VERIFIED |
+| C07 | Results/M1 | Honest clients (no abort) leak zero on every architecture. | **DIRECTLY MEASURED** | `results/processed` | leak_per_request, client_type=honest | VERIFIED |
+| C08 | Results/M2 | Client-authoritative billing leaks; server-authoritative billing leaks zero for every manipulation tested. | **DIRECTLY MEASURED** | `results/tables/table_m2_results.md` | leakage efficiency by architecture | VERIFIED |
+| C09 | Results/M2 | Which manipulation succeeds depends on the pricing basis: total/subtotal mismatch is inert under category pricing (0.000) but the strongest attack under flat-total pricing (0.741). | **DIRECTLY MEASURED** | `results/tables/table_m2_formal.md` | leakage efficiency by (basis, manipulation) | VERIFIED |
+| C10 | Results/M2 | M2 leakage efficiency is invariant to concurrency. | **DIRECTLY MEASURED** | `results/tables/table_m2_concurrency.md` | leakage efficiency by concurrency | VERIFIED |
+| C11 | Ablation | Abort-inclusive finalization closes M1's integrity violation with or without a reservation. | **DIRECTLY MEASURED** | `results/tables/table_m1_ablation.md` | worst leak/req by (reservation, finalization) | VERIFIED |
+| C12 | Ablation | Reservation independently provides solvency: without it the balance goes negative under a constrained budget. | **DIRECTLY MEASURED** | `results/tables/table_m1_ablation.md` | final_balance in the solvency probe | VERIFIED |
+| C13 | Ablation | Performing a recount is insufficient: client_logged computes an authoritative recount and still leaks (efficiency 0.595) because billing ignores it. | **DIRECTLY MEASURED** | `results/tables/table_m2_ablation.md` | leakage efficiency, client_logged | VERIFIED |
+| C14 | Cost/RQ4 | Tokenizer recount cost is linear in input length (log-log slope 0.999-1.14, R^2>=0.998). | **DIRECTLY MEASURED** | `results/tables/stats_output.txt` | log-log regression of p50 latency vs tokens | VERIFIED |
+| C15 | Cost/RQ4 | Tokenizer engine choice changes recount cost by ~2.9-3.6x at 16384 tokens. | **DIRECTLY MEASURED** | `results/tables/tokenizer_overhead.md` | p50 latency ratio vs tiktoken/cl100k_base | VERIFIED |
+| C16 | Cost/RQ4 | With a mock (zero-cost) generator, gateway recount costs up to 95% of throughput at 16384 tokens; tokenization time explains it (Spearman rho=-0.868, p=1.3e-5). | **DIRECTLY MEASURED** | `results/tables/stats_output.txt` | throughput ratio vs no-recount; Spearman | VERIFIED |
+| C17 | Cost/RQ4 | With real local inference, the recount is 0.012-0.016% of end-to-end time at every context size. | **DIRECTLY MEASURED** | `results/tables/stats_output.txt` | recount_frac_of_e2e with bootstrap CI | VERIFIED |
+| C18 | Cost/RQ4 | The apparent expense of recount under the mock gateway is an artifact of the generator costing nothing. | **INFERRED** | `results/tables/stats_output.txt` | comparison of mock-gateway vs real-model ratios | VERIFIED |
+| C19 | Methodology | Integrity gates fail closed: six corruption types are each detected for both M1 and M2 (12/12). | **DIRECTLY MEASURED** | `results/processed/metamorphic_report.json` | fault-injection detection rate | VERIFIED |
+| C20 | Methodology | An independently coded checker agrees with the gateway on all cross-validated cells (42 M2, 16 M1, 2 B0). | **DIRECTLY MEASURED** | `results/raw` | verdict agreement | VERIFIED |
+| C21 | Methodology | Hardened architectures survive nine injected lifecycle failures; recount-engine failure is fail-closed. | **DIRECTLY MEASURED** | `results/tables/table_failure_modes.md` | invariant_preserved per failure mode | VERIFIED |
+| C22 | Economics | Leakage efficiency is invariant under uniform price scaling (low->medium x10) and shifts by at most ~0.012 under a price-structure change. | **DIRECTLY MEASURED** | `results/tables/table_economic_sensitivity.md` | efficiency by price tier | VERIFIED |
+| C23 | Economics | Flat-total pricing systematically overcharges honest clients (negative leak). | **DIRECTLY MEASURED** | `results/tables/table_economic_sensitivity.md` | signed leak, client_total + honest | VERIFIED |
+| C24 | Detectability | Logging a server recount moves an M2 leak from D0 (invisible) to D1 (reconcilable) without preventing it. | **DIRECTLY MEASURED** | `results/tables/table_detectability.md` | detection level by architecture | VERIFIED |
+| C25 | Related work | Prior LLM-billing security work covers provider over-charge, victim bill inflation, and intermediary provenance; not client under-payment. | **LITERATURE-SUPPORTED** | `paper/phase1_sources.json` | targeted corpus review (bounded negative) | VERIFIED |
+| C26 | Related work | M1 and M2 are type-B systematization contributions, not novel primitives; B0 is a known baseline. | **LITERATURE-SUPPORTED** | `paper/novelty_matrix.csv` | novelty assessment | VERIFIED |
+| C27 | Threats | Results do NOT generalize to commercial providers or production serving stacks. | **HYPOTHESIS** | `paper/threats_to_validity.md` | n/a (scope statement) | VERIFIED |
+
+## Totals
+
+- **DIRECTLY MEASURED**: 21
+- **HYPOTHESIS**: 1
+- **INFERRED**: 3
+- **LITERATURE-SUPPORTED**: 2
+
+**UNSUPPORTED claims: 0** (none — no deletions required)

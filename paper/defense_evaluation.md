@@ -7,7 +7,24 @@ primitive, implemented behind the same interface and measured on the same rig.
 |---|---|---|---|---|---|
 | B0 | non-atomic check+decrement | atomic `UPDATE … WHERE balance>=cost RETURNING` | $0 at all concurrency | holds | none (no extra round trip) |
 | M1 | `post_completion`, `reserve_refund_on_abort` | `reserve_reconcile` (settle to delivered in a cancellation-shielded path) | $0 at all abort points | holds | +9.8 ms mean (~few %) |
-| M2 | `client`, `client_logged`, `client_total` | `server_recount` (independent tokenizer recount) | $0 for all 8 manipulations | holds | +0.1 ms mean (mock; tokenizer cost not captured) |
+| M2 | `client`, `client_logged`, `client_total` | `server_recount` (real tokenizer recount) | $0 for all 8 manipulations | holds | **size- and engine-dependent — see below** |
+
+### M2 recount overhead: the three-level answer (supersedes the earlier "+0.1 ms")
+
+The earlier "+0.1 ms, essentially free" figure was measured against a *mock* tokenizer
+and is **not** a valid general claim. Measured properly at three levels:
+
+| level | what it answers | result |
+|---|---|---|
+| standalone tokenizer | cost of one `encode()` call | 0.16 ms (256 tok) → 88 ms (32 768 tok); linear in length; engine matters 2.9–3.6× |
+| gateway, **mock** generator | end-to-end throughput cost when generation is free | 0.96–1.00× at ≤1 024 tok; **0.05–0.76×** at 16 384 tok |
+| gateway, **real** local model | the realistic ratio | recount = **0.012–0.016 % of end-to-end**, throughput ratio ≈ 1.0 |
+
+The severe mock-gateway numbers are an artifact of the mock generator costing nothing —
+when generation is free, tokenization *is* the request. Under real autoregressive
+inference the same defense is negligible. Operators should budget recount as
+`tokens × per-token constant` (≈0.7 µs/token for tiktoken, ≈2.5 µs/token for
+SentencePiece) and compare it against their actual generation time, not against zero.
 
 ## Enforcement primitives
 

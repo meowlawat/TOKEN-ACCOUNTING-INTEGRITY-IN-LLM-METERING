@@ -67,9 +67,13 @@ serves exactly `min(concurrency, k)` and leaks $0 at every concurrency. Detectio
   `UPDATE … RETURNING`; no extra round trip (Phase 0 latency tables).
 - **M1:** `reserve_reconcile` adds **+9.8 ms mean** over `post_completion` (two extra
   atomic DB writes) on top of ~258 ms streaming — a few percent.
-- **M2:** `server_recount` adds **+0.1 ms mean** over `client` in the testbed.
-  **Caveat:** the deterministic mock makes the recount nearly free; in production the
-  recount is a real tokenizer pass whose cost is not captured here (threats-to-validity).
+- **M2:** with the *mock* tokenizer, `server_recount` added only **+0.1 ms** — a figure
+  that is **superseded and must not be cited as the defense cost.** Measured with real
+  tokenizers: the standalone recount is 0.16 ms (256 tok) to 88 ms (32 768 tok), linear
+  in length and 2.9–3.6× engine-dependent; against a *mock* generator it costs up to
+  95% of gateway throughput at 16 384 tokens; and under **real local inference** it is
+  **0.012–0.016% of end-to-end time**. See `defense_evaluation.md` and
+  `tokenizer_benchmark_methodology.md`.
 
 ## Cross-mechanism synthesis
 
