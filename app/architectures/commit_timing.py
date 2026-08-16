@@ -53,6 +53,17 @@ ARCHES: dict[str, CommitArch] = {
         on_disconnect="refund_all", safe=False,
         description="Reserve estimate; on abort with missing final usage, refund the entire reserve (VULNERABLE; new-api #5235).",
     ),
+    # ABLATION CELL: abort-inclusive finalization WITHOUT a reservation. Isolates
+    # which primitive actually closes M1. Accounting-safe (delivered value is always
+    # billed) but provides NO funds guarantee: the balance can go negative because
+    # nothing was held before serving.
+    "no_reserve_settle": CommitArch(
+        "no_reserve_settle", reserve_before=False, on_complete="debit_actual",
+        on_disconnect="debit_delivered", safe=True,
+        description="No reservation; settle to delivered tokens on BOTH completion and abort "
+                    "(ablation: finalization without reservation -- integrity holds, funds "
+                    "guarantee does not).",
+    ),
 }
 
 VULNERABLE = [a for a, v in ARCHES.items() if not v.safe]

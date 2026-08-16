@@ -74,9 +74,36 @@ def gen_high_entropy(rng: random.Random, approx_chars: int) -> str:
     return "".join(rng.choice(alphabet) for _ in range(approx_chars))
 
 
+_JSON_KEYS = ("request_id", "account_id", "model", "input_tokens", "output_tokens",
+              "cached_input_tokens", "reasoning_tokens", "total_tokens", "cost",
+              "posture", "architecture", "committed", "refunded", "created_at")
+_JSON_VALS = ("gpt-mini", "llama-3.2-3b", "true", "false", "null", "server_recount",
+              "client_total", "reserve_reconcile", "2026-08-16T11:00:00Z")
+
+
+def gen_json(rng: random.Random, approx_chars: int) -> str:
+    """Structured JSON-like payloads (punctuation/quote dense, very different BPE profile)."""
+    out: list[str] = []
+    n = 0
+    while n < approx_chars:
+        fields = []
+        for _ in range(rng.randint(3, 8)):
+            k = rng.choice(_JSON_KEYS)
+            if rng.random() < 0.5:
+                v = str(rng.randint(0, 999999))
+            else:
+                v = '"' + rng.choice(_JSON_VALS) + '"'
+            fields.append(f'"{k}": {v}')
+        obj = "{" + ", ".join(fields) + "}"
+        out.append(obj)
+        n += len(obj) + 2
+    return "[" + ",\n".join(out) + "]"
+
+
 GENERATORS: dict[str, Callable[[random.Random, int], str]] = {
     "natural": gen_natural,
     "code": gen_code,
+    "json": gen_json,
     "high_entropy": gen_high_entropy,
 }
 

@@ -1,0 +1,18 @@
+\begin{table}[t]
+\centering
+\small
+\caption{M2 ablation: performing a recount is not sufficient; it must be used as the billing basis. client\_logged computes the recount and still leaks.}
+\label{tab:m2abl}
+\begin{tabular}{llrrrr}
+\toprule
+architecture & recount performed & recount used for billing & worst leak eff. & integrity & detection \\
+\midrule
+client & no & no & 0.595 & VIOLATED & D0 \\
+client\_logged & yes & no & 0.595 & VIOLATED & D1 \\
+client\_total & no & no & 0.745 & VIOLATED & D0 \\
+server\_recount & yes & yes & 0.000 & held & n/a \\
+hybrid\_reconcile & yes & yes & 0.000 & held & n/a \\
+upstream & no & no & 0.000 & held & n/a \\
+\bottomrule
+\end{tabular}
+\end{table}

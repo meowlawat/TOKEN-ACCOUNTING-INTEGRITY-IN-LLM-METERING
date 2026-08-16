@@ -194,7 +194,12 @@ async def m1_stream(
     if arch.reserve_before:
         ok, _ = await ledger.reserve_atomic(session, account.id, est_full_cost)
         await session.commit()
-        reserved = est_full_cost if ok else Decimal("0")
+        if not ok:
+            # A reservation architecture MUST refuse to serve when funds are
+            # insufficient; serving anyway would deliver value with no hold and is
+            # not what "reserve before inference" means.
+            raise HTTPException(status_code=402, detail="insufficient credits")
+        reserved = est_full_cost
 
     delay_s = max(0.0, settings.mock_inter_token_delay_ms) / 1000.0
     state = {"delivered": 0, "completed": False, "settled": False,
@@ -265,8 +270,12 @@ async def _settle_m1(*, account_id, trial_id, request_id, arch, prices, input_to
                     if refund:
                         await ledger.credit(s, account_id, refund)
                 # keep_reserve: no change
-        else:  # no reserve (post_completion)
+        else:  # no reserve (post_completion, no_reserve_settle)
             if completed and arch.on_complete == "debit_actual":
+                await ledger.debit_unchecked(s, account_id, delivered_cost)
+                committed = delivered_cost
+            elif (not completed) and arch.on_disconnect == "debit_delivered":
+                # Ablation: finalize on the abort path too, without any reservation.
                 await ledger.debit_unchecked(s, account_id, delivered_cost)
                 committed = delivered_cost
             # on_disconnect == "no_debit": nothing charged

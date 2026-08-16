@@ -1,0 +1,139 @@
+{
+  "passed": 22,
+  "total": 22,
+  "ok": true,
+  "checks": [
+    {
+      "part": "fault_injection",
+      "check": "M2: pristine file passes gates",
+      "passed": true,
+      "detail": "clean data must exit 0"
+    },
+    {
+      "part": "fault_injection",
+      "check": "M2: detects leakage value changed",
+      "passed": true,
+      "detail": "summarizer exited 1, expected non-zero"
+    },
+    {
+      "part": "fault_injection",
+      "check": "M2: detects committed debit changed",
+      "passed": true,
+      "detail": "summarizer exited 1, expected non-zero"
+    },
+    {
+      "part": "fault_injection",
+      "check": "M2: detects served flag flipped",
+      "passed": true,
+      "detail": "summarizer exited 1, expected non-zero"
+    },
+    {
+      "part": "fault_injection",
+      "check": "M2: detects final balance changed",
+      "passed": true,
+      "detail": "summarizer exited 1, expected non-zero"
+    },
+    {
+      "part": "fault_injection",
+      "check": "M2: detects invariant result flipped",
+      "passed": true,
+      "detail": "summarizer exited 1, expected non-zero"
+    },
+    {
+      "part": "fault_injection",
+      "check": "M2: detects ledger row deleted",
+      "passed": true,
+      "detail": "summarizer exited 1, expected non-zero"
+    },
+    {
+      "part": "fault_injection",
+      "check": "M1: pristine file passes gates",
+      "passed": true,
+      "detail": "clean data must exit 0"
+    },
+    {
+      "part": "fault_injection",
+      "check": "M1: detects leakage value changed",
+      "passed": true,
+      "detail": "summarizer exited 1, expected non-zero"
+    },
+    {
+      "part": "fault_injection",
+      "check": "M1: detects committed debit changed",
+      "passed": true,
+      "detail": "summarizer exited 1, expected non-zero"
+    },
+    {
+      "part": "fault_injection",
+      "check": "M1: detects served flag flipped",
+      "passed": true,
+      "detail": "summarizer exited 1, expected non-zero"
+    },
+    {
+      "part": "fault_injection",
+      "check": "M1: detects final balance changed",
+      "passed": true,
+      "detail": "summarizer exited 1, expected non-zero"
+    },
+    {
+      "part": "fault_injection",
+      "check": "M1: detects invariant result flipped",
+      "passed": true,
+      "detail": "summarizer exited 1, expected non-zero"
+    },
+    {
+      "part": "fault_injection",
+      "check": "M1: detects ledger row deleted",
+      "passed": true,
+      "detail": "summarizer exited 1, expected non-zero"
+    },
+    {
+      "part": "metamorphic",
+      "check": "P1 doubling identical M2 requests exactly doubles total leak",
+      "passed": true,
+      "detail": "0.840000 -> 1.680000 (expected 1.680000)"
+    },
+    {
+      "part": "metamorphic",
+      "check": "P2 dollar leak scales with price tier (10x steps)",
+      "passed": true,
+      "detail": "low=0.084000 med=0.840000 hi=8.400000"
+    },
+    {
+      "part": "metamorphic",
+      "check": "P3a leakage efficiency invariant under UNIFORM price scaling (low->medium)",
+      "passed": true,
+      "detail": "low=0.5874125874125874125874125874 medium=0.5874125874125874125874125874"
+    },
+    {
+      "part": "metamorphic",
+      "check": "P4 hardened leak never exceeds vulnerable leak (per manipulation)",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "part": "metamorphic",
+      "check": "P5 hardened leak is exactly zero for every manipulation",
+      "passed": true,
+      "detail": "max hardened leak=0"
+    },
+    {
+      "part": "metamorphic",
+      "check": "P6 honest client on vulnerable architecture leaks 0",
+      "passed": true,
+      "detail": "leak=0.000000"
+    },
+    {
+      "part": "metamorphic",
+      "check": "P7 ledger conservation holds in all metamorphic trials",
+      "passed": true,
+      "detail": "unreconciled: []"
+    },
+    {
+      "part": "metamorphic",
+      "check": "P8 M1 leak is non-decreasing in tokens delivered",
+      "passed": true,
+      "detail": "10%=0.012500, 25%=0.027500, 50%=0.050000, 75%=0.072500, 90%=0.087500"
+    }
+  ]
+}

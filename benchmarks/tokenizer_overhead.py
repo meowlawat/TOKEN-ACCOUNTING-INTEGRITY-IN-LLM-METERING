@@ -52,7 +52,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "results" / "raw"
 
 DEFAULT_LENGTHS = [256, 1024, 4096, 16384, 32768]
-WORKLOADS = ["natural", "code", "high_entropy"]
+WORKLOADS = ["natural", "code", "json", "high_entropy"]
 SEED = 1337
 
 # Adaptive repetition budget (documented in the methodology): we target a wall-clock
@@ -89,11 +89,20 @@ def build_engines(llama_repo: str) -> tuple[list[Engine], list[dict]]:
         tv = md.version("tiktoken")
         for enc_name in ("cl100k_base", "o200k_base"):
             enc = tiktoken.get_encoding(enc_name)
+            # Reproducible artifact fingerprint: hash the byte form of a fixed token
+            # range (public API), so a changed vocabulary is detectable across runs.
+            h = hashlib.sha256()
+            for tid in range(0, min(2000, enc.n_vocab)):
+                try:
+                    h.update(enc.decode_single_token_bytes(tid))
+                except Exception:  # noqa: BLE001
+                    h.update(b"\x00")
             engines.append(Engine(
                 name=f"tiktoken/{enc_name}", family="tiktoken",
                 encode=enc.encode, decode=enc.decode,
                 meta={"library": "tiktoken", "library_version": tv,
                       "encoding": enc_name, "n_vocab": enc.n_vocab,
+                      "vocab_fingerprint_sha256_first2k": h.hexdigest(),
                       "revision": f"tiktoken=={tv}; encoding={enc_name}"},
             ))
     except Exception as e:  # noqa: BLE001
