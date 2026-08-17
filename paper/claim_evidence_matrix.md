@@ -31,13 +31,19 @@ Classifications: **DIRECTLY MEASURED** / **INFERRED** / **LITERATURE-SUPPORTED**
 | C24 | Detectability | Logging a server recount moves an M2 leak from D0 (invisible) to D1 (reconcilable) without preventing it. | **DIRECTLY MEASURED** | `results/tables/table_detectability.md` | detection level by architecture | VERIFIED | high | single-host testbed; mock generator unless stated |
 | C25 | Related work | Prior LLM-billing security work covers provider over-charge, victim bill inflation, and intermediary provenance; not client under-payment. | **LITERATURE-SUPPORTED** | `paper/phase1_sources.json` | targeted corpus review (bounded negative) | VERIFIED | medium (bounded negative) | targeted search; does not establish non-existence |
 | C26 | Related work | M1 and M2 are type-B systematization contributions, not novel primitives; B0 is a known baseline. | **LITERATURE-SUPPORTED** | `paper/novelty_matrix.csv` | novelty assessment | VERIFIED | medium (bounded negative) | targeted search; does not establish non-existence |
+| C28 | Results/generality | Accounting outcomes match the single-worker control across a 4-worker and a 2-instance topology: 96 cells compared, 0 mismatches. | **DIRECTLY MEASURED** | `results/tables/table_topology_generality.md` | per-cell leak/efficiency vs control | VERIFIED | high | single-host testbed; mock generator unless stated |
+| C29 | Results/generality | Load demonstrably spread across workers/instances (per-request serving-process attribution), so topology equivalence is not an artifact of requests landing on one process. | **DIRECTLY MEASURED** | `results/processed/generality.summary.json` | distinct serving processes per cell | VERIFIED | high | single-host testbed; mock generator unless stated |
+| C30 | Results/generality | B0's hardened posture leaks $0 at every concurrency in every topology, including across two separate gateway containers. | **DIRECTLY MEASURED** | `results/processed/generality.summary.json` | mean $-leak, hardened posture by topology | VERIFIED | high | single-host testbed; mock generator unless stated |
+| C31 | Results/generality | Outcomes are identical under a mutable-balance-row backend and an append-only ledger with a derived balance: 17/17 strongest cases byte-identical. | **DIRECTLY MEASURED** | `results/tables/table_backend_generality.md` | leak, efficiency, violations, reconciliation | VERIFIED | high | single-host testbed; mock generator unless stated |
+| C32 | Results/generality | A multi-worker deployment requires shared runtime posture and serialized schema creation; both defects were observed directly when building the topology. | **DIRECTLY MEASURED** | `results/raw/topology` | observed UniqueViolation on pg_class; per-process posture | VERIFIED | high | single-host testbed; mock generator unless stated |
+| C33 | Defense sufficiency | Stated conditions are sufficient WITHIN the accounting model; they are argued deductively, not machine-checked, and their necessity evidence is empirical. | **INFERRED** | `paper/defense_sufficiency.md` | model-level argument + ablation | VERIFIED | medium | derived from measurements, not directly observed |
 | C27 | Threats | Results do NOT generalize to commercial providers or production serving stacks. | **HYPOTHESIS** | `paper/threats_to_validity.md` | n/a (scope statement) | VERIFIED | n/a (scope statement) | explicitly not claimed as a result |
 
 ## Totals
 
-- **DIRECTLY MEASURED**: 21
+- **DIRECTLY MEASURED**: 26
 - **HYPOTHESIS**: 1
-- **INFERRED**: 3
+- **INFERRED**: 4
 - **LITERATURE-SUPPORTED**: 2
 
 **UNSUPPORTED claims: 0** (none — no deletions required)

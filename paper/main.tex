@@ -40,7 +40,14 @@ substitutes for the other. For usage authority, computing an accurate server-sid
 is insufficient unless that value becomes the billing basis: an architecture that
 recounts correctly, records the result, and still bills the client-declared number leaks
 $58.3\%$ of the delivered value. Server-authoritative billing eliminates the observed
-usage-authority leakage. Tokenizer cost is real, grows with input length, and varies by
+usage-authority leakage. To test whether these are artifacts of one execution or storage
+design, we repeat the experiments across three topologies (single worker; a reverse proxy
+over four workers; a load balancer over two gateway instances) and two accounting
+backends (a mutable balance row; an append-only ledger with a derived balance):
+$96$ accounting cells match the single-worker control with no mismatches, and $17/17$
+strongest cases are identical across backends. We also state model-level sufficiency
+conditions per mechanism, separating what is sufficient in the model from what is
+implementation-specific. Tokenizer cost is real, grows with input length, and varies by
 $2.9$--$3.6\times$ across engines; in the tested local SmolLM2-135M CPU configuration the
 recount accounted for $0.014$--$0.019\%$ of end-to-end inference time. All reported
 results regenerate from raw data through fail-closed integrity gates and a clean
@@ -78,13 +85,15 @@ legitimate refunds.
 \item \textbf{An architecture taxonomy} of three experimentally distinguishable
 dimensions --- synchronization (B0, known baseline), commitment timing (M1), and usage
 authority (M2) --- with the known/systematized/defensive boundaries stated explicitly.
-\item \textbf{A reproducible measurement study}: a testbed and methodology quantifying
-attack success, leakage, leakage efficiency, detectability, invariant violations,
-latency and throughput, with integrity gates proven to fail closed and an independent
-re-implementation of the strongest defense.
-\item \textbf{An integrity/performance trade-off}, including an ablation identifying
-which primitive closes which property, and recount cost measured at three levels
-(standalone tokenizer, gateway, and a local real-model experiment).
+\item \textbf{A reproducible, cross-architecture measurement study}: a testbed and
+methodology quantifying attack success, leakage, leakage efficiency, detectability,
+invariant violations, latency and throughput --- repeated across three execution
+topologies and two accounting backends, with integrity gates proven to fail closed and an
+independent re-implementation of the strongest defense.
+\item \textbf{Defense sufficiency conditions and their integrity/performance cost}:
+model-level sufficient conditions per mechanism (\S\ref{sec:sufficiency}), an ablation
+identifying which primitive closes which property, and recount cost measured at three
+levels (standalone tokenizer, gateway, and a local real-model experiment).
 \end{enumerate}
 
 \begin{table}[t]\centering
@@ -326,6 +335,53 @@ concurrency-independent in the tested design because the violation lies in the a
 assigned to per-request usage data. Operationally this means an operator cannot infer
 safety from low traffic, and cannot detect M1/M2 by watching for load spikes.
 
+\subsection{Cross-architecture validation}
+\label{sec:generality}
+A measurement study on one deployment invites the objection that its conclusions are
+artifacts of that deployment. We therefore repeated the experiments across three
+execution topologies and two accounting backends, changing \emph{only} the deployment or
+the storage architecture --- the attack harness, the architectures under test, and the
+integrity gates are byte-identical across all runs.
+
+\paragraph{Topologies.} (i) \emph{single}: one uvicorn worker, no proxy (the control);
+(ii) \emph{multi-worker}: nginx over \textbf{four} uvicorn workers, i.e.\ four independent
+event loops sharing one PostgreSQL and one Redis; (iii) \emph{distributed}: an nginx load
+balancer over \textbf{two separate gateway containers}, two workers each, again sharing one
+datastore. Every ledger row records the serving process, so we can confirm load actually
+spread rather than assuming it: four distinct worker processes served M1 requests in the
+multi-worker run (101/164/79/136 requests), and both containers served traffic in the
+distributed run.
+
+Across \textbf{96} accounting cells compared against the control there were
+\textbf{no mismatches} (Table~\ref{tab:topogen}). Differences are either exactly zero or
+bounded by the price of a single delivered token --- the disconnect-detection jitter
+already characterized in our reproduction audit --- and never change a verdict. B0 is
+also preserved: the hardened posture leaks exactly \$0 at every concurrency in every
+topology, \emph{including across two separate containers}, because atomicity is enforced
+by the database rather than by process locality; and the distributed vulnerable posture
+reproduced the control exactly (\$0.8910 at $c{=}10$, \$4.8510 at $c{=}50$).
+
+\paragraph{A multi-worker deployment is not free.} Building the topology exposed two real
+defects that a single-worker study cannot reveal, and we report them as findings rather
+than silently fixing them. First, the B0 runtime posture was \emph{per-process} state, so
+a configuration change would have reached only one of four workers; it must live in
+shared state (we moved it to Redis). Second, four workers racing schema creation at boot
+crashed with a uniqueness violation on \texttt{pg\_class}; startup must be serialized (we
+use a PostgreSQL advisory lock). Neither changes the accounting semantics, but both are
+prerequisites for the results above to be meaningful.
+
+\paragraph{Accounting backends.} To test whether the conclusions depend on \emph{how money
+is stored}, we implemented a second backend behind the same semantic interface. Backend~A
+keeps a mutable \texttt{credits.balance} row and obtains atomicity from a conditional
+\texttt{UPDATE {\ldots} WHERE balance >= cost}. Backend~B never mutates that row: every
+movement is an immutable row in an append-only ledger and the balance is \emph{derived} as
+the sum of those entries, with the atomic reserve becoming a conditional append serialized
+on an anchor row. Running the strongest B0/M1/M2 cases against both,
+\textbf{17 of 17 were byte-identical} --- same leakage, same leakage efficiency, same
+invariant-violation counts, same reconciliation verdicts (Table~\ref{tab:backendgen}).
+This supports the structural claim: the outcomes follow from where synchronization,
+commitment and authority sit, not from the storage representation.
+
 \subsection{Lifecycle failure modes}
 Beyond the scripted attack we inject nine lifecycle failures (disconnect at $t{=}0$ and
 mid-stream, truncated stream, settle-window race, missing / delayed / duplicated usage
@@ -343,6 +399,49 @@ Under \texttt{client} billing the leak is D0 --- the ledger faithfully records t
 client's lie. Merely \emph{logging} a recount moves the same leak to D1 without preventing
 it, and reconciling in-request reaches D3 (Table~\ref{tab:detect}). This gives operators
 who cannot yet re-architect billing a cheap intermediate step.
+
+\section{Defense Sufficiency Conditions}
+\label{sec:sufficiency}
+The ablation shows which primitive is load-bearing empirically; here we state, for each
+mechanism, conditions that are \emph{sufficient within the accounting model} to guarantee
+$V(r)\le N(r)$. These are model-level deductive arguments, \textbf{not} machine-checked
+proofs and \textbf{not} universal theorems about deployed systems; we separate what the
+model forces from what our implementation happens to supply.
+
+\paragraph{M1 --- commitment timing.} Sufficient: \emph{(M1-a) terminal-path totality} ---
+every terminal path, including client disconnect, server exception and stream truncation,
+reaches a state where an accounting event for $r$ is committed and durable; and
+\emph{(M1-b) refund boundedness} --- every refund satisfies
+$F(r)\le \mathrm{Res}(r)-V(r)$. If a reservation was taken, (M1-b) gives
+$N(r)=\mathrm{Res}(r)-F(r)\ge V(r)$; if not, (M1-a) forces the terminal event to commit
+$D(r)=V(r)$. Solvency is a \emph{separate} condition \emph{(M1-c)}: reserve atomically
+before execution and refuse the request when the reservation fails.
+\texttt{no\_reserve\_settle} satisfies (M1-a)/(M1-b) but not (M1-c), and measured exactly
+that --- integrity held (leak $0.0000$) while the balance went to $-0.32$.
+
+\paragraph{M2 --- usage authority.} Sufficient: \emph{(M2-a) authority} --- the usage value
+used for billing is derived from state the attacker cannot control, i.e.\
+$U_{\text{bill}}=U_{\text{true}}$; and \emph{(M2-b) pricing monotonicity} --- $P$ is
+non-decreasing in each category. Computing $U_{\text{true}}$ is \emph{not} sufficient: an
+architecture that computes it correctly, records it, and bills $P(U_{\text{decl}})$
+satisfies ``the server recounts'' while violating (M2-a), and leaks
+$P(U_{\text{true}})-P(T(U_{\text{true}}))$.
+
+\paragraph{B0 --- synchronization.} Sufficient: \emph{(B0-a)} the check
+$\text{balance}\ge\text{cost}$ and the decrement occur as one operation atomic with
+respect to competing transactions. Under (B0-a) the authorizations on an account are
+totally ordered, so no two requests authorize against the same funds. With a single
+in-flight transaction (B0-a) holds vacuously, which is why B0 leaks nothing at
+concurrency~1.
+
+\paragraph{Implementation-specific caveats.} The model says ``committed and durable''; our
+implementation achieves it with a cancellation-shielded settlement task, and a framework
+that cancelled that task would satisfy the architecture on paper while violating (M1-a).
+The \texttt{upstream} architecture satisfies (M2-a) \emph{only because the provider is
+honest by assumption}. And (B0-a) is a property, not a mechanism: our two backends obtain
+it by a conditional \texttt{UPDATE} and by an anchor-row lock respectively, which is
+precisely what \S\ref{sec:generality} tests. Full statements, arguments and caveats are in
+the accompanying \texttt{defense\_sufficiency} document.
 
 \section{Defense Evaluation}
 Each vulnerable architecture is paired with a server-side primitive: atomic
@@ -379,6 +478,8 @@ tested configuration.
 \input{../results/tables/table_m1_results.tex}
 \input{../results/tables/table_m1_concurrency.tex}
 \input{../results/tables/table_m1_property_matrix.tex}
+\input{../results/tables/table_topology_generality.tex}
+\input{../results/tables/table_backend_generality.tex}
 \input{../results/tables/table_m2_results.tex}
 \input{../results/tables/table_m2_concurrency.tex}
 \input{../results/tables/table_m2_formal.tex}
@@ -492,10 +593,25 @@ treated as performance evidence; the excluded cells remain published in
 value''; leakage normalized by delivered value; and a detectability scale that separates
 exploitability from evidence availability.
 
-\paragraph{External.} One local architecture family, one database, one cache, one small
-CPU model, no commercial provider, no multi-region or distributed gateway. The real-model
-experiment bounds a \emph{ratio} in one configuration and does not validate any
-commercial provider's billing behaviour.
+\paragraph{External.} The cross-architecture experiments (\S\ref{sec:generality}) remove
+the single-event-loop, single-process and single-storage-design confounds, but they do not
+remove all of them, and we state the boundary precisely. \emph{Addressed:} four
+independent event loops; two separate gateway containers behind a load balancer; and two
+structurally different accounting backends (mutable row vs.\ append-only derived ledger).
+\emph{Not addressed:} all instances still run on \textbf{one physical host} sharing
+\textbf{one} PostgreSQL and \textbf{one} Redis, so multi-host networking, replica lag,
+cross-region latency and datastore partitioning are untested; both backends are
+strongly-consistent single-datastore designs, so an \textbf{eventually-consistent} or
+sharded accounting pipeline --- which could break the atomicity condition (B0-a) or the
+durability condition (M1-a) --- remains unevaluated. We also test one model family, one
+cache, and no commercial provider; the real-model experiment bounds a \emph{ratio} in one
+configuration and does not validate any commercial provider's billing behaviour.
+
+\paragraph{Formal.} The sufficiency conditions of \S\ref{sec:sufficiency} are model-level
+deductive arguments, not machine-checked proofs. We do not claim they are sufficient in an
+arbitrary deployed system, nor that no other sufficient condition set exists. Their
+\emph{necessity} evidence is empirical: removing a condition produced a measured violation
+in our implementation.
 
 \paragraph{Literature.} A targeted search rather than a proof of absence, in a
 fast-moving area with terminology mismatch risk.

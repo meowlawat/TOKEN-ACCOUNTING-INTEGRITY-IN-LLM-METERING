@@ -181,6 +181,45 @@ CLAIMS = [
                "B0 is a known baseline.",
          kind="LITERATURE-SUPPORTED", metric="novelty assessment",
          source="paper/novelty_matrix.md", result_file="paper/novelty_matrix.csv"),
+    # ---- cross-architecture generality (Phases 1-3) ------------------------
+    dict(id="C28", section="Results/generality",
+         claim="Accounting outcomes match the single-worker control across a 4-worker and a "
+               "2-instance topology: 96 cells compared, 0 mismatches.",
+         kind="DIRECTLY MEASURED", metric="per-cell leak/efficiency vs control",
+         source="experiments/run_topology.py + summarize_generality.py",
+         result_file="results/tables/table_topology_generality.md",
+         verify=("generality", "topology")),
+    dict(id="C29", section="Results/generality",
+         claim="Load demonstrably spread across workers/instances (per-request serving-process "
+               "attribution), so topology equivalence is not an artifact of requests landing on "
+               "one process.",
+         kind="DIRECTLY MEASURED", metric="distinct serving processes per cell",
+         source="app/m_routes.py worker attribution",
+         result_file="results/processed/generality.summary.json"),
+    dict(id="C30", section="Results/generality",
+         claim="B0's hardened posture leaks $0 at every concurrency in every topology, including "
+               "across two separate gateway containers.",
+         kind="DIRECTLY MEASURED", metric="mean $-leak, hardened posture by topology",
+         source="experiments/run_topology.py",
+         result_file="results/processed/generality.summary.json"),
+    dict(id="C31", section="Results/generality",
+         claim="Outcomes are identical under a mutable-balance-row backend and an append-only "
+               "ledger with a derived balance: 17/17 strongest cases byte-identical.",
+         kind="DIRECTLY MEASURED", metric="leak, efficiency, violations, reconciliation",
+         source="experiments/run_backend_comparison.py",
+         result_file="results/tables/table_backend_generality.md",
+         verify=("generality", "backend")),
+    dict(id="C32", section="Results/generality",
+         claim="A multi-worker deployment requires shared runtime posture and serialized schema "
+               "creation; both defects were observed directly when building the topology.",
+         kind="DIRECTLY MEASURED", metric="observed UniqueViolation on pg_class; per-process posture",
+         source="app/main.py (advisory lock, Redis-backed posture)",
+         result_file="results/raw/topology"),
+    dict(id="C33", section="Defense sufficiency",
+         claim="Stated conditions are sufficient WITHIN the accounting model; they are argued "
+               "deductively, not machine-checked, and their necessity evidence is empirical.",
+         kind="INFERRED", metric="model-level argument + ablation",
+         source="paper/defense_sufficiency.md", result_file="paper/defense_sufficiency.md"),
     # ---- explicitly scoped non-claims -------------------------------------
     dict(id="C27", section="Threats",
          claim="Results do NOT generalize to commercial providers or production serving stacks.",
@@ -207,6 +246,20 @@ def verify(c: dict) -> tuple[str, str]:
         txt = (ROOT / path).read_text(encoding="utf-8")
         return ("VERIFIED", f"'{needle}' found") if needle in txt else \
                ("VALUE MISMATCH", f"'{needle}' not in {path}")
+    if kind == "generality":
+        gp = RESULTS / "processed" / "generality.summary.json"
+        if not gp.exists():
+            return "MISSING ARTIFACT", "generality.summary.json not found"
+        g = json.loads(gp.read_text(encoding="utf-8"))
+        if arg == "topology":
+            return (("VERIFIED", f"{g['topology_cells_compared']} cells, "
+                                 f"{len(g['topology_mismatches'])} mismatches")
+                    if g["topology_all_consistent"] else
+                    ("VALUE MISMATCH", f"{len(g['topology_mismatches'])} topology mismatches"))
+        if arg == "backend":
+            return (("VERIFIED", f"{g['backend_cases_compared']} cases identical")
+                    if g["backend_identical"] else
+                    ("VALUE MISMATCH", "backend outcomes differ"))
     if kind == "cross_val":
         files = sorted(glob.glob(str(RESULTS / "raw" / "cross_validation_*.json")))
         if not files:

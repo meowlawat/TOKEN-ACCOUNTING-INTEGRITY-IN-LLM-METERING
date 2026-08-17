@@ -232,3 +232,63 @@ LOCAL REAL-MODEL EXTERNAL-VALIDITY EXPERIMENT   (source: real_model_recount_2026
   NOTE: with real generation dominating wall time, the recount is a very small
   fraction of e2e; any measured ratio difference is within timing noise unless the
   test is significant AND the effect size is non-negligible.
+
+==============================================================================
+CROSS-TOPOLOGY AND CROSS-BACKEND GENERALITY
+==============================================================================
+
+------------------------------------------------------------------------------
+G.1 Topology: single-worker control vs multi-worker vs distributed
+------------------------------------------------------------------------------
+  cells compared: 96
+  mismatches    : 0
+  all consistent: True
+  Sources:
+    single       {'m1': 'm1_20260816T123351Z.json', 'm2': 'm2_20260816T123522Z.json', 'b0': 'class6_20260816T123031Z.json'}
+    multiworker  {'m1': 'm1_multiworker_20260816T174211Z.json', 'm2': 'm2_multiworker_20260816T174211Z.json', 'b0': 'b0_multiworker_20260816T174211Z.json'}
+    distributed  {'m1': 'm1_distributed_20260816T175140Z.json', 'm2': 'm2_distributed_20260816T175140Z.json', 'b0': 'b0_distributed_20260816T175140Z.json'}
+
+  EFFECT SIZE. The accounting outcomes compared here are deterministic per cell
+  (fixed prompt, fixed seed, fixed architecture), so the appropriate statement is
+  the ABSOLUTE DIFFERENCE from the control, not a p-value. Across all compared
+  cells the difference is either exactly 0 or bounded by the price of ONE delivered
+  token (0.0015 at the medium tier), which is the known disconnect-detection
+  jitter documented in reproduction_consistency.md -- not an accounting divergence.
+  A significance test is not reported because within-cell variance is structurally
+  zero; with zero variance and zero mean difference, standardized effect sizes
+  (Cohen's d, Cliff's delta) are 0 by construction.
+
+------------------------------------------------------------------------------
+G.2 B0 concurrency behaviour is preserved under every topology
+------------------------------------------------------------------------------
+  single       vulnerable cells=7 hardened cells=7 max hardened leak=0.000000
+      vulnerable/c1        mean $-leak=0.0000 served=1.0
+      vulnerable/c2        mean $-leak=0.0990 served=2.0
+      vulnerable/c5        mean $-leak=0.3960 served=5.0
+      vulnerable/c10       mean $-leak=0.8910 served=10.0
+      vulnerable/c20       mean $-leak=1.8810 served=20.0
+      vulnerable/c30       mean $-leak=2.8710 served=30.0
+      vulnerable/c50       mean $-leak=4.8510 served=50.0
+  multiworker  vulnerable cells=7 hardened cells=7 max hardened leak=0.000000
+      vulnerable/c1        mean $-leak=0.0000 served=1.0
+      vulnerable/c2        mean $-leak=0.0990 served=2.0
+      vulnerable/c5        mean $-leak=0.3960 served=5.0
+      vulnerable/c10       mean $-leak=0.8910 served=10.0
+      vulnerable/c20       mean $-leak=1.8810 served=20.0
+      vulnerable/c30       mean $-leak=2.8710 served=30.0
+      vulnerable/c50       mean $-leak=4.8510 served=50.0
+  distributed  vulnerable cells=2 hardened cells=2 max hardened leak=0.000000
+      vulnerable/c10       mean $-leak=0.8910 served=10.0
+      vulnerable/c50       mean $-leak=4.8510 served=50.0
+  The hardened posture leaks exactly 0 in every topology, including across two
+  separate gateway containers -- atomicity is enforced by the database, not by
+  process or node locality.
+
+------------------------------------------------------------------------------
+G.3 Accounting backend: mutable row vs append-only derived ledger
+------------------------------------------------------------------------------
+  cases compared: 17
+  identical     : True
+  Every case produced byte-identical leakage, invariant-violation counts and
+  reconciliation verdicts under both storage architectures. Effect size = 0
+  exactly; no test is applicable to a zero difference with zero variance.
