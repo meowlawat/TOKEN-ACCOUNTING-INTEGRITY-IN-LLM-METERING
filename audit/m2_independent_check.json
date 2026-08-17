@@ -1,0 +1,145 @@
+{
+  "promptA_sweep": {
+    "label": "promptA_sweep",
+    "file": "m2_20260816T123522Z.json",
+    "prompt": "benchmark the usage record authority boundary please now",
+    "seed": 1337,
+    "records_checked": 4800,
+    "mismatch_count": 0,
+    "mismatches": [],
+    "model_efficiency": {
+      "client/honest/medium": 0.0,
+      "client/under_report_output_50/medium": 0.3237410071942446,
+      "client/under_report_output_90/medium": 0.5827338129496403,
+      "client/under_report_input_50/medium": 0.014388489208633094,
+      "client/drop_reasoning/medium": 0.3237410071942446,
+      "client/inflate_cached/medium": 0.3129496402877698,
+      "client/total_mismatch/medium": 0.0,
+      "client/rounding_shave/medium": 0.03597122302158273,
+      "client_logged/honest/medium": 0.0,
+      "client_logged/under_report_output_50/medium": 0.3237410071942446,
+      "client_logged/under_report_output_90/medium": 0.5827338129496403,
+      "client_logged/under_report_input_50/medium": 0.014388489208633094,
+      "client_logged/drop_reasoning/medium": 0.3237410071942446,
+      "client_logged/inflate_cached/medium": 0.3129496402877698,
+      "client_logged/total_mismatch/medium": 0.0,
+      "client_logged/rounding_shave/medium": 0.03597122302158273,
+      "client_total/honest/medium": -0.05755395683453238,
+      "client_total/under_report_output_50/medium": 0.26618705035971224,
+      "client_total/under_report_output_90/medium": 0.5251798561151079,
+      "client_total/under_report_input_50/medium": -0.014388489208633094,
+      "client_total/drop_reasoning/medium": 0.26618705035971224,
+      "client_total/inflate_cached/medium": -0.05755395683453238,
+      "client_total/total_mismatch/medium": 0.7410071942446043,
+      "client_total/rounding_shave/medium": -0.014388489208633094,
+      "upstream/honest/medium": 0.0,
+      "upstream/under_report_output_50/medium": 0.0,
+      "upstream/under_report_output_90/medium": 0.0,
+      "upstream/under_report_input_50/medium": 0.0,
+      "upstream/drop_reasoning/medium": 0.0,
+      "upstream/inflate_cached/medium": 0.0,
+      "upstream/total_mismatch/medium": 0.0,
+      "upstream/rounding_shave/medium": 0.0,
+      "server_recount/honest/medium": 0.0,
+      "server_recount/under_report_output_50/medium": 0.0,
+      "server_recount/under_report_output_90/medium": 0.0,
+      "server_recount/under_report_input_50/medium": 0.0,
+      "server_recount/drop_reasoning/medium": 0.0,
+      "server_recount/inflate_cached/medium": 0.0,
+      "server_recount/total_mismatch/medium": 0.0,
+      "server_recount/rounding_shave/medium": 0.0,
+      "hybrid_reconcile/honest/medium": 0.0,
+      "hybrid_reconcile/under_report_output_50/medium": 0.0,
+      "hybrid_reconcile/under_report_output_90/medium": 0.0,
+      "hybrid_reconcile/under_report_input_50/medium": 0.0,
+      "hybrid_reconcile/drop_reasoning/medium": 0.0,
+      "hybrid_reconcile/inflate_cached/medium": 0.0,
+      "hybrid_reconcile/total_mismatch/medium": 0.0,
+      "hybrid_reconcile/rounding_shave/medium": 0.0
+    },
+    "model_true_usage": {
+      "input_tokens": 8,
+      "output_tokens": 60,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 30,
+      "declared_total": null
+    }
+  },
+  "reconciliation_0583_0595": {
+    "prompt A (main sweep)": {
+      "prompt": "benchmark the usage record authority boundary please now",
+      "true_usage": {
+        "input_tokens": 8,
+        "output_tokens": 60,
+        "cached_input_tokens": 0,
+        "reasoning_tokens": 30,
+        "declared_total": null
+      },
+      "efficiency": 0.5827338129496403,
+      "authoritative": "0.139000",
+      "billed": "0.058000"
+    },
+    "prompt B (ablation)": {
+      "prompt": "ablation probe for usage record authority primitives now",
+      "true_usage": {
+        "input_tokens": 8,
+        "output_tokens": 77,
+        "cached_input_tokens": 0,
+        "reasoning_tokens": 38,
+        "declared_total": null
+      },
+      "efficiency": 0.5949008498583569,
+      "authoritative": "0.176500",
+      "billed": "0.071500"
+    }
+  },
+  "attacker_knowledge": {
+    "levels": {
+      "K0": "client-observable only: prompt text, response text, and its own balance",
+      "K1": "provider-reported usage: whatever usage the architecture returns to the client",
+      "K2": "oracle: exact server-side true usage vector (what the current experiment grants)"
+    },
+    "by_manipulation": {
+      "honest": {
+        "knowledge": "K0",
+        "rationale": "no manipulation required",
+        "efficiency_if_successful": 0.0
+      },
+      "under_report_output_50": {
+        "knowledge": "K0",
+        "rationale": "scales the OUTPUT count, which the client can count from the response it received",
+        "efficiency_if_successful": 0.3237410071942446
+      },
+      "under_report_output_90": {
+        "knowledge": "K0",
+        "rationale": "scales the OUTPUT count, which the client can count from the response it received",
+        "efficiency_if_successful": 0.5827338129496403
+      },
+      "under_report_input_50": {
+        "knowledge": "K0",
+        "rationale": "scales the INPUT count, which the client computes from its own prompt",
+        "efficiency_if_successful": 0.014388489208633094
+      },
+      "rounding_shave": {
+        "knowledge": "K0",
+        "rationale": "small absolute decrements to input/output, both client-countable",
+        "efficiency_if_successful": 0.03597122302158273
+      },
+      "total_mismatch": {
+        "knowledge": "K0",
+        "rationale": "derives a total from client-countable subtotals",
+        "efficiency_if_successful": 0.0
+      },
+      "inflate_cached": {
+        "knowledge": "K1",
+        "rationale": "requires knowing the cached-token split, which the client cannot observe from the response alone; needs provider-reported usage",
+        "efficiency_if_successful": 0.3129496402877698
+      },
+      "drop_reasoning": {
+        "knowledge": "K2",
+        "rationale": "requires knowing the hidden reasoning-token count, which is not in the response and is not client-derivable in this model",
+        "efficiency_if_successful": 0.3237410071942446
+      }
+    }
+  }
+}

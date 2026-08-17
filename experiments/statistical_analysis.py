@@ -483,7 +483,7 @@ def analyze_generality():
         for d in g["backend_differences"][:10]:
             w(f"    DIFF: {d}")
     else:
-        w("  Every case produced byte-identical leakage, invariant-violation counts and")
+        w("  Every case agreed on leakage, invariant-violation counts and")
         w("  reconciliation verdicts under both storage architectures. Effect size = 0")
         w("  exactly; no test is applicable to a zero difference with zero variance.")
 

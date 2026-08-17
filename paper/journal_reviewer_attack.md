@@ -101,14 +101,24 @@ attack harness, architectures, and integrity gates are unchanged:
   as `opening_balance + SUM(delta)`. The atomic reserve becomes a conditional *append*
   serialized on an anchor row.
 
-**Result: 17 of 17 strongest B0/M1/M2 cases produced byte-identical outcomes** — same
-leakage, same leakage efficiency, same invariant-violation counts, same reconciliation
-verdicts. Examples: `M2/client` 0.594 both; `M2/server_recount` 0.000 both;
-`M1/post_completion/abort90` 0.0950/req both; `B0/vulnerable/c50` 5.1695 both;
-`B0/hardened/c50` 0.000000 both.
+**Result: all 17 comparison cells agreed** — same leakage, same leakage efficiency, same
+invariant-violation counts, same reconciliation verdicts. Examples: `M2/client` 0.594
+both; `M2/server_recount` 0.000 both; `M1/post_completion/abort90` 0.0950/req both;
+`B0/vulnerable/c50` 5.1695 both; `B0/hardened/c50` 0.000000 both.
 
-This supports the paper's structural claim: the outcomes follow from *where*
-synchronization, commitment and authority sit, not from how money is stored. The
+> **Corrected after the independent audit (F3).** The raw "17/17" count overstates the
+> evidence and is no longer used. Of the 17 cells, only **8 genuinely exercised both
+> backends**; **5** agree for an analytic reason (the M2 billed amount is computed before
+> any balance is read, so it cannot vary by backend); and the remaining **4** are vacuous: they are the
+> B0 cells, and the frozen B0 debit module contains **no reference to the backend
+> abstraction**, so those rows ran identical code twice. Their agreement was guaranteed a
+> priori and carries no information, and **B0's independence from the storage
+> representation is untested**. The defensible statement is:
+> *eight genuine backend-sensitive cases agreed, and no case disagreed.*
+
+Within that reduced scope this still supports the paper's structural claim — the outcomes
+follow from *where* synchronization, commitment and authority sit, not from how money is
+stored — but it supports it over eight cases (M1 and M2 only), not seventeen. The
 sufficiency conditions in `defense_sufficiency.md` are stated over the accounting model,
 and both backends are instantiations of it.
 
@@ -188,7 +198,7 @@ claim it. **Response type: scope-limiting + empirical (normalized metrics).**
 |---|---|---|---|
 | A | generic API security | partly conceded; dimensions shown experimentally distinguishable | **yes** — type-B novelty |
 | B | single-worker doesn't generalize | **answered empirically** — 96 cells, 0 mismatches, 3 topologies | **yes** — one physical host |
-| C | second backend will differ | **refuted empirically** — 17/17 identical | **yes** — no eventual-consistency backend |
+| C | second backend will differ | **refuted, over 8 genuine cases** — all agreed, none disagreed (9 further cells are analytic or vacuous; see F3 correction above) | **yes** — no eventual-consistency backend |
 | D | no proof of sufficiency | conceded; model-level argument, clearly scoped | **yes** — no mechanized proof |
 | E | synthetic economics | conceded on dollars; efficiency is price-invariant | **yes** — no real billing data |
 

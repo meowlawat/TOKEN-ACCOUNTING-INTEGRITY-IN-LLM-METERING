@@ -19,10 +19,18 @@ ROOT = Path(__file__).resolve().parents[1]
 PAPER = ROOT / "paper"
 RESULTS = ROOT / "results"
 
-# kind: DIRECTLY MEASURED | INFERRED | LITERATURE-SUPPORTED | HYPOTHESIS | UNSUPPORTED
+# kind: DIRECTLY MEASURED | ANALYTICALLY DERIVED | INFERRED | LITERATURE-SUPPORTED
+#       | HYPOTHESIS | WITHDRAWN | UNSUPPORTED
+#
+# ANALYTICALLY DERIVED: the claim follows from the model/implementation structure and the
+# experiment CONFIRMS it rather than discovering it. Must not be presented as an
+# empirical finding.
+# WITHDRAWN: previously claimed, retracted after the independent audit.
 
 DEFAULT_CONFIDENCE = {
     "DIRECTLY MEASURED": "high",
+    "ANALYTICALLY DERIVED": "high (derivation), confirmatory (experiment)",
+    "WITHDRAWN": "none (retracted)",
     "INFERRED": "medium",
     "LITERATURE-SUPPORTED": "medium (bounded negative)",
     "HYPOTHESIS": "n/a (scope statement)",
@@ -30,6 +38,8 @@ DEFAULT_CONFIDENCE = {
 }
 DEFAULT_LIMITATION = {
     "DIRECTLY MEASURED": "single-host testbed; mock generator unless stated",
+    "ANALYTICALLY DERIVED": "experiment is a consistency check, not independent evidence",
+    "WITHDRAWN": "retracted after independent audit; not claimed in the paper",
     "INFERRED": "derived from measurements, not directly observed",
     "LITERATURE-SUPPORTED": "targeted search; does not establish non-existence",
     "HYPOTHESIS": "explicitly not claimed as a result",
@@ -88,8 +98,12 @@ CLAIMS = [
          source="experiments/economic_analysis.py", result_file="results/tables/table_m2_formal.md",
          verify=("file_contains", ("results/tables/table_m2_formal.md", "0.741"))),
     dict(id="C10", section="Results/M2",
-         claim="M2 leakage efficiency is invariant to concurrency.",
-         kind="DIRECTLY MEASURED", metric="leakage efficiency by concurrency",
+         claim="M2 leakage efficiency is invariant to concurrency. DERIVED, not discovered: "
+               "the billed amount is a pure function of one request's declared usage and is "
+               "computed before any balance is read, so it cannot depend on other in-flight "
+               "requests; the sweep is a consistency check that no unintended shared-state "
+               "dependency exists, and it passes.",
+         kind="ANALYTICALLY DERIVED", metric="leakage efficiency by concurrency (confirmatory)",
          source="experiments/run_m2.py", result_file="results/tables/table_m2_concurrency.md"),
     # ---- ablation ---------------------------------------------------------
     dict(id="C11", section="Ablation",
@@ -166,10 +180,14 @@ CLAIMS = [
          result_file="results/tables/table_economic_sensitivity.md"),
     # ---- detectability ----------------------------------------------------
     dict(id="C24", section="Detectability",
-         claim="Logging a server recount moves an M2 leak from D0 (invisible) to D1 "
-               "(reconcilable) without preventing it.",
-         kind="DIRECTLY MEASURED", metric="detection level by architecture",
-         source="experiments/run_m2.py", result_file="results/tables/table_detectability.md"),
+         claim="WITHDRAWN. Previously: 'logging a server recount moves an M2 leak from D0 "
+               "to D1'. The instrumentation restated an experimenter-assigned label rather "
+               "than measuring evidence; an evidence-only reclassification finds `client` "
+               "and `client_logged` retain IDENTICAL evidence and no record qualifies as D0. "
+               "The paper makes no detectability claim.",
+         kind="WITHDRAWN", metric="n/a (retracted)",
+         source="experiments/detectability.py",
+         result_file="results/processed/detectability.json"),
     # ---- literature -------------------------------------------------------
     dict(id="C25", section="Related work",
          claim="Prior LLM-billing security work covers provider over-charge, victim bill "
@@ -204,7 +222,11 @@ CLAIMS = [
          result_file="results/processed/generality.summary.json"),
     dict(id="C31", section="Results/generality",
          claim="Outcomes are identical under a mutable-balance-row backend and an append-only "
-               "ledger with a derived balance: 17/17 strongest cases byte-identical.",
+               "ledger with a derived balance. All 17 comparison cells agreed, but only 8 "
+               "genuinely exercised both backends (5 agree analytically because the M2 "
+               "billed amount is computed before any balance is read; 4 are vacuous "
+               "zero-vs-zero agreements). B0 does not reference the backend abstraction "
+               "and was not re-executed against Backend B.",
          kind="DIRECTLY MEASURED", metric="leak, efficiency, violations, reconciliation",
          source="experiments/run_backend_comparison.py",
          result_file="results/tables/table_backend_generality.md",
@@ -275,7 +297,9 @@ def main() -> None:
     rows = []
     for c in CLAIMS:
         status, note = verify(c)
-        kind = "UNSUPPORTED" if status != "VERIFIED" else c["kind"]
+        # A WITHDRAWN claim is already retracted; artifact status cannot demote it
+        # further, and it must not be reported as a live UNSUPPORTED claim.
+        kind = c["kind"] if (status == "VERIFIED" or c["kind"] == "WITHDRAWN") else "UNSUPPORTED"
         rows.append({
             "claim_id": c["id"], "section": c["section"], "claim": c["claim"],
             "classification": kind, "source": c["source"],
@@ -296,7 +320,7 @@ def main() -> None:
     md = ["# Claim-to-Evidence Matrix (Phase R)\n",
           "Every major paper claim, its classification, and the artifact that supports it.",
           "Classifications: **DIRECTLY MEASURED** / **INFERRED** / **LITERATURE-SUPPORTED** / "
-          "**HYPOTHESIS** / **UNSUPPORTED**. Any row that fails artifact verification is "
+          "**ANALYTICALLY DERIVED** / **HYPOTHESIS** / **WITHDRAWN** / **UNSUPPORTED**. Any row that fails artifact verification is "
           "reclassified UNSUPPORTED and must be deleted from the paper.\n",
           "| id | section | claim | class | evidence | metric | verified | confidence | limitation |",
           "|---|---|---|---|---|---|---|---|---|"]

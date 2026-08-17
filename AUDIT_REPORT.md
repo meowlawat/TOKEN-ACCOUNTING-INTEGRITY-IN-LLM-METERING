@@ -320,3 +320,54 @@ The audit does **not** invalidate the project. The leakage measurements — the 
 the paper — are independently reproducible and exact. What it invalidates is one
 subsidiary claim (detectability) and the strength of two others (concurrency generality,
 backend generality).
+
+---
+
+## Corrections resulting from independent audit
+
+*Appended after the corrective phase. Every fix below was applied, then re-verified by a
+second independent pass; nothing was closed by argument alone.*
+
+| # | Finding | Status | What was actually done | Re-verification |
+|---|---------|--------|------------------------|-----------------|
+| **F1** | Detectability declared, not measured; D0 contradicted | **CLAIM WITHDRAWN** | The paper now carries `\subsection{Detectability: a claim we withdraw}`; the assertion table generator emits nothing and returns `status: WITHDRAWN`; the hand-written matrix is deleted; the regression assertion that checked for the constant `"D0"` is removed; the two `detection_level` sites in `app/m_routes.py` are annotated as non-measurements retained only for raw-data reproducibility. Claim C24 is reclassified `WITHDRAWN`. | `experiments/detectability.py` (blind to architecture, posture, stored label): `client` and `client_logged` retain **identical** evidence and receive **identical** levels; **2,200** stored-D0 records are D1 or D3 on the evidence; **no record qualifies as D0**. |
+| **F2** | M2 concurrency-invariance is analytic | **SPLIT THREE WAYS** | Abstract and results now distinguish B0 (empirical slope), M1 (empirical invariance), M2 (analytic invariance, experiment confirms rather than discovers). Claim C10 reclassified `ANALYTICALLY DERIVED` — a category the original matrix could not express. | The derivation is stated in the paper with its implementation witness: billed cost is computed at `app/m_routes.py:378`, before `ledger.read_balance` at `:380`. |
+| **F3** | "17/17 identical" partly vacuous | **RESTATED AS 8** | `summarize_generality.py` now classifies every cell GENUINE / ANALYTIC / VACUOUS **by code path**, and the generated table carries the classification. Paper, `journal_reviewer_attack.md` and `JOURNAL_READINESS_REPORT.md` all state *eight genuine cases agreed, none disagreed*. B0's storage independence is declared **untested** in Threats to Validity. | Regenerated: `GENUINE=8, ANALYTIC=5, VACUOUS=4`, matching the audit's manual count. |
+| **F4** | "Independent" M2 checker partially dependent | **REPLACED** | `audit/m2_independent_model.py` re-derives true usage, pricing, all 7 transformations and the per-architecture billing basis **from the specification**, never reading the gateway's `extra["true"]` and importing no project code. | `audit/m2_independent_check.py`: **0 mismatches**. |
+| **F5** | Undisclosed oracle-level attacker knowledge | **DISCLOSED** | A K0/K1/K2 knowledge model is added to the threat model. The headline attack (90% output under-reporting, 58.3% efficiency) is **K0-feasible**; `inflate_cached` is K1 and `drop_reasoning` is K2, both labelled and excluded from the main claim. | `knowledge_required()` grades each manipulation from its definition, not its outcome: K0-and-leaking = `under_report_output_50/90`, `under_report_input_50`, `rounding_shave`. |
+| **F6** | Real-model timing never re-measured | **RE-MEASURED** | `audit/verify_real_model_timing.py` re-times the recount with separately written code. Paper wording widened to *well under 0.1%* with both ranges and their generation lengths given. | 0.0169–0.0277% at 32 new tokens vs the artifact's 0.014–0.019% at 64 — same order of magnitude, ratio rising as generation shortens, as the cost model predicts. |
+
+### What did *not* change
+
+The accounting core was not touched, and did not need to be. `audit/recompute_all.py`
+(zero project imports) still reproduces **4,800 M2 records, 2,400 M1 records and 420 B0
+trials with 0 discrepancies**, and the B0 slope at 0.099 with R²=1.0000. The B0/M1/M2
+definitions, the frozen debit module, and all raw data are unchanged; no inconvenient
+data was deleted, and the withdrawn detectability field remains in the stored records so
+historical runs stay byte-reproducible.
+
+### Post-fix re-verification
+
+| check | result |
+|---|---|
+| `audit/recompute_all.py` (independent) | **0 discrepancies** |
+| `audit/m2_independent_check.py` (spec-derived) | **0 mismatches** |
+| `experiments/regression_m.py` | **16/16 pass** |
+| `experiments/metamorphic_checks.py` | **22/22 pass** |
+| `experiments/run_cross_validation.py` | M2 42 cells, M1 16 cells, B0 2 cells — **all implementations agree** |
+| Summarizer integrity gates (B0, M1, M2) | **PASS, 0 problems** |
+| Topology generality | 96 cells, **0 mismatches** |
+| Claim matrix | 33 claims, **0 UNSUPPORTED** (1 WITHDRAWN, 1 ANALYTICALLY DERIVED) |
+| `paper/main.pdf` | compiles, **0 overfull boxes** |
+
+### Revised executive verdict
+
+> ## VERIFIED — MATERIAL LIMITATIONS NOW STATED IN THE PAPER
+
+The four material problems are closed by withdrawal (F1), scope restatement (F2, F3),
+re-implementation (F4), disclosure (F5) and re-measurement (F6). The paper now claims
+less than it did before the audit, and everything it claims has been recomputed by code
+that shares nothing with the pipeline that produced it. A process note is recorded
+separately in `audit/confirmation_bias.md`, including a second-order bias caught during
+the fix itself: the first replacement classifier for F3 used outcome value rather than
+code path and reproduced the wrong split until it was checked against the audit.

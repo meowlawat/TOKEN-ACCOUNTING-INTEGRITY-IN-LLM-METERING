@@ -17,6 +17,9 @@ cannot regress.
 Per request `r`: served flag `S(r)`, authoritative value `C(r)` (cost of the inference
 actually obtained), committed debit and legitimate refund → `NetDebit(r)`.
 
+
+> **WITHDRAWN (independent audit, F1).** The detectability levels below were *emitted* by the code under evaluation (`"D3" if arch.safe else "D0"`; static architecture metadata for M2), never measured. An evidence-only reclassification (`experiments/detectability.py`) finds `client` and `client_logged` retain **identical** evidence, **2,200** stored-D0 records are D1 or D3 on the evidence, and **no record qualifies as D0 at all**. The paper makes no detectability claim. The levels are retained here only as a record of what the artifact used to assert.
+
 - **Leak** `Leak(r) = S(r)·C(r) − NetDebit(r)` (signed; positive = under-payment).
 - **Leakage efficiency** `= max(Leak,0)/C(r)` — the fraction of value evaded
   (price-tier invariant; the key normalized metric so raw dollars don't confound).

@@ -21,6 +21,12 @@
   "topology_all_consistent": true,
   "backend_cases_compared": 17,
   "backend_identical": true,
+  "backend_evidence_classes": {
+    "GENUINE": 8,
+    "ANALYTIC": 5,
+    "VACUOUS": 4
+  },
+  "backend_genuine_cases": 8,
   "backend_differences": [],
   "b0_by_topology": {
     "single": {

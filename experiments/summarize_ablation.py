@@ -1,4 +1,7 @@
-"""Summarize the architectural ablation, lifecycle failure modes, and detectability.
+"""Summarize the architectural ablation and lifecycle failure modes.
+
+The detectability table this module used to emit was WITHDRAWN after an independent
+audit (see `summarize_detectability` below and `experiments/detectability.py`).
 
 Consumes raw JSON only; writes Markdown + LaTeX tables to results/tables/ and a
 processed JSON to results/processed/.
@@ -7,7 +10,6 @@ Produces:
   table_m1_ablation.{md,tex}     -- which primitive closes M1 (integrity vs solvency)
   table_m2_ablation.{md,tex}     -- which primitive closes M2
   table_failure_modes.{md,tex}   -- lifecycle failure injection outcomes
-  table_detectability.{md,tex}   -- D0..D3 detection matrix
 """
 
 from __future__ import annotations
@@ -171,36 +173,26 @@ def summarize_failures(d: dict) -> dict:
 
 
 def summarize_detectability(abl: dict, fm: dict) -> dict:
-    """Detection matrix: which evidence source can reveal each violation."""
-    # Evidence sources: request logs / usage ledger / reconciliation / final balance / real-time
-    spec = [
-        # (mechanism, architecture, req_logs, ledger, reconciliation, final_balance, realtime, level, latency)
-        ("B0", "vulnerable (non-atomic)", "no", "yes", "yes", "no*", "no", "D1",
-         "until a reconciliation pass"),
-        ("B0", "hardened (atomic CAS)", "n/a", "n/a", "n/a", "n/a", "yes", "D3", "0 (prevented)"),
-        ("M1", "post_completion", "partial", "no", "no", "no", "no", "D0",
-         "never (no record is written)"),
-        ("M1", "reserve_refund_on_abort", "partial", "yes", "yes", "yes", "no", "D1",
-         "until a reconciliation pass"),
-        ("M1", "reserve_reconcile", "n/a", "n/a", "n/a", "n/a", "yes", "D3", "0 (prevented)"),
-        ("M2", "client", "no", "no", "no", "no", "no", "D0", "never (ledger records the lie)"),
-        ("M2", "client_logged", "no", "yes", "yes", "no", "no", "D1",
-         "until a reconciliation pass"),
-        ("M2", "server_recount", "n/a", "n/a", "n/a", "n/a", "yes", "D3", "0 (prevented)"),
-        ("M2", "hybrid_reconcile", "yes", "yes", "yes", "n/a", "yes", "D3",
-         "0 (detected and corrected in-request)"),
-    ]
-    rows = [[m, a, rl, lg, rc, fb, rt, lvl, lat] for (m, a, rl, lg, rc, fb, rt, lvl, lat) in spec]
-    write_table("table_detectability",
-                ["mech", "architecture", "req logs", "usage ledger", "reconciliation",
-                 "final balance", "real-time", "level", "detection latency"],
-                rows,
-                "Detectability matrix. D0 invisible; D1 only via post-hoc reconciliation; "
-                "D2 logged discrepancy; D3 prevented or corrected in real time. "
-                "*B0's final balance alone cannot reveal the loss because the ledger and the "
-                "balance are both under-decremented consistently with the surviving write.",
-                "tab:detect")
-    return {"rows": rows}
+    """Withdrawn (audit fix F1).
+
+    This function previously emitted a hand-written detectability matrix: every cell was
+    an assertion by the experimenter, not a measurement, and the paper then cited it as a
+    result. An evidence-only reclassification (`experiments/detectability.py`) showed the
+    central D0-vs-D1 distinction is contradicted by the artifact's own data --- `client`
+    and `client_logged` retain identical evidence, and no record in the study qualifies as
+    D0 at all.
+
+    We do not emit a weaker version of the table. We emit nothing, and report the
+    withdrawal, so that no downstream document can cite an assertion as a finding.
+    """
+    return {
+        "status": "WITHDRAWN",
+        "reason": "hand-authored assertion matrix, not derived from data; the D0/D1 "
+                  "distinction it encoded is contradicted by the artifact's own records",
+        "superseded_by": "experiments/detectability.py -> "
+                         "results/processed/detectability.json",
+        "table_emitted": None,
+    }
 
 
 def main() -> None:
@@ -217,7 +209,8 @@ def main() -> None:
     PROC.mkdir(parents=True, exist_ok=True)
     (PROC / "ablation_failure_detect.summary.json").write_text(
         json.dumps(out, indent=2), encoding="utf-8")
-    print("tables -> table_m1_ablation, table_m2_ablation, table_failure_modes, table_detectability")
+    print("tables -> table_m1_ablation, table_m2_ablation, table_failure_modes")
+    print("detectability: WITHDRAWN (no table emitted; see experiments/detectability.py)")
 
 
 if __name__ == "__main__":

@@ -113,7 +113,9 @@ transformation changes:
 R² ≥ 0.998), 16,384-token p50 spans **10.1–41.8 ms** across engines (2.9–3.6×
 implementation effect). Gateway with a *mock* generator: 0.96–1.00× at ≤1,024 tokens,
 **0.05–0.76×** at 16,384 (Spearman ρ = −0.868, p = 1.3×10⁻⁵). Local real model:
-**0.014–0.019% of end-to-end**.
+**well under 0.1% of end-to-end** (0.014–0.019% at 64 new tokens; an independent
+re-measurement with separately written timing code gave 0.017–0.028% at 32 new tokens —
+same order of magnitude, the ratio rising as generation shortens).
 
 ## 7. Strongest empirical result
 
@@ -160,10 +162,14 @@ metadata, recount-engine failure), every invariant violation falls on a vulnerab
 architecture, hardened architectures survive all of them, and recount-engine failure is
 **fail-closed** (request rejected, nothing served or billed).
 
-**Detectability** (orthogonal to exploitability): `client` = D0 (invisible — the ledger
-faithfully records the client's lie); `client_logged` = D1 (reconcilable but not
-prevented); `server_recount` / `hybrid_reconcile` = D3 (prevented / corrected in
-real time).
+**Detectability — WITHDRAWN.** This report previously stated that `client` = D0
+(invisible), `client_logged` = D1 (reconcilable) and the server-authoritative
+architectures = D3. That claim is **retracted**. The independent audit showed the levels
+were *emitted* by the code under test (`"D3" if arch.safe else "D0"`), never measured. An
+evidence-only reclassification finds `client` and `client_logged` retain **identical**
+evidence and are therefore equally reconcilable, **2,200** stored-D0 records are D1 or D3
+on the evidence, and **no record in the study qualifies as D0 at all**. The paper makes no
+detectability claim; see `audit/confirmation_bias.md` and `experiments/detectability.py`.
 
 ## 10. Realism assessment
 
@@ -171,7 +177,7 @@ real time).
 |---|---|---|
 | Mock generator (most experiments) | exact, reproducible accounting semantics | anything about real inference cost |
 | Real tokenizers (recount path) | true tokenization cost, engine and workload effects | provider-specific tokenizers |
-| Local real model (SmolLM2-135M, CPU, greedy) | recount is 0.014–0.019% of end-to-end inference in this configuration | **nothing about commercial providers** |
+| Local real model (SmolLM2-135M, CPU, greedy) | recount is well under 0.1% of end-to-end inference in this configuration (0.014–0.019% at 64 new tokens; 0.017–0.028% on independent re-measurement at 32) | **nothing about commercial providers** |
 
 The real-model experiment is explicitly a *local external-validity experiment*: a small
 open model on CPU, measuring a **ratio**. It does not validate any commercial provider's
@@ -287,3 +293,41 @@ and the key defense result is independently verified.
 
 **Novelty confidence: MEDIUM** — systematization, ablation, and measurement are solid and
 defensible; the underlying mechanisms are known, and the paper says so.
+
+---
+
+## 17. Corrections resulting from independent audit
+
+An adversarial integrity audit (`AUDIT_REPORT.md`) was run against this project with the
+explicit goal of breaking it. It succeeded in six places. All six are now closed, and the
+corrections are listed here rather than absorbed silently, because the direction of every
+correction is the same: **the project now claims less than it did.**
+
+1. **Detectability (D0–D3) — withdrawn entirely.** The levels were emitted by the code
+   under evaluation and read back as a result. An evidence-only classifier contradicts
+   the published distinction: identical evidence for `client` and `client_logged`, 2,200
+   label disagreements, and an empty D0 category. No weaker version is reported.
+2. **Concurrency — split into empirical and analytic.** B0's slope and M1's invariance
+   are empirical; M2's invariance is a derivation the experiment can only confirm. The
+   claim matrix gained an `ANALYTICALLY DERIVED` class to make the distinction
+   expressible at all.
+3. **Backend generality — 17/17 restated as 8.** Only eight of seventeen cells genuinely
+   exercised both storage backends; five agree analytically and four are B0 cells that
+   ran identical code twice. B0's storage independence is now declared untested.
+4. **M2 independence — re-established.** The previous "independent" checker inherited the
+   gateway's own ground truth. It was replaced by a specification-derived model that
+   shares no code with the project: 0 mismatches.
+5. **Attacker knowledge — disclosed.** The harness grants oracle knowledge of true usage.
+   A K0/K1/K2 grading is now in the threat model; the headline attack is K0-feasible, and
+   the two manipulations that are not are labelled and excluded from the main claim.
+6. **Real-model timing — independently re-measured.** Previously reported from a single
+   pipeline and never re-checked. Re-timing with separate code confirms the order of
+   magnitude and the wording was widened accordingly.
+
+**What survived unchanged:** the accounting core. Independent recomputation from raw data
+with zero project imports reproduces 4,800 M2 records, 2,400 M1 records and 420 B0 trials
+with **0 discrepancies**, and the B0 slope at 0.099 (R²=1.0000). No raw data was deleted
+or adjusted; the retracted `detection_level` field remains in stored records so historical
+runs stay byte-reproducible. The failures were concentrated entirely in the interpretive
+layer — the places where the artifact described an outcome instead of measuring one —
+which is the finding recorded in `audit/confirmation_bias.md`.

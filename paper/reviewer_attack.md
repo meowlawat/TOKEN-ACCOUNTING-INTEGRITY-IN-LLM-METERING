@@ -49,6 +49,9 @@ leaks at efficiency $0.595$ because billing ignores it. "Recount works" would ha
 the trivial claim; "recount must be the billing basis, and finalization not reservation
 closes integrity" is the non-trivial one.
 
+
+> **WITHDRAWN (independent audit, F1).** The detectability levels below were *emitted* by the code under evaluation (`"D3" if arch.safe else "D0"`; static architecture metadata for M2), never measured. An evidence-only reclassification (`experiments/detectability.py`) finds `client` and `client_logged` retain **identical** evidence, **2,200** stored-D0 records are D1 or D3 on the evidence, and **no record qualifies as D0 at all**. The paper makes no detectability claim. The levels are retained here only as a record of what the artifact used to assert.
+
 **A5. "Detectability is a footnote, not a result."**
 Addressed: `table_detectability` classifies every mechanism/architecture across five
 evidence sources with a D0–D3 level and a latency column, and yields an actionable

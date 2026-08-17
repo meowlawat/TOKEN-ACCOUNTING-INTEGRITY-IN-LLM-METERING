@@ -15,7 +15,7 @@ model, and no change to the validated M1/M2/B0 definitions.
 |---|---|---|
 | 1 | Multi-worker topology (nginx → 4 uvicorn workers → shared PG/Redis) | full B0/M1/M2 matrix, concurrency 1–100 |
 | 2 | Distributed topology (nginx LB → 2 gateway containers × 2 workers) | reduced matched matrix, concurrency 10/50 |
-| 3 | Second accounting backend (append-only ledger, derived balance) | 17/17 cases identical to mutable-row backend |
+| 3 | Second accounting backend (append-only ledger, derived balance) | 8 genuine cases identical to mutable-row backend; none disagreed (17 cells compared; 5 analytic, 4 vacuous) |
 | 4 | `paper/defense_sufficiency.md` | model-level sufficiency conditions per mechanism |
 | 5 | Economic sensitivity (3 price tiers) | efficiency invariant under uniform scaling |
 | 6 | Statistics extended with cross-topology/backend effect sizes | absolute differences, not spurious p-values |
@@ -37,9 +37,14 @@ topology, *including across two separate containers* — atomicity is enforced b
 database, not by process locality. Distributed vulnerable reproduced the control exactly
 (\$0.8910 at c=10, \$4.8510 at c=50).
 
-**Backends (17 strongest B0/M1/M2 cases): byte-identical.** `M2/client` 0.594 both;
-`M2/server_recount` 0.000 both; `M1/post_completion/abort90` 0.0950/req both;
-`B0/vulnerable/c50` 5.1695 both; `B0/hardened/c50` 0.000000 both.
+**Backends: 8 genuine cases agreed; no case disagreed.** *(Restated after the independent
+audit — the earlier "17/17 byte-identical" headline overstated the evidence.)* All 17
+comparison cells agreed, but only 8 genuinely exercised both backends; 5 agree
+analytically (the M2 billed amount is computed before any balance is read) and 4 are
+vacuous: the frozen B0 debit module does not reference the backend abstraction, so those
+B0 cells ran identical code twice. **B0's storage independence is untested.** Agreeing values:
+`M2/client` 0.594 both; `M2/server_recount` 0.000 both;
+`M1/post_completion/abort90` 0.0950/req both.
 
 **Two genuine multi-worker defects surfaced and are reported as findings**, not hidden:
 the B0 runtime posture was per-process (would have reached 1 of 4 workers → moved to

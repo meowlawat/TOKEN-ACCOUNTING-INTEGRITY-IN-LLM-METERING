@@ -289,6 +289,6 @@ G.3 Accounting backend: mutable row vs append-only derived ledger
 ------------------------------------------------------------------------------
   cases compared: 17
   identical     : True
-  Every case produced byte-identical leakage, invariant-violation counts and
+  Every case agreed on leakage, invariant-violation counts and
   reconciliation verdicts under both storage architectures. Effect size = 0
   exactly; no test is applicable to a zero difference with zero variance.

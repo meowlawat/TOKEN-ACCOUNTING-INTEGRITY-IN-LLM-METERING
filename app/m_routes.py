@@ -301,6 +301,10 @@ async def _settle_m1(*, account_id, trial_id, request_id, arch, prices, input_to
             authoritative_cost=authoritative, committed_debit=committed, refund=refund,
             net_debit=net_debit, leak=leak, balance_before=balance_before, balance_after=balance_after,
             served=served, completed=completed, invariant_ok=invariant_ok,
+            # NOT a measurement. This restates the architecture's own `safe` flag and is
+            # retained only so historical raw data remains byte-reproducible. The paper
+            # makes no detectability claim; see experiments/detectability.py for the
+            # evidence-only classifier that superseded this field (audit fix F1).
             detection_level=("D3" if arch.safe else "D0"), abort_pct=abort_pct, manipulation=None,
             extra={"worker": _worker_id(),
                    "n_out": n_out, "est_full_cost": str(est_full_cost),
@@ -397,6 +401,8 @@ async def m2_complete(
         tokens_delivered=true_usage.subtotal_total, tokens_billed=declared.subtotal_total,
         authoritative_cost=authoritative_cost, committed_debit=net_debit, refund=Decimal("0"),
         net_debit=net_debit, leak=leak, balance_before=balance_before, balance_after=balance_after,
+        # NOT a measurement: `detection` is static architecture metadata. Retained for
+        # raw-data reproducibility only; superseded by experiments/detectability.py.
         served=True, completed=True, invariant_ok=invariant_ok, detection_level=detection,
         abort_pct=None, manipulation=req.manipulation,
         extra={"worker": _worker_id(),

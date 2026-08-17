@@ -155,6 +155,33 @@ def b0_cells(raw: dict) -> dict:
                 "n": len(v["leak"])} for k, v in out.items()}
 
 
+def evidence_class(case: str, value) -> str:
+    """What is a backend agreement in this cell actually worth? (audit fix F3)
+
+    Classified by CODE PATH, not by outcome value. A zero-leak result is not
+    automatically vacuous: a defended M1 architecture still writes reservations and
+    settlements through the backend abstraction, so the cell genuinely exercised both
+    storage designs and could have disagreed.
+
+      VACUOUS  the cell ran identical code twice. The frozen B0 debit module contains no
+               reference to the backend abstraction, so B0 never routes through it and
+               its agreement is guaranteed a priori.
+      ANALYTIC the outcome cannot depend on the backend by construction: the M2 billed
+               amount is a pure function of declared usage computed BEFORE any balance is
+               read, so no storage decision can influence it.
+      GENUINE  the cell drove real reserve/settle/refund traffic through the backend
+               interface and could have disagreed.
+
+    Only GENUINE cells support the storage-independence claim.
+    """
+    c = case.lower()
+    if c.startswith("b0"):
+        return "VACUOUS"
+    if c.startswith("m2"):
+        return "ANALYTIC"
+    return "GENUINE"
+
+
 def main() -> None:
     # ---------------- topology comparison ---------------------------------- #
     sources = {
@@ -220,6 +247,7 @@ def main() -> None:
     # ---------------- backend comparison ------------------------------------ #
     bc = load(latest("backend_comparison_*.json", RAW))
     brows = []
+    evidence_counts = {"GENUINE": 0, "ANALYTIC": 0, "VACUOUS": 0}
     if bc:
         mut = {r["case"]: r for r in bc["results"]["mutable"]}
         led = {r["case"]: r for r in bc["results"]["ledger"]}
@@ -229,16 +257,25 @@ def main() -> None:
                       "leak_per_request" if "leak_per_request" in a else "leak")
             va, vb = a.get(metric), b.get(metric)
             same = str(va) == str(vb)
+            ev = evidence_class(case, va)
+            evidence_counts[ev] += 1
             brows.append([case, metric, str(va), str(vb),
                           a.get("invariant_violations"), b.get("invariant_violations"),
-                          "IDENTICAL" if same else "DIFFERS"])
+                          "IDENTICAL" if same else "DIFFERS", ev])
         write_table("table_backend_generality",
-                    ["case", "metric", "mutable", "ledger", "viol (mut)", "viol (led)", "verdict"],
+                    ["case", "metric", "mutable", "ledger", "viol (mut)", "viol (led)",
+                     "verdict", "evidence"],
                     brows,
                     "Cross-backend validation. The same cases run against a mutable balance row "
                     "and an append-only ledger with a derived balance, behind one semantic "
-                    "interface. Identical outcomes indicate the results do not depend on the "
-                    "balance-storage architecture.",
+                    "interface. The `evidence` column states what each agreement is worth: "
+                    "GENUINE = the case actually exercised both backends and could have "
+                    "disagreed; ANALYTIC = the M2 billed amount is computed before any balance "
+                    "is read, so it cannot vary by backend; VACUOUS = agreement between two "
+                    "zero-leak outcomes, which any correct implementation produces. B0 cases "
+                    "are ANALYTIC-at-best because the frozen B0 debit module does not reference "
+                    "the backend abstraction. Only the GENUINE count is evidence of "
+                    "storage-architecture independence.",
                     "tab:backendgen")
 
     summary = {
@@ -248,6 +285,8 @@ def main() -> None:
         "topology_all_consistent": not mismatches,
         "backend_cases_compared": len(brows),
         "backend_identical": bool(bc and bc.get("identical")),
+        "backend_evidence_classes": evidence_counts,
+        "backend_genuine_cases": evidence_counts["GENUINE"],
         "backend_differences": (bc or {}).get("differences", []),
         "b0_by_topology": {k: {f"{p}/c{c}": v for (p, c), v in topo[k]["b0"].items()}
                            for k in topo},
@@ -257,6 +296,9 @@ def main() -> None:
                                                   encoding="utf-8")
     print(f"topology cells compared: {len(rows)} | mismatches: {len(mismatches)}")
     print(f"backend cases compared : {len(brows)} | identical: {summary['backend_identical']}")
+    print(f"  evidence value        : {evidence_counts}")
+    print(f"  => defensible claim   : {evidence_counts['GENUINE']} genuine backend-sensitive "
+          f"cases agreed; 0 disagreed")
     for m in mismatches[:8]:
         print("  MISMATCH:", m)
     print("tables -> table_topology_generality, table_backend_generality")

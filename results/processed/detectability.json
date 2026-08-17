@@ -1,0 +1,156 @@
+{
+  "m2": {
+    "mechanism": "m2",
+    "file": "m2_20260816T123522Z.json",
+    "by_architecture": {
+      "client": {
+        "D3": 200,
+        "D1": 600
+      },
+      "client_logged": {
+        "D3": 200,
+        "D1": 600
+      },
+      "client_total": {
+        "D3": 400,
+        "D1": 400
+      },
+      "upstream": {
+        "D3": 800
+      },
+      "server_recount": {
+        "D3": 800
+      },
+      "hybrid_reconcile": {
+        "D3": 800
+      }
+    },
+    "reasons": {
+      "client": {
+        "no residual leak (prevented, corrected, or never occurred)": 200,
+        "record retains a server-observed usage vector that disagrees with the declared vector; offline reconciliation would surface it": 600
+      },
+      "client_logged": {
+        "no residual leak (prevented, corrected, or never occurred)": 200,
+        "record retains a server-observed usage vector that disagrees with the declared vector; offline reconciliation would surface it": 600
+      },
+      "client_total": {
+        "no residual leak (prevented, corrected, or never occurred)": 400,
+        "record retains a server-observed usage vector that disagrees with the declared vector; offline reconciliation would surface it": 400
+      },
+      "upstream": {
+        "no residual leak (prevented, corrected, or never occurred)": 800
+      },
+      "server_recount": {
+        "no residual leak (prevented, corrected, or never occurred)": 800
+      },
+      "hybrid_reconcile": {
+        "no residual leak (prevented, corrected, or never occurred)": 800
+      }
+    },
+    "stored_vs_evidence": {
+      "stored=D3|evidence=D3": 3200,
+      "stored=D0|evidence=D1": 1000,
+      "stored=D1|evidence=D1": 600
+    },
+    "retained_evidence_fields": {
+      "client": [
+        [
+          "corrected",
+          "declared",
+          "true"
+        ]
+      ],
+      "client_logged": [
+        [
+          "corrected",
+          "declared",
+          "true"
+        ]
+      ],
+      "client_total": [
+        [
+          "corrected",
+          "declared",
+          "true"
+        ]
+      ],
+      "upstream": [
+        [
+          "corrected",
+          "declared",
+          "true"
+        ]
+      ],
+      "server_recount": [
+        [
+          "corrected",
+          "declared",
+          "true"
+        ]
+      ],
+      "hybrid_reconcile": [
+        [
+          "corrected",
+          "declared",
+          "true"
+        ]
+      ]
+    }
+  },
+  "m1": {
+    "mechanism": "m1",
+    "file": "m1_20260816T123351Z.json",
+    "by_architecture": {
+      "pre_debit": {
+        "D3": 600
+      },
+      "reserve_reconcile": {
+        "D3": 600
+      },
+      "post_completion": {
+        "D1": 500,
+        "D3": 100
+      },
+      "reserve_refund_on_abort": {
+        "D1": 500,
+        "D3": 100
+      }
+    },
+    "reasons": {
+      "pre_debit": {
+        "no residual leak (prevented, corrected, or never occurred)": 600
+      },
+      "reserve_reconcile": {
+        "no residual leak (prevented, corrected, or never occurred)": 600
+      },
+      "post_completion": {
+        "record retains a delivered-token count inconsistent with the committed debit; offline reconciliation would surface it": 500,
+        "no residual leak (prevented, corrected, or never occurred)": 100
+      },
+      "reserve_refund_on_abort": {
+        "record retains a delivered-token count inconsistent with the committed debit; offline reconciliation would surface it": 500,
+        "no residual leak (prevented, corrected, or never occurred)": 100
+      }
+    },
+    "stored_vs_evidence": {
+      "stored=D3|evidence=D3": 1200,
+      "stored=D0|evidence=D1": 1000,
+      "stored=D0|evidence=D3": 200
+    },
+    "retained_evidence_fields": {
+      "pre_debit": [
+        []
+      ],
+      "reserve_reconcile": [
+        []
+      ],
+      "post_completion": [
+        []
+      ],
+      "reserve_refund_on_abort": [
+        []
+      ]
+    }
+  }
+}

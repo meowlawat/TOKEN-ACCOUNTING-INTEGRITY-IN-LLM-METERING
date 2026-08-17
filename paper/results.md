@@ -27,6 +27,9 @@ serves exactly `min(concurrency, k)` and leaks $0 at every concurrency. Detectio
 *Leak vs abort timing (medium tier, 10 reps/cell; `fig_m1_abort_curve.png`,
 `table_m1_results`).*
 
+
+> **WITHDRAWN (independent audit, F1).** The detectability levels below were *emitted* by the code under evaluation (`"D3" if arch.safe else "D0"`; static architecture metadata for M2), never measured. An evidence-only reclassification (`experiments/detectability.py`) finds `client` and `client_logged` retain **identical** evidence, **2,200** stored-D0 records are D1 or D3 on the evidence, and **no record qualifies as D0 at all**. The paper makes no detectability claim. The levels are retained here only as a record of what the artifact used to assert.
+
 - **Vulnerable** (`post_completion`, `reserve_refund_on_abort`): request-ASR = 1.00
   [0.72, 1.00] and invariant-violation rate = 1.00 for every abort point **before**
   completion. Leak rises monotonically with delivered tokens — mean $0.0045 at ~1

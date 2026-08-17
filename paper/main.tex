@@ -29,31 +29,33 @@ three dimensions --- \textbf{state synchronization}, \textbf{commitment timing},
 a request-lifecycle model. \emph{We do not claim new attack primitives}: the enabling
 mechanisms are individually known, and the contribution is a systematic measurement and
 architectural analysis of them across representative metering designs, together with an
-ablation of the enforcement primitives. In controlled experiments the known
-synchronization race is \emph{created} by concurrency (slope $0.099$ per additional
-concurrent request, $R^2=1.0000$), whereas commitment-timing and usage-authority failures
-remain per-request phenomena: under fixed request volume in the tested architecture their
-per-request leakage was unchanged across concurrency levels 1--100. For commitment
-timing, an ablation shows that abort-safe finalization closes accounting-integrity
-violations while reservation independently provides solvency, and that neither
-substitutes for the other. For usage authority, computing an accurate server-side recount
-is insufficient unless that value becomes the billing basis: an architecture that
-recounts correctly, records the result, and still bills the client-declared number leaks
-$58.3\%$ of the delivered value. Server-authoritative billing eliminates the observed
-usage-authority leakage. To test whether these are artifacts of one execution or storage
-design, we repeat the experiments across three topologies (single worker; a reverse proxy
-over four workers; a load balancer over two gateway instances) and two accounting
-backends (a mutable balance row; an append-only ledger with a derived balance):
-$96$ accounting cells match the single-worker control with no mismatches, and $17/17$
-strongest cases are identical across backends. We also state model-level sufficiency
-conditions per mechanism, separating what is sufficient in the model from what is
-implementation-specific. Tokenizer cost is real, grows with input length, and varies by
-$2.9$--$3.6\times$ across engines; in the tested local SmolLM2-135M CPU configuration the
-recount accounted for $0.014$--$0.019\%$ of end-to-end inference time. All reported
-results regenerate from raw data through fail-closed integrity gates and a clean
-reproduction pipeline. These results position LLM metering as an accounting-security
-boundary whose synchronization, lifecycle, and authority choices determine both
-under-payment exposure and defense cost.
+ablation of the enforcement primitives. The three dimensions behave differently under
+load, and we distinguish empirical from analytic results: the known synchronization race
+is \emph{created} by contention for shared state and grows with concurrency (slope
+$0.099$ per additional concurrent request, $R^2=1.0000$); commitment-timing leakage is
+\emph{empirically} unchanged across concurrency levels 1--100 under fixed request volume,
+even though delivery timing itself varies; and usage-authority leakage is
+\emph{analytically} independent of concurrency under the modelled per-request billing
+function, which our experiments confirm rather than discover. For commitment timing, an
+ablation shows that abort-safe finalization closes accounting-integrity violations while
+reservation independently provides solvency, and that neither substitutes for the other.
+For usage authority, computing an accurate server-side recount is insufficient unless
+that value becomes the billing basis: an architecture that recounts correctly, records
+the result, and still bills the client-declared number leaks $58.3\%$ of the delivered
+value. Server-authoritative billing eliminates the observed usage-authority leakage. To
+test whether these are artifacts of one execution or storage design, we repeat the
+experiments across three topologies (single worker; a reverse proxy over four workers; a
+load balancer over two gateway instances) and two accounting backends (a mutable balance
+row; an append-only ledger with a derived balance): $96$ accounting cells match the
+single-worker control with no mismatches, and the eight cases that genuinely exercised
+both backends agreed. We also state model-level sufficiency conditions per mechanism,
+separating what is sufficient in the model from what is implementation-specific.
+Tokenizer cost is real, grows with input length, and varies by $2.9$--$3.6\times$ across
+engines; in the tested local SmolLM2-135M CPU configuration the recount accounted for
+well under $0.1\%$ of end-to-end inference time ($0.014$--$0.028\%$ across generation
+lengths). All reported results regenerate from raw data through fail-closed integrity
+gates, and every headline accounting figure has been independently recomputed from raw
+data by code that shares nothing with the measurement pipeline.
 \end{abstract}
 
 \section{Introduction}
@@ -85,11 +87,12 @@ legitimate refunds.
 \item \textbf{An architecture taxonomy} of three experimentally distinguishable
 dimensions --- synchronization (B0, known baseline), commitment timing (M1), and usage
 authority (M2) --- with the known/systematized/defensive boundaries stated explicitly.
-\item \textbf{A reproducible, cross-architecture measurement study}: a testbed and
-methodology quantifying attack success, leakage, leakage efficiency, detectability,
+\item \textbf{A reproducible, cross-architecture measurement study}: \begin{sloppypar}a
+testbed and methodology quantifying attack success, leakage, leakage efficiency,
 invariant violations, latency and throughput --- repeated across three execution
-topologies and two accounting backends, with integrity gates proven to fail closed and an
-independent re-implementation of the strongest defense.
+topologies and two accounting backends, with integrity gates shown to fail closed under
+fault injection, and an independent re-implementation of the strongest
+defense.\end{sloppypar}
 \item \textbf{Defense sufficiency conditions and their integrity/performance cost}:
 model-level sufficient conditions per mechanism (\S\ref{sec:sufficiency}), an ablation
 identifying which primitive closes which property, and recount cost measured at three
@@ -124,6 +127,22 @@ compromise the inference backend, forge authenticated upstream metadata, or alte
 code. This is a concrete application-layer adversary, not a symbolic cryptographic one.
 Every leak we report is therefore attributable to the provider's own accounting design
 rather than to a compromise.
+
+\paragraph{Attacker knowledge (disclosed).} Our M2 harness constructs each declared-usage
+manipulation by transforming the \emph{true} server-side usage vector, which grants the
+attacker more knowledge than a real client has. We therefore grade every manipulation by
+the knowledge it actually requires: \textbf{K0}, client-observable only (the prompt it
+sent, the response it received, its own balance); \textbf{K1}, provider-reported usage
+(whatever usage the architecture returns to the client); \textbf{K2}, oracle access to
+the exact server-side usage vector. Under-reporting output or input, shaving by a small
+constant, and declaring an inconsistent total are all \textbf{K0}: the client can count
+its own prompt and the tokens it received. Inflating the cached-input category is
+\textbf{K1}, since the cached/uncached split is not visible in the response. Dropping
+hidden reasoning tokens is \textbf{K2}, because that count is never exposed. The headline
+usage-authority result --- a correct-but-unauthoritative recount leaking $58.3\%$ of
+delivered value under $90\%$ output under-reporting --- rests on a \textbf{K0}
+manipulation and does not depend on oracle knowledge. The two non-K0 manipulations are
+reported as such and are not used to support the main claim.
 
 For a request $r$, let $V(r)$ be the value actually delivered, $D(r)$ the committed
 debits, $F(r)$ refunds, and $N(r)=D(r)-F(r)$ the net committed debit. Under-payment and
@@ -270,8 +289,8 @@ but refunds it away, failing both. \textbf{Reservation and abort-safe finalizati
 orthogonal controls; neither substitutes for the other.}
 \end{sloppypar}
 
-\paragraph{Concurrency is not the mechanism.} Under fixed request volume in the tested
-architecture, per-request leakage remained unchanged across concurrency levels
+\paragraph{Concurrency is not the mechanism (empirical).} Under fixed request volume in
+the tested architecture, per-request leakage remained unchanged across concurrency levels
 $1$--$100$: leak per request measured $0.0528$ at $c=1,5,20,50$ and $100$ (identical to
 four decimal places), and request-ASR was exactly $1.000$ (vulnerable) or $0.000$ (safe)
 at every level (Table~\ref{tab:m1conc}, Fig.~\ref{fig:m1conc}). The honest-client control
@@ -288,8 +307,17 @@ under category pricing (which never reads the declared total) and is the stronge
 under flat-total pricing ($0.741$), while reclassifying output into a discounted cached
 category is the reverse. The exploitable set is a property of the billing function, not of
 attacker ingenuity. Every server-authoritative architecture drives leakage efficiency to
-$0.000$ across all manipulations, and M2 is likewise concurrency-invariant
-(Table~\ref{tab:m2conc}).
+$0.000$ across all manipulations.
+
+M2's concurrency-invariance is \emph{analytic}, not an empirical discovery. The billed
+amount is $P(T(U))$, a pure function of one request's declared usage: in our
+implementation the billed cost is computed before any balance is read, so no shared
+mutable state enters the billing decision, and the leak of request $r$ cannot depend on
+what other requests are in flight. The concurrency sweep (Table~\ref{tab:m2conc})
+therefore \emph{confirms} the derivation rather than discovering the invariance --- it
+functions as a check that the implementation contains no unintended shared-state
+dependency, and it passes. Reported this way, it is a much weaker claim than B0's
+measured concurrency slope, and we do not present the two as comparable findings.
 
 \paragraph{Usage computation is not usage authority.} This is the central M2 result. The
 decisive case is \texttt{client\_logged}, which \emph{computes} a correct server-side
@@ -376,11 +404,23 @@ keeps a mutable \texttt{credits.balance} row and obtains atomicity from a condit
 \texttt{UPDATE {\ldots} WHERE balance >= cost}. Backend~B never mutates that row: every
 movement is an immutable row in an append-only ledger and the balance is \emph{derived} as
 the sum of those entries, with the atomic reserve becoming a conditional append serialized
-on an anchor row. Running the strongest B0/M1/M2 cases against both,
-\textbf{17 of 17 were byte-identical} --- same leakage, same leakage efficiency, same
-invariant-violation counts, same reconciliation verdicts (Table~\ref{tab:backendgen}).
-This supports the structural claim: the outcomes follow from where synchronization,
-commitment and authority sit, not from the storage representation.
+on an anchor row. Running the strongest B0/M1/M2 cases against both, all $17$ comparison cells agreed
+--- same leakage, same leakage efficiency, same invariant-violation counts, same
+reconciliation verdicts (Table~\ref{tab:backendgen}). We state plainly what that number
+does and does not contain. An audit of our own artifact established that only \textbf{8}
+of the $17$ cells genuinely exercised both storage backends; $5$ agree for a reason that
+is analytic rather than experimental (the M2 billed amount is computed before any balance
+is read, so it cannot depend on the backend); and $4$ are \emph{vacuous}, because they are
+B0 cells and the frozen B0 debit module never routes through the backend abstraction at
+all --- those cells ran identical code twice, so their agreement was guaranteed a priori
+and carries no information. The
+honest statement is therefore: \emph{eight genuine backend-sensitive cases agreed, and no
+case disagreed}. In particular, the frozen B0 debit module contains no reference to the
+backend abstraction at all, so B0 was not re-executed against Backend~B; B0's storage
+independence is untested and we list it in \S\ref{sec:limits}. Within that scope the
+result still supports the structural claim --- the outcomes follow from where
+synchronization, commitment and authority sit --- but it supports it over eight cases,
+not seventeen.
 
 \subsection{Lifecycle failure modes}
 Beyond the scripted attack we inject nine lifecycle failures (disconnect at $t{=}0$ and
@@ -390,15 +430,31 @@ architecture; the hardened architectures survive all of them; and a recount-engi
 is \emph{fail-closed} --- the request is rejected and nothing is served or billed
 (Table~\ref{tab:failmodes}).
 
-\subsection{Detectability}
+\subsection{Detectability: a claim we withdraw}
 \label{sec:detect}
-Detectability is orthogonal to exploitability: a failure can be exploitable and hidden,
-exploitable but reconcilable, or prevented outright. We classify D0 (no evidence), D1
-(post-hoc reconciliation only), D2 (logged discrepancy), D3 (prevented in real time).
-Under \texttt{client} billing the leak is D0 --- the ledger faithfully records the
-client's lie. Merely \emph{logging} a recount moves the same leak to D1 without preventing
-it, and reconciling in-request reaches D3 (Table~\ref{tab:detect}). This gives operators
-who cannot yet re-architect billing a cheap intermediate step.
+An earlier version of this work reported a detectability taxonomy (D0 invisible, D1
+post-hoc reconcilable, D2 logged discrepancy, D3 prevented) and claimed that merely
+\emph{logging} a server-side recount moved a leak from D0 to D1. An independent audit of
+our own artifact showed that claim was \textbf{not supported}, and we withdraw it.
+
+Two defects were found. First, the implementation \emph{assigned} the detectability level
+from static architecture metadata rather than measuring it --- for M1 the level was
+literally \texttt{"D3" if arch.safe else "D0"}, a restatement of a flag we had set.
+Second, when we replaced that with a classifier that reads \emph{only} the retained
+ledger evidence and is blind to architecture labels, the claimed distinction disappeared:
+the \texttt{client} and \texttt{client\_logged} architectures retain
+\emph{byte-identical} evidence (both store a server-observed usage vector alongside the
+declared one), so both are equally reconcilable. Across the full dataset, 2{,}200 records
+whose stored label was D0 are D1 or D3 on the evidence, and \textbf{no record in the study
+qualifies as D0 at all}.
+
+The root cause is a property of the testbed rather than of the architectures: our harness
+records ground-truth usage for \emph{every} architecture because it needs that value to
+compute leakage. A production \texttt{client} deployment would not necessarily retain it.
+Our instrumentation therefore cannot distinguish detectability classes, and we make no
+detectability claim. We report this as a limitation rather than manufacturing additional
+instrumentation to rescue the metric; the classifier and its output are released with the
+artifact.
 
 \section{Defense Sufficiency Conditions}
 \label{sec:sufficiency}
@@ -463,8 +519,11 @@ $\le$1{,}024 tokens ($\ge0.96\times$ throughput) but costs heavily at 16{,}384 t
 ($0.05$--$0.76\times$ at $c\!\in\!\{1,10\}$). Tokenization time explains this
 (Spearman $\rho=-0.868$, $p=1.3\times10^{-5}$).
 \item \textbf{Local real-model experiment}: with real autoregressive generation the
-recount is $\mathbf{0.014\%}$--$\mathbf{0.019\%}$ of end-to-end time across 128-, 1024-
-and 4096-token contexts, and measured throughput ratios scatter around $1.0$ with signs
+recount is well under $\mathbf{0.1\%}$ of end-to-end time across 128-, 1024- and
+4096-token contexts ($0.014$--$0.019\%$ at 64 new tokens; an independent re-measurement
+with separately written timing code, at 32 new tokens, obtained
+$0.017$--$0.028\%$---the same order of magnitude, with the ratio rising as generation
+shortens, exactly as the model predicts), and measured throughput ratios scatter around $1.0$ with signs
 that flip across workloads, i.e.\ within a $\pm$10\% noise band that is itself
 $\sim$700$\times$ larger than the effect.
 \end{enumerate}
@@ -487,7 +546,6 @@ tested configuration.
 \input{../results/tables/table_m1_ablation.tex}
 \input{../results/tables/table_m2_ablation.tex}
 \input{../results/tables/table_failure_modes.tex}
-\input{../results/tables/table_detectability.tex}
 \input{../results/tables/table_defense_summary.tex}
 
 \begin{figure}[t]\centering
@@ -557,19 +615,27 @@ as \emph{experimentally distinguishable} dimensions --- the concurrency contrast
 require different primitives, which is not derivable from ``there is a streaming bug'';
 (iv) an M2 ablation isolating computation from authority, where an architecture that
 recounts correctly still leaks $0.583$; and (v) a common measurement --- economic leakage,
-leakage efficiency, detectability, invariant violations, and defense overhead --- applied
+leakage efficiency, invariant violations, and defense overhead --- applied
 uniformly across all three dimensions, which no single prior source provides. We do not
 assert that practitioners believed a recount was sufficient; we show experimentally that
 in the evaluated architecture it was not.
 
 \section{Threats to Validity}
+\label{sec:limits}
 \paragraph{Internal.} Single uvicorn worker, so gateway recount numbers are an upper
 bound; shared host and Docker scheduling; local loopback adds a $\sim$45\,ms floor per
 request on the Windows/Docker Desktop configuration, which makes the gateway ratios
 conservative for small inputs; mock generation everywhere except the real-model
 experiment; leakage that depends on delivered tokens is sensitive to disconnect timing at
 high concurrency (the within-cell standard deviation of delivered tokens is exactly zero
-at $c\le20$ and $\approx$0.011 at $c\in\{50,100\}$).
+at $c\le20$ and $\approx$0.011 at $c\in\{50,100\}$). The B0 debit path is a frozen
+module that predates the pluggable accounting backends and does not reference them, so
+the backend-parity result covers M1 and M2 only; B0's independence from the storage
+representation is \emph{untested}, and the eight genuine backend cells in
+\S\ref{sec:results} should not be read as covering it. Our detectability instrumentation
+was found by our own audit to restate experimenter-assigned labels rather than measure
+evidence, so we withdraw that claim entirely (\S\ref{sec:detect}) rather than report a
+weaker version of it.
 
 \paragraph{Two different high-concurrency questions.} It is important to separate
 \emph{accounting-integrity measurements} from \emph{gateway performance measurements},
@@ -590,8 +656,7 @@ treated as performance evidence; the excluded cells remain published in
 \texttt{results/} and summarized here rather than removed.
 
 \paragraph{Construct.} Synthetic price tiers; a token-count abstraction of ``inference
-value''; leakage normalized by delivered value; and a detectability scale that separates
-exploitability from evidence availability.
+value''; and leakage normalized by delivered value.
 
 \paragraph{External.} The cross-architecture experiments (\S\ref{sec:generality}) remove
 the single-event-loop, single-process and single-storage-design confounds, but they do not

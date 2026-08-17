@@ -81,7 +81,11 @@ async def main():
         r = await send(client, key, PROMPT, SEED, t, "under_report_output_90")
         chk.check("M2 client under90: leak>0", D(r["leak"]) > 0, f"leak={r['leak']}")
         chk.check("M2 client under90: invariant violated", r["invariant_ok"] is False)
-        chk.check("M2 client under90: hidden (D0)", r["detection_level"] == "D0", r["detection_level"])
+        # The former "hidden (D0)" assertion was removed: it asserted that the gateway
+        # echoes a static architecture label, which is true by construction and tests
+        # nothing. The detectability claim it supported has been withdrawn (audit fix F1).
+        chk.check("M2 client under90: label is architecture metadata, not evidence",
+                  r["detection_level"] in ("D0", "D1", "D2", "D3"), r["detection_level"])
 
         # server_recount neutralizes the same manipulation
         t = await _mtrial(client, aid, "m2", "server_recount")

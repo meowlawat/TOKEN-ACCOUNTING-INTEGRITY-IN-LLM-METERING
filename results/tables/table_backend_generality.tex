@@ -1,30 +1,30 @@
 \begin{table}[t]
 \centering
 \small
-\caption{Cross-backend validation. The same cases run against a mutable balance row and an append-only ledger with a derived balance, behind one semantic interface. Identical outcomes indicate the results do not depend on the balance-storage architecture.}
+\caption{Cross-backend validation. The same cases run against a mutable balance row and an append-only ledger with a derived balance, behind one semantic interface. The `evidence` column states what each agreement is worth: GENUINE = the case actually exercised both backends and could have disagreed; ANALYTIC = the M2 billed amount is computed before any balance is read, so it cannot vary by backend; VACUOUS = agreement between two zero-leak outcomes, which any correct implementation produces. B0 cases are ANALYTIC-at-best because the frozen B0 debit module does not reference the backend abstraction. Only the GENUINE count is evidence of storage-architecture independence.}
 \label{tab:backendgen}
 \resizebox{\linewidth}{!}{%
-\begin{tabular}{llrrrrr}
+\begin{tabular}{llrrrrrr}
 \toprule
-case & metric & mutable & ledger & viol (mut) & viol (led) & verdict \\
+case & metric & mutable & ledger & viol (mut) & viol (led) & verdict & evidence \\
 \midrule
-B0/hardened/c10 & leak & 0.000000 & 0.000000 & 0 & 0 & IDENTICAL \\
-B0/hardened/c50 & leak & 0.000000 & 0.000000 & 0 & 0 & IDENTICAL \\
-B0/vulnerable/c10 & leak & 0.949500 & 0.949500 & 9 & 9 & IDENTICAL \\
-B0/vulnerable/c50 & leak & 5.169500 & 5.169500 & 49 & 49 & IDENTICAL \\
-M1/no\_reserve\_settle/abort50 & leak\_per\_request & 0.000000 & 0.000000 & 0 & 0 & IDENTICAL \\
-M1/no\_reserve\_settle/abort90 & leak\_per\_request & 0.000000 & 0.000000 & 0 & 0 & IDENTICAL \\
-M1/post\_completion/abort50 & leak\_per\_request & 0.054500 & 0.054500 & 10 & 10 & IDENTICAL \\
-M1/post\_completion/abort90 & leak\_per\_request & 0.095000 & 0.095000 & 10 & 10 & IDENTICAL \\
-M1/reserve\_reconcile/abort50 & leak\_per\_request & 0.000000 & 0.000000 & 0 & 0 & IDENTICAL \\
-M1/reserve\_reconcile/abort90 & leak\_per\_request & 0.000000 & 0.000000 & 0 & 0 & IDENTICAL \\
-M1/reserve\_refund\_on\_abort/abort50 & leak\_per\_request & 0.054500 & 0.054500 & 10 & 10 & IDENTICAL \\
-M1/reserve\_refund\_on\_abort/abort90 & leak\_per\_request & 0.095000 & 0.095000 & 10 & 10 & IDENTICAL \\
-M2/client/under\_report\_output\_90 & efficiency & 0.5942492012779552 & 0.5942492012779552 & 10 & 10 & IDENTICAL \\
-M2/client\_logged/under\_report\_output\_90 & efficiency & 0.5942492012779552 & 0.5942492012779552 & 10 & 10 & IDENTICAL \\
-M2/client\_total/total\_mismatch & efficiency & 0.7412140575079872 & 0.7412140575079872 & 10 & 10 & IDENTICAL \\
-M2/hybrid\_reconcile/total\_mismatch & efficiency & 0.0 & 0.0 & 0 & 0 & IDENTICAL \\
-M2/server\_recount/under\_report\_output\_90 & efficiency & 0.0 & 0.0 & 0 & 0 & IDENTICAL \\
+B0/hardened/c10 & leak & 0.000000 & 0.000000 & 0 & 0 & IDENTICAL & VACUOUS \\
+B0/hardened/c50 & leak & 0.000000 & 0.000000 & 0 & 0 & IDENTICAL & VACUOUS \\
+B0/vulnerable/c10 & leak & 0.949500 & 0.949500 & 9 & 9 & IDENTICAL & VACUOUS \\
+B0/vulnerable/c50 & leak & 5.169500 & 5.169500 & 49 & 49 & IDENTICAL & VACUOUS \\
+M1/no\_reserve\_settle/abort50 & leak\_per\_request & 0.000000 & 0.000000 & 0 & 0 & IDENTICAL & GENUINE \\
+M1/no\_reserve\_settle/abort90 & leak\_per\_request & 0.000000 & 0.000000 & 0 & 0 & IDENTICAL & GENUINE \\
+M1/post\_completion/abort50 & leak\_per\_request & 0.054500 & 0.054500 & 10 & 10 & IDENTICAL & GENUINE \\
+M1/post\_completion/abort90 & leak\_per\_request & 0.095000 & 0.095000 & 10 & 10 & IDENTICAL & GENUINE \\
+M1/reserve\_reconcile/abort50 & leak\_per\_request & 0.000000 & 0.000000 & 0 & 0 & IDENTICAL & GENUINE \\
+M1/reserve\_reconcile/abort90 & leak\_per\_request & 0.000000 & 0.000000 & 0 & 0 & IDENTICAL & GENUINE \\
+M1/reserve\_refund\_on\_abort/abort50 & leak\_per\_request & 0.054500 & 0.054500 & 10 & 10 & IDENTICAL & GENUINE \\
+M1/reserve\_refund\_on\_abort/abort90 & leak\_per\_request & 0.095000 & 0.095000 & 10 & 10 & IDENTICAL & GENUINE \\
+M2/client/under\_report\_output\_90 & efficiency & 0.5942492012779552 & 0.5942492012779552 & 10 & 10 & IDENTICAL & ANALYTIC \\
+M2/client\_logged/under\_report\_output\_90 & efficiency & 0.5942492012779552 & 0.5942492012779552 & 10 & 10 & IDENTICAL & ANALYTIC \\
+M2/client\_total/total\_mismatch & efficiency & 0.7412140575079872 & 0.7412140575079872 & 10 & 10 & IDENTICAL & ANALYTIC \\
+M2/hybrid\_reconcile/total\_mismatch & efficiency & 0.0 & 0.0 & 0 & 0 & IDENTICAL & ANALYTIC \\
+M2/server\_recount/under\_report\_output\_90 & efficiency & 0.0 & 0.0 & 0 & 0 & IDENTICAL & ANALYTIC \\
 \bottomrule
 \end{tabular}
 }
