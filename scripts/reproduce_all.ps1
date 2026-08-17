@@ -66,7 +66,7 @@ python -m experiments.power_analysis
 python -m experiments.statistical_analysis
 python -m experiments.build_claim_matrix
 
-Write-Host "== 7g. cross-architecture generality (optional; needs the alt topologies) =="
+Write-Host "== 8c. cross-architecture generality (optional; needs the alt topologies) =="
 Write-Host "     multi-worker:  docker compose -f docker-compose.multiworker.yml -p taimw up -d   (:8001)"
 Write-Host "     distributed :  docker compose -f docker-compose.distributed.yml -p taidist up -d (:8002)"
 Write-Host "     then: python -m experiments.run_topology --topology multiworker --base-url http://localhost:8001"
