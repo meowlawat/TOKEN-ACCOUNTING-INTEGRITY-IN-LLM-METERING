@@ -1,0 +1,36 @@
+\begin{table}[t]\centering
+\caption{M1 under asynchronous settlement with a continuously running accounting worker. With an honest pipeline the mean exposure window tracks the configured reconciliation delay and the leak reconciles to exactly zero: asynchronous accounting is late, not lossy. Duplicate events are suppressed idempotently. A lost event leaks permanently. Whether the `delayed\\_event' straggler (fixed 1 s) appears lost or merely late depends on the observation horizon (4x the delay, floored at 400 ms), which is a property of the observer, not of the architecture.}
+\label{tab:asyncm1}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{llllllll}
+\toprule
+delay (ms) & fault & delivered ($) & charged ($) & leak ($) & window mean (ms) & window p95 (ms) & reconciled \\
+\midrule
+0 & none & 0.325500 & 0.325500 & 0.000000 & 14.0 & 8.3 & yes \\
+0 & lost\_event & 0.306000 & 0.000000 & 0.306000 & - & - & NO \\
+0 & duplicate\_event & 0.304500 & 0.304500 & 0.000000 & 5.7 & 6.2 & yes \\
+0 & delayed\_event & 0.310500 & 0.000000 & 0.310500 & - & - & NO \\
+0 & abort\_before\_event & 0.330000 & 0.081000 & 0.249000 & 5.3 & 5.3 & NO \\
+10 & none & 0.282000 & 0.282000 & 0.000000 & 14.9 & 15.4 & yes \\
+10 & lost\_event & 0.319500 & 0.000000 & 0.319500 & - & - & NO \\
+10 & duplicate\_event & 0.277500 & 0.277500 & 0.000000 & 14.8 & 15.5 & yes \\
+10 & delayed\_event & 0.313500 & 0.000000 & 0.313500 & - & - & NO \\
+10 & abort\_before\_event & 0.289500 & 0.000000 & 0.289500 & - & - & NO \\
+50 & none & 0.291000 & 0.291000 & 0.000000 & 54.3 & 55.3 & yes \\
+50 & lost\_event & 0.310500 & 0.000000 & 0.310500 & - & - & NO \\
+50 & duplicate\_event & 0.321000 & 0.321000 & 0.000000 & 53.9 & 54.2 & yes \\
+50 & delayed\_event & 0.319500 & 0.000000 & 0.319500 & - & - & NO \\
+50 & abort\_before\_event & 0.297000 & 0.081000 & 0.216000 & 54.1 & 54.1 & NO \\
+100 & none & 0.298500 & 0.298500 & 0.000000 & 103.7 & 104.3 & yes \\
+100 & lost\_event & 0.334500 & 0.000000 & 0.334500 & - & - & NO \\
+100 & duplicate\_event & 0.262500 & 0.262500 & 0.000000 & 103.8 & 104.1 & yes \\
+100 & delayed\_event & 0.303000 & 0.000000 & 0.303000 & - & - & NO \\
+100 & abort\_before\_event & 0.328500 & 0.000000 & 0.328500 & - & - & NO \\
+500 & none & 0.340500 & 0.340500 & 0.000000 & 504.1 & 504.8 & yes \\
+500 & lost\_event & 0.334500 & 0.000000 & 0.334500 & - & - & NO \\
+500 & duplicate\_event & 0.321000 & 0.321000 & 0.000000 & 504.0 & 504.0 & yes \\
+500 & delayed\_event & 0.340500 & 0.340500 & 0.000000 & 1010.5 & 1014.9 & yes \\
+500 & abort\_before\_event & 0.342000 & 0.162000 & 0.180000 & 517.5 & 514.9 & NO \\
+\bottomrule
+\end{tabular}}
+\end{table}

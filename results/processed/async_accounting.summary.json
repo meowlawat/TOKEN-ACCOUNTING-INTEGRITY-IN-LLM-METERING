@@ -1,0 +1,44 @@
+{
+  "source": "async_accounting_20260818T153903Z.json",
+  "parameters": {
+    "prompt": "asynchronous accounting exposure window measurement prompt for the testbed",
+    "seed": 1337,
+    "price_tier": "medium",
+    "reps": 5,
+    "delays_ms": [
+      0.0,
+      10.0,
+      50.0,
+      100.0,
+      500.0
+    ],
+    "m1_faults": [
+      "none",
+      "lost_event",
+      "duplicate_event",
+      "delayed_event",
+      "abort_before_event"
+    ],
+    "b0_interarrival_ms": 20.0,
+    "b0_requests": 6,
+    "worker_poll_ms": 2.0
+  },
+  "m1_honest_all_reconciled": true,
+  "m1_lost_event_all_leak": true,
+  "m1_duplicate_all_reconciled": true,
+  "m1_duplicates_suppressed": 25,
+  "exposure_window_mean_ms_by_delay": {
+    "0.0": 13.986,
+    "10.0": 14.933,
+    "50.0": 54.31,
+    "100.0": 103.718,
+    "500.0": 504.135
+  },
+  "b0_over_serving_threshold_ms": 100.0,
+  "b0_max_over_served": 4,
+  "b0_sequential": true,
+  "m2_distinct_efficiencies": [
+    0.582278
+  ],
+  "m2_delay_independent": true
+}

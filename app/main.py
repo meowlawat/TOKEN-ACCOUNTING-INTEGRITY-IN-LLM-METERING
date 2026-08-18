@@ -119,8 +119,10 @@ app = FastAPI(
 
 # M1 (metering-commit timing) and M2 (usage-record authority) endpoints.
 from .m_routes import router as m_router  # noqa: E402
+from .async_routes import router as async_router  # noqa: E402
 
 app.include_router(m_router)
+app.include_router(async_router)
 
 # Benchmark-only endpoints (real-tokenizer recount overhead). Optional: if the
 # tokenizer libraries are absent the router still loads; engines report unavailable.
