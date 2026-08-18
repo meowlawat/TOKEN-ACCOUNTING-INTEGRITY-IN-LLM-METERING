@@ -1,0 +1,1526 @@
+{
+  "tool": "TLC (tla2tools 2.19)",
+  "spec": "formal/TokenAccounting.tla",
+  "invariants": [
+    "AccountingIntegrity",
+    "Solvency",
+    "LedgerConservation",
+    "RefundBounded"
+  ],
+  "configurations": 10,
+  "checks": 40,
+  "disagreements": 0,
+  "matrix": {
+    "b0_vulnerable": {
+      "AccountingIntegrity": "HOLDS",
+      "Solvency": "HOLDS",
+      "LedgerConservation": "VIOLATED",
+      "RefundBounded": "HOLDS"
+    },
+    "b0_hardened": {
+      "AccountingIntegrity": "HOLDS",
+      "Solvency": "HOLDS",
+      "LedgerConservation": "HOLDS",
+      "RefundBounded": "HOLDS"
+    },
+    "m1_post_completion": {
+      "AccountingIntegrity": "VIOLATED",
+      "Solvency": "HOLDS",
+      "LedgerConservation": "HOLDS",
+      "RefundBounded": "HOLDS"
+    },
+    "m1_reserve_refund_on_abort": {
+      "AccountingIntegrity": "VIOLATED",
+      "Solvency": "HOLDS",
+      "LedgerConservation": "HOLDS",
+      "RefundBounded": "VIOLATED"
+    },
+    "m1_no_reserve_settle": {
+      "AccountingIntegrity": "HOLDS",
+      "Solvency": "VIOLATED",
+      "LedgerConservation": "HOLDS",
+      "RefundBounded": "HOLDS"
+    },
+    "m1_reserve_reconcile": {
+      "AccountingIntegrity": "HOLDS",
+      "Solvency": "HOLDS",
+      "LedgerConservation": "HOLDS",
+      "RefundBounded": "HOLDS"
+    },
+    "m2_client": {
+      "AccountingIntegrity": "VIOLATED",
+      "Solvency": "HOLDS",
+      "LedgerConservation": "HOLDS",
+      "RefundBounded": "VIOLATED"
+    },
+    "m2_server_recount": {
+      "AccountingIntegrity": "HOLDS",
+      "Solvency": "HOLDS",
+      "LedgerConservation": "HOLDS",
+      "RefundBounded": "HOLDS"
+    },
+    "all_defenses": {
+      "AccountingIntegrity": "HOLDS",
+      "Solvency": "HOLDS",
+      "LedgerConservation": "HOLDS",
+      "RefundBounded": "HOLDS"
+    },
+    "all_defenses_3req": {
+      "AccountingIntegrity": "HOLDS",
+      "Solvency": "HOLDS",
+      "LedgerConservation": "HOLDS",
+      "RefundBounded": "HOLDS"
+    }
+  },
+  "results": [
+    {
+      "config": "b0_vulnerable",
+      "mechanism": "B0",
+      "invariant": "AccountingIntegrity",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 2.67,
+      "states_generated": 271,
+      "distinct_states": 157
+    },
+    {
+      "config": "b0_vulnerable",
+      "mechanism": "B0",
+      "invariant": "Solvency",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.82,
+      "states_generated": 271,
+      "distinct_states": 157
+    },
+    {
+      "config": "b0_vulnerable",
+      "mechanism": "B0",
+      "invariant": "LedgerConservation",
+      "expected": "VIOLATED",
+      "observed": "VIOLATED",
+      "agrees": true,
+      "seconds": 0.85,
+      "states_generated": 271,
+      "distinct_states": 157,
+      "counterexample": [
+        {
+          "step": 1,
+          "action": "Initial predicate",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"CREATED\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 2,
+          "action": "AuthorizeRead",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"CREATED\" @@ r2 :> \"AUTHORIZED\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 2)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 3,
+          "action": "AuthorizeRead",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"AUTHORIZED\" @@ r2 :> \"AUTHORIZED\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 2 @@ r2 :> 2)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 4,
+          "action": "ReserveWrite",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"RESERVED\" @@ r2 :> \"AUTHORIZED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 2 @@ r2 :> 2)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 5,
+          "action": "ReserveWrite",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"RESERVED\" @@ r2 :> \"RESERVED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 2 @@ r2 :> 2)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 6,
+          "action": "Begin",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"EXECUTING\" @@ r2 :> \"RESERVED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 2 @@ r2 :> 2)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 7,
+          "action": "Begin",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"EXECUTING\" @@ r2 :> \"EXECUTING\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 2 @@ r2 :> 2)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 8,
+          "action": "StartStream",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"EXECUTING\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 2 @@ r2 :> 2)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 9,
+          "action": "StartStream",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"STREAMING\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 2 @@ r2 :> 2)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 10,
+          "action": "Deliver",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 1)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"STREAMING\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 2 @@ r2 :> 2)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 11,
+          "action": "Deliver",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 1 @@ r2 :> 1)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"STREAMING\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 2 @@ r2 :> 2)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 12,
+          "action": "Deliver",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 1 @@ r2 :> 2)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"STREAMING\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 2 @@ r2 :> 2)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 13,
+          "action": "Complete",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 1 @@ r2 :> 2)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"COMPLETED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 2 @@ r2 :> 2)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 14,
+          "action": "AccountComplete",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 2)",
+            "delivered": "(r1 :> 1 @@ r2 :> 2)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"ACCOUNTED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 2 @@ r2 :> 2)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 15,
+          "action": "Reconcile",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 2)",
+            "delivered": "(r1 :> 1 @@ r2 :> 2)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"RECONCILED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 2 @@ r2 :> 2)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 16,
+          "action": "Deliver",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 2)",
+            "delivered": "(r1 :> 2 @@ r2 :> 2)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"RECONCILED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 2 @@ r2 :> 2)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 17,
+          "action": "Finish",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 2)",
+            "delivered": "(r1 :> 2 @@ r2 :> 2)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"DONE\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 2 @@ r2 :> 2)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 18,
+          "action": "Complete",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 2)",
+            "delivered": "(r1 :> 2 @@ r2 :> 2)",
+            "pc": "(r1 :> \"COMPLETED\" @@ r2 :> \"DONE\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 2 @@ r2 :> 2)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 19,
+          "action": "AccountComplete",
+          "vars": {
+            "debit": "(r1 :> 2 @@ r2 :> 2)",
+            "delivered": "(r1 :> 2 @@ r2 :> 2)",
+            "pc": "(r1 :> \"ACCOUNTED\" @@ r2 :> \"DONE\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 2 @@ r2 :> 2)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 20,
+          "action": "Reconcile",
+          "vars": {
+            "debit": "(r1 :> 2 @@ r2 :> 2)",
+            "delivered": "(r1 :> 2 @@ r2 :> 2)",
+            "pc": "(r1 :> \"RECONCILED\" @@ r2 :> \"DONE\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 2 @@ r2 :> 2)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 21,
+          "action": "Finish",
+          "vars": {
+            "debit": "(r1 :> 2 @@ r2 :> 2)",
+            "delivered": "(r1 :> 2 @@ r2 :> 2)",
+            "pc": "(r1 :> \"DONE\" @@ r2 :> \"DONE\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 2 @@ r2 :> 2)",
+            "balance": "0"
+          }
+        }
+      ],
+      "trace_length": 21
+    },
+    {
+      "config": "b0_vulnerable",
+      "mechanism": "B0",
+      "invariant": "RefundBounded",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.82,
+      "states_generated": 271,
+      "distinct_states": 157
+    },
+    {
+      "config": "b0_hardened",
+      "mechanism": "B0",
+      "invariant": "AccountingIntegrity",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.82,
+      "states_generated": 53,
+      "distinct_states": 37
+    },
+    {
+      "config": "b0_hardened",
+      "mechanism": "B0",
+      "invariant": "Solvency",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.82,
+      "states_generated": 53,
+      "distinct_states": 37
+    },
+    {
+      "config": "b0_hardened",
+      "mechanism": "B0",
+      "invariant": "LedgerConservation",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.82,
+      "states_generated": 53,
+      "distinct_states": 37
+    },
+    {
+      "config": "b0_hardened",
+      "mechanism": "B0",
+      "invariant": "RefundBounded",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.81,
+      "states_generated": 53,
+      "distinct_states": 37
+    },
+    {
+      "config": "m1_post_completion",
+      "mechanism": "M1",
+      "invariant": "AccountingIntegrity",
+      "expected": "VIOLATED",
+      "observed": "VIOLATED",
+      "agrees": true,
+      "seconds": 0.82,
+      "states_generated": 282,
+      "distinct_states": 180,
+      "counterexample": [
+        {
+          "step": 1,
+          "action": "Initial predicate",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"CREATED\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "4"
+          }
+        },
+        {
+          "step": 2,
+          "action": "AtomicReserve",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"EXECUTING\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "4"
+          }
+        },
+        {
+          "step": 3,
+          "action": "StartStream",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "4"
+          }
+        },
+        {
+          "step": 4,
+          "action": "Deliver",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 1 @@ r2 :> 0)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "4"
+          }
+        },
+        {
+          "step": 5,
+          "action": "Abort",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 1 @@ r2 :> 0)",
+            "pc": "(r1 :> \"ABORTED\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "4"
+          }
+        },
+        {
+          "step": 6,
+          "action": "AbortBypass",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 1 @@ r2 :> 0)",
+            "pc": "(r1 :> \"REFUNDED\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "4"
+          }
+        },
+        {
+          "step": 7,
+          "action": "Finish",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 1 @@ r2 :> 0)",
+            "pc": "(r1 :> \"DONE\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "4"
+          }
+        }
+      ],
+      "trace_length": 7
+    },
+    {
+      "config": "m1_post_completion",
+      "mechanism": "M1",
+      "invariant": "Solvency",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.84,
+      "states_generated": 613,
+      "distinct_states": 324
+    },
+    {
+      "config": "m1_post_completion",
+      "mechanism": "M1",
+      "invariant": "LedgerConservation",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.82,
+      "states_generated": 613,
+      "distinct_states": 324
+    },
+    {
+      "config": "m1_post_completion",
+      "mechanism": "M1",
+      "invariant": "RefundBounded",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.84,
+      "states_generated": 613,
+      "distinct_states": 324
+    },
+    {
+      "config": "m1_reserve_refund_on_abort",
+      "mechanism": "M1",
+      "invariant": "AccountingIntegrity",
+      "expected": "VIOLATED",
+      "observed": "VIOLATED",
+      "agrees": true,
+      "seconds": 0.81,
+      "states_generated": 329,
+      "distinct_states": 203,
+      "counterexample": [
+        {
+          "step": 1,
+          "action": "Initial predicate",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"CREATED\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "4"
+          }
+        },
+        {
+          "step": 2,
+          "action": "AtomicReserve",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"RESERVED\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 3,
+          "action": "Begin",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"EXECUTING\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 4,
+          "action": "StartStream",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 5,
+          "action": "Deliver",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 1 @@ r2 :> 0)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 6,
+          "action": "Deliver",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 2 @@ r2 :> 0)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 7,
+          "action": "Abort",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 2 @@ r2 :> 0)",
+            "pc": "(r1 :> \"ABORTED\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 8,
+          "action": "AbortBypass",
+          "vars": {
+            "debit": "(r1 :> 2 @@ r2 :> 0)",
+            "delivered": "(r1 :> 2 @@ r2 :> 0)",
+            "pc": "(r1 :> \"REFUNDED\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 0)",
+            "refund": "(r1 :> 2 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "4"
+          }
+        },
+        {
+          "step": 9,
+          "action": "Finish",
+          "vars": {
+            "debit": "(r1 :> 2 @@ r2 :> 0)",
+            "delivered": "(r1 :> 2 @@ r2 :> 0)",
+            "pc": "(r1 :> \"DONE\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 0)",
+            "refund": "(r1 :> 2 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "4"
+          }
+        }
+      ],
+      "trace_length": 9
+    },
+    {
+      "config": "m1_reserve_refund_on_abort",
+      "mechanism": "M1",
+      "invariant": "Solvency",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.81,
+      "states_generated": 685,
+      "distinct_states": 361
+    },
+    {
+      "config": "m1_reserve_refund_on_abort",
+      "mechanism": "M1",
+      "invariant": "LedgerConservation",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.81,
+      "states_generated": 685,
+      "distinct_states": 361
+    },
+    {
+      "config": "m1_reserve_refund_on_abort",
+      "mechanism": "M1",
+      "invariant": "RefundBounded",
+      "expected": "VIOLATED",
+      "observed": "VIOLATED",
+      "agrees": true,
+      "seconds": 0.84,
+      "states_generated": 206,
+      "distinct_states": 138,
+      "counterexample": [
+        {
+          "step": 1,
+          "action": "Initial predicate",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"CREATED\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "4"
+          }
+        },
+        {
+          "step": 2,
+          "action": "AtomicReserve",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"RESERVED\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 3,
+          "action": "Begin",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"EXECUTING\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 4,
+          "action": "StartStream",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 5,
+          "action": "Deliver",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 1 @@ r2 :> 0)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 6,
+          "action": "Abort",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 1 @@ r2 :> 0)",
+            "pc": "(r1 :> \"ABORTED\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 7,
+          "action": "AbortBypass",
+          "vars": {
+            "debit": "(r1 :> 2 @@ r2 :> 0)",
+            "delivered": "(r1 :> 1 @@ r2 :> 0)",
+            "pc": "(r1 :> \"REFUNDED\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 0)",
+            "refund": "(r1 :> 2 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "4"
+          }
+        }
+      ],
+      "trace_length": 7
+    },
+    {
+      "config": "m1_no_reserve_settle",
+      "mechanism": "M1",
+      "invariant": "AccountingIntegrity",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.84,
+      "states_generated": 657,
+      "distinct_states": 336
+    },
+    {
+      "config": "m1_no_reserve_settle",
+      "mechanism": "M1",
+      "invariant": "Solvency",
+      "expected": "VIOLATED",
+      "observed": "VIOLATED",
+      "agrees": true,
+      "seconds": 0.82,
+      "states_generated": 618,
+      "distinct_states": 324,
+      "counterexample": [
+        {
+          "step": 1,
+          "action": "Initial predicate",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"CREATED\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 2,
+          "action": "AtomicReserve",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"CREATED\" @@ r2 :> \"EXECUTING\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 3,
+          "action": "StartStream",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"CREATED\" @@ r2 :> \"STREAMING\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 4,
+          "action": "AtomicReserve",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"EXECUTING\" @@ r2 :> \"STREAMING\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 5,
+          "action": "Deliver",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 1)",
+            "pc": "(r1 :> \"EXECUTING\" @@ r2 :> \"STREAMING\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 6,
+          "action": "StartStream",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 1)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"STREAMING\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 7,
+          "action": "Deliver",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 1 @@ r2 :> 1)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"STREAMING\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 8,
+          "action": "Deliver",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 2 @@ r2 :> 1)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"STREAMING\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 9,
+          "action": "Complete",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 2 @@ r2 :> 1)",
+            "pc": "(r1 :> \"COMPLETED\" @@ r2 :> \"STREAMING\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 10,
+          "action": "AccountComplete",
+          "vars": {
+            "debit": "(r1 :> 2 @@ r2 :> 0)",
+            "delivered": "(r1 :> 2 @@ r2 :> 1)",
+            "pc": "(r1 :> \"ACCOUNTED\" @@ r2 :> \"STREAMING\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 11,
+          "action": "Abort",
+          "vars": {
+            "debit": "(r1 :> 2 @@ r2 :> 0)",
+            "delivered": "(r1 :> 2 @@ r2 :> 1)",
+            "pc": "(r1 :> \"ACCOUNTED\" @@ r2 :> \"ABORTED\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 12,
+          "action": "AccountAbort",
+          "vars": {
+            "debit": "(r1 :> 2 @@ r2 :> 1)",
+            "delivered": "(r1 :> 2 @@ r2 :> 1)",
+            "pc": "(r1 :> \"ACCOUNTED\" @@ r2 :> \"ACCOUNTED\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "-1"
+          }
+        }
+      ],
+      "trace_length": 12
+    },
+    {
+      "config": "m1_no_reserve_settle",
+      "mechanism": "M1",
+      "invariant": "LedgerConservation",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.83,
+      "states_generated": 657,
+      "distinct_states": 336
+    },
+    {
+      "config": "m1_no_reserve_settle",
+      "mechanism": "M1",
+      "invariant": "RefundBounded",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.84,
+      "states_generated": 657,
+      "distinct_states": 336
+    },
+    {
+      "config": "m1_reserve_reconcile",
+      "mechanism": "M1",
+      "invariant": "AccountingIntegrity",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.83,
+      "states_generated": 723,
+      "distinct_states": 361
+    },
+    {
+      "config": "m1_reserve_reconcile",
+      "mechanism": "M1",
+      "invariant": "Solvency",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.83,
+      "states_generated": 723,
+      "distinct_states": 361
+    },
+    {
+      "config": "m1_reserve_reconcile",
+      "mechanism": "M1",
+      "invariant": "LedgerConservation",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.82,
+      "states_generated": 723,
+      "distinct_states": 361
+    },
+    {
+      "config": "m1_reserve_reconcile",
+      "mechanism": "M1",
+      "invariant": "RefundBounded",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.83,
+      "states_generated": 723,
+      "distinct_states": 361
+    },
+    {
+      "config": "m2_client",
+      "mechanism": "M2",
+      "invariant": "AccountingIntegrity",
+      "expected": "VIOLATED",
+      "observed": "VIOLATED",
+      "agrees": true,
+      "seconds": 0.84,
+      "states_generated": 567,
+      "distinct_states": 303,
+      "counterexample": [
+        {
+          "step": 1,
+          "action": "Initial predicate",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"CREATED\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "4"
+          }
+        },
+        {
+          "step": 2,
+          "action": "AtomicReserve",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"RESERVED\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 3,
+          "action": "Begin",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"EXECUTING\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 4,
+          "action": "StartStream",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 5,
+          "action": "AtomicReserve",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"RESERVED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 6,
+          "action": "Deliver",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 1 @@ r2 :> 0)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"RESERVED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 7,
+          "action": "Deliver",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 2 @@ r2 :> 0)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"RESERVED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 8,
+          "action": "Abort",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 2 @@ r2 :> 0)",
+            "pc": "(r1 :> \"ABORTED\" @@ r2 :> \"RESERVED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 9,
+          "action": "AccountAbort",
+          "vars": {
+            "debit": "(r1 :> 2 @@ r2 :> 0)",
+            "delivered": "(r1 :> 2 @@ r2 :> 0)",
+            "pc": "(r1 :> \"ACCOUNTED\" @@ r2 :> \"RESERVED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 1 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "1"
+          }
+        },
+        {
+          "step": 10,
+          "action": "Reconcile",
+          "vars": {
+            "debit": "(r1 :> 2 @@ r2 :> 0)",
+            "delivered": "(r1 :> 2 @@ r2 :> 0)",
+            "pc": "(r1 :> \"RECONCILED\" @@ r2 :> \"RESERVED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 1 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "1"
+          }
+        },
+        {
+          "step": 11,
+          "action": "Finish",
+          "vars": {
+            "debit": "(r1 :> 2 @@ r2 :> 0)",
+            "delivered": "(r1 :> 2 @@ r2 :> 0)",
+            "pc": "(r1 :> \"DONE\" @@ r2 :> \"RESERVED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 1 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "1"
+          }
+        }
+      ],
+      "trace_length": 11
+    },
+    {
+      "config": "m2_client",
+      "mechanism": "M2",
+      "invariant": "Solvency",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.85,
+      "states_generated": 723,
+      "distinct_states": 361
+    },
+    {
+      "config": "m2_client",
+      "mechanism": "M2",
+      "invariant": "LedgerConservation",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.83,
+      "states_generated": 723,
+      "distinct_states": 361
+    },
+    {
+      "config": "m2_client",
+      "mechanism": "M2",
+      "invariant": "RefundBounded",
+      "expected": "VIOLATED",
+      "observed": "VIOLATED",
+      "agrees": true,
+      "seconds": 0.83,
+      "states_generated": 357,
+      "distinct_states": 211,
+      "counterexample": [
+        {
+          "step": 1,
+          "action": "Initial predicate",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"CREATED\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 0 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "4"
+          }
+        },
+        {
+          "step": 2,
+          "action": "AtomicReserve",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"RESERVED\" @@ r2 :> \"CREATED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 0)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "2"
+          }
+        },
+        {
+          "step": 3,
+          "action": "AtomicReserve",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"RESERVED\" @@ r2 :> \"RESERVED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 4,
+          "action": "Begin",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"EXECUTING\" @@ r2 :> \"RESERVED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 5,
+          "action": "StartStream",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 0 @@ r2 :> 0)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"RESERVED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 6,
+          "action": "Deliver",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 1 @@ r2 :> 0)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"RESERVED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 7,
+          "action": "Deliver",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 2 @@ r2 :> 0)",
+            "pc": "(r1 :> \"STREAMING\" @@ r2 :> \"RESERVED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 8,
+          "action": "Complete",
+          "vars": {
+            "debit": "(r1 :> 0 @@ r2 :> 0)",
+            "delivered": "(r1 :> 2 @@ r2 :> 0)",
+            "pc": "(r1 :> \"COMPLETED\" @@ r2 :> \"RESERVED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 0 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "0"
+          }
+        },
+        {
+          "step": 9,
+          "action": "AccountComplete",
+          "vars": {
+            "debit": "(r1 :> 2 @@ r2 :> 0)",
+            "delivered": "(r1 :> 2 @@ r2 :> 0)",
+            "pc": "(r1 :> \"ACCOUNTED\" @@ r2 :> \"RESERVED\")",
+            "reserved": "(r1 :> 2 @@ r2 :> 2)",
+            "refund": "(r1 :> 1 @@ r2 :> 0)",
+            "snapshot": "(r1 :> 0 @@ r2 :> 0)",
+            "balance": "1"
+          }
+        }
+      ],
+      "trace_length": 9
+    },
+    {
+      "config": "m2_server_recount",
+      "mechanism": "M2",
+      "invariant": "AccountingIntegrity",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.83,
+      "states_generated": 723,
+      "distinct_states": 361
+    },
+    {
+      "config": "m2_server_recount",
+      "mechanism": "M2",
+      "invariant": "Solvency",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.82,
+      "states_generated": 723,
+      "distinct_states": 361
+    },
+    {
+      "config": "m2_server_recount",
+      "mechanism": "M2",
+      "invariant": "LedgerConservation",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.82,
+      "states_generated": 723,
+      "distinct_states": 361
+    },
+    {
+      "config": "m2_server_recount",
+      "mechanism": "M2",
+      "invariant": "RefundBounded",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.82,
+      "states_generated": 723,
+      "distinct_states": 361
+    },
+    {
+      "config": "all_defenses",
+      "mechanism": "ALL",
+      "invariant": "AccountingIntegrity",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.83,
+      "states_generated": 279,
+      "distinct_states": 172
+    },
+    {
+      "config": "all_defenses",
+      "mechanism": "ALL",
+      "invariant": "Solvency",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.86,
+      "states_generated": 279,
+      "distinct_states": 172
+    },
+    {
+      "config": "all_defenses",
+      "mechanism": "ALL",
+      "invariant": "LedgerConservation",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.83,
+      "states_generated": 279,
+      "distinct_states": 172
+    },
+    {
+      "config": "all_defenses",
+      "mechanism": "ALL",
+      "invariant": "RefundBounded",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.85,
+      "states_generated": 279,
+      "distinct_states": 172
+    },
+    {
+      "config": "all_defenses_3req",
+      "mechanism": "ALL",
+      "invariant": "AccountingIntegrity",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.96,
+      "states_generated": 12586,
+      "distinct_states": 4807
+    },
+    {
+      "config": "all_defenses_3req",
+      "mechanism": "ALL",
+      "invariant": "Solvency",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.92,
+      "states_generated": 12586,
+      "distinct_states": 4807
+    },
+    {
+      "config": "all_defenses_3req",
+      "mechanism": "ALL",
+      "invariant": "LedgerConservation",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.96,
+      "states_generated": 12586,
+      "distinct_states": 4807
+    },
+    {
+      "config": "all_defenses_3req",
+      "mechanism": "ALL",
+      "invariant": "RefundBounded",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.96,
+      "states_generated": 12586,
+      "distinct_states": 4807
+    }
+  ]
+}

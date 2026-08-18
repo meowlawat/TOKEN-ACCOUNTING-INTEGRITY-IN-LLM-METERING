@@ -25,3 +25,5 @@ paper/*.out
 # Provenance records must be tracked (they are the reproducibility evidence)
 !results/reproduction_manifest.json
 !results/environment.json
+formal/.run/
+formal/states/
