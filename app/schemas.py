@@ -190,6 +190,11 @@ class M1Request(BaseModel):
     seed: int | None = None
     request_id: str | None = None
     trial_id: str | None = None
+    # "mock" (default) keeps the deterministic generator and therefore every existing
+    # measurement byte-identical; "real" routes token production to a third-party
+    # OpenAI-compatible serving stack (see app/llm/real_server.py).
+    generator: str = "mock"
+    max_tokens: int = 64
 
 
 class M2Request(BaseModel):
@@ -199,6 +204,8 @@ class M2Request(BaseModel):
     trial_id: str | None = None
     manipulation: str = "honest"
     client_usage: UsageIn | None = None  # declared usage (may be manipulated)
+    generator: str = "mock"
+    max_tokens: int = 64
 
 
 class MRecordOut(BaseModel):

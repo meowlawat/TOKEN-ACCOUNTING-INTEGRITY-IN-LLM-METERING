@@ -1,0 +1,140 @@
+{
+  "experiment": "cached_split_probe",
+  "generated_at": "20260818T152907Z",
+  "upstream": "http://127.0.0.1:8899/v1/chat/completions",
+  "prices": {
+    "input_per_1k": "0.5",
+    "cached_input_per_1k": "0.05",
+    "output_per_1k": "1.5"
+  },
+  "summary": {
+    "prompts_tested": 3,
+    "repeats_per_prompt": 4,
+    "any_cost_varies": true,
+    "prompts_with_varying_cost": 3,
+    "mean_cost_spread_pct": 25.256,
+    "max_cost_spread_pct": 31.738
+  },
+  "results": [
+    {
+      "prompt": "Unseen probe 8c34dfcb-0: state two short facts about the number 0.",
+      "calls": [
+        {
+          "prompt_tokens": 53,
+          "completion_tokens": 16,
+          "cached_tokens": 24,
+          "authoritative_cost": "0.039700"
+        },
+        {
+          "prompt_tokens": 53,
+          "completion_tokens": 16,
+          "cached_tokens": 52,
+          "authoritative_cost": "0.027100"
+        },
+        {
+          "prompt_tokens": 53,
+          "completion_tokens": 16,
+          "cached_tokens": 52,
+          "authoritative_cost": "0.027100"
+        },
+        {
+          "prompt_tokens": 53,
+          "completion_tokens": 16,
+          "cached_tokens": 52,
+          "authoritative_cost": "0.027100"
+        }
+      ],
+      "cached_distinct": [
+        24,
+        52
+      ],
+      "cached_varies": true,
+      "cost_distinct": [
+        "0.027100",
+        "0.039700"
+      ],
+      "cost_varies": true,
+      "cost_spread_pct": 31.738035264483628
+    },
+    {
+      "prompt": "Unseen probe 8c34dfcb-1: state two short facts about the number 1.",
+      "calls": [
+        {
+          "prompt_tokens": 53,
+          "completion_tokens": 16,
+          "cached_tokens": 35,
+          "authoritative_cost": "0.034750"
+        },
+        {
+          "prompt_tokens": 53,
+          "completion_tokens": 16,
+          "cached_tokens": 52,
+          "authoritative_cost": "0.027100"
+        },
+        {
+          "prompt_tokens": 53,
+          "completion_tokens": 16,
+          "cached_tokens": 52,
+          "authoritative_cost": "0.027100"
+        },
+        {
+          "prompt_tokens": 53,
+          "completion_tokens": 16,
+          "cached_tokens": 52,
+          "authoritative_cost": "0.027100"
+        }
+      ],
+      "cached_distinct": [
+        35,
+        52
+      ],
+      "cached_varies": true,
+      "cost_distinct": [
+        "0.027100",
+        "0.034750"
+      ],
+      "cost_varies": true,
+      "cost_spread_pct": 22.014388489208635
+    },
+    {
+      "prompt": "Unseen probe 8c34dfcb-2: state two short facts about the number 2.",
+      "calls": [
+        {
+          "prompt_tokens": 53,
+          "completion_tokens": 16,
+          "cached_tokens": 35,
+          "authoritative_cost": "0.034750"
+        },
+        {
+          "prompt_tokens": 53,
+          "completion_tokens": 16,
+          "cached_tokens": 52,
+          "authoritative_cost": "0.027100"
+        },
+        {
+          "prompt_tokens": 53,
+          "completion_tokens": 16,
+          "cached_tokens": 52,
+          "authoritative_cost": "0.027100"
+        },
+        {
+          "prompt_tokens": 53,
+          "completion_tokens": 16,
+          "cached_tokens": 52,
+          "authoritative_cost": "0.027100"
+        }
+      ],
+      "cached_distinct": [
+        35,
+        52
+      ],
+      "cached_varies": true,
+      "cost_distinct": [
+        "0.027100",
+        "0.034750"
+      ],
+      "cost_varies": true,
+      "cost_spread_pct": 22.014388489208635
+    }
+  ]
+}

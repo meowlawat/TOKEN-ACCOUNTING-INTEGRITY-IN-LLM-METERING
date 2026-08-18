@@ -29,7 +29,7 @@ from .accounting.usage import CENTS, Prices, Usage, D
 from .architectures import commit_timing, usage_authority
 from .config import settings
 from .db import SessionLocal, get_session
-from .llm import mock
+from .llm import mock, real_server
 from .models.models import Account, Credit, MRecord, MTrial
 from .schemas import (
     M1Request,
@@ -194,7 +194,16 @@ async def m1_stream(
     seed = req.seed if req.seed is not None else trial.model_seed
     request_id = req.request_id or secrets.token_hex(8)
 
-    input_tokens, n_out, _reasoning = _server_truth(req.prompt, seed)
+    use_real = req.generator == "real"
+    if use_real:
+        # A real generator cannot tell you how many tokens it will emit. The
+        # reservation must therefore be made against the requested upper bound,
+        # which is what a production gateway actually holds. `n_out` is that bound;
+        # the settled charge still uses the tokens actually delivered.
+        input_tokens = await real_server.count_prompt_tokens(req.prompt)
+        n_out = req.max_tokens
+    else:
+        input_tokens, n_out, _reasoning = _server_truth(req.prompt, seed)
     est_full_cost = Usage(input_tokens=input_tokens, output_tokens=n_out).cost(prices)
 
     balance_before = await ledger.read_balance(session, account.id)
@@ -211,22 +220,40 @@ async def m1_stream(
 
     delay_s = max(0.0, settings.mock_inter_token_delay_ms) / 1000.0
     state = {"delivered": 0, "completed": False, "settled": False,
+             "generator": req.generator, "upstream_usage": None,
              "stream_start_ns": time.perf_counter_ns(), "disconnect_ns": None,
              "stream_end_ns": None, "settle_commit_ns": None}
 
     async def gen():
         try:
-            for i in range(n_out):
-                if await request.is_disconnected():
-                    state["disconnect_ns"] = time.perf_counter_ns()
-                    break
-                word = mock._det_int(f"{req.prompt}:{i}", seed, 0, 21)  # noqa: SLF001 - deterministic index
-                yield f"data: token_{word}\n\n".encode()
-                state["delivered"] += 1
-                if delay_s:
-                    await asyncio.sleep(delay_s)
+            if use_real:
+                # Real SSE from the upstream serving stack. On a client disconnect we
+                # stop consuming and the upstream stream is torn down, so the usage
+                # record never arrives -- the M1 condition occurring for real rather
+                # than by construction.
+                async for delta, usage in real_server.stream(req.prompt, seed, n_out):
+                    if await request.is_disconnected():
+                        state["disconnect_ns"] = time.perf_counter_ns()
+                        break
+                    if usage is not None:
+                        state["upstream_usage"] = usage.raw
+                        continue
+                    yield f"data: {delta}\n\n".encode()
+                    state["delivered"] += 1
+                else:
+                    state["completed"] = True
             else:
-                state["completed"] = True
+                for i in range(n_out):
+                    if await request.is_disconnected():
+                        state["disconnect_ns"] = time.perf_counter_ns()
+                        break
+                    word = mock._det_int(f"{req.prompt}:{i}", seed, 0, 21)  # noqa: SLF001 - deterministic index
+                    yield f"data: token_{word}\n\n".encode()
+                    state["delivered"] += 1
+                    if delay_s:
+                        await asyncio.sleep(delay_s)
+                else:
+                    state["completed"] = True
             yield b"data: [DONE]\n\n"
         finally:
             state["stream_end_ns"] = time.perf_counter_ns()
@@ -307,6 +334,8 @@ async def _settle_m1(*, account_id, trial_id, request_id, arch, prices, input_to
             # evidence-only classifier that superseded this field (audit fix F1).
             detection_level=("D3" if arch.safe else "D0"), abort_pct=abort_pct, manipulation=None,
             extra={"worker": _worker_id(),
+                   "generator": state.get("generator", "mock"),
+                   "upstream_usage": state.get("upstream_usage"),
                    "n_out": n_out, "est_full_cost": str(est_full_cost),
                    "delivered_cost": str(delivered_cost), "reserved": str(reserved),
                    # Timing instrumentation (monotonic ns, same process clock).
@@ -346,8 +375,21 @@ async def m2_complete(
     seed = req.seed if req.seed is not None else trial.model_seed
     request_id = req.request_id or secrets.token_hex(8)
 
-    input_tokens, output_tokens, reasoning_tokens = _server_truth(req.prompt, seed)
-    true_usage = Usage(input_tokens=input_tokens, output_tokens=output_tokens, reasoning_tokens=reasoning_tokens)
+    upstream_raw = None
+    if req.generator == "real":
+        # Ground truth is the serving stack's OWN usage record: a real BPE prompt count,
+        # whatever the model actually emitted, and a real prefix-cache split. SmolLM2
+        # reports no reasoning tokens, so that category is genuinely 0 here rather than a
+        # deterministic stand-in -- which makes the K2 `drop_reasoning` manipulation
+        # inert against this stack. That is reported, not hidden.
+        _text, ru = await real_server.complete(req.prompt, seed, req.max_tokens)
+        input_tokens, output_tokens, reasoning_tokens = ru.input_tokens, ru.output_tokens, 0
+        upstream_raw = ru.raw
+        true_usage = Usage(input_tokens=input_tokens, output_tokens=output_tokens,
+                           cached_input_tokens=ru.cached_input_tokens, reasoning_tokens=0)
+    else:
+        input_tokens, output_tokens, reasoning_tokens = _server_truth(req.prompt, seed)
+        true_usage = Usage(input_tokens=input_tokens, output_tokens=output_tokens, reasoning_tokens=reasoning_tokens)
     authoritative_cost = true_usage.cost(prices)  # value the client obtained
 
     # Declared usage: what the client sent. Priority: explicit client_usage vector;
@@ -407,8 +449,22 @@ async def m2_complete(
         abort_pct=None, manipulation=req.manipulation,
         extra={"worker": _worker_id(),
                "declared": declared.as_dict(), "true": true_usage.as_dict(),
-               "corrected": corrected, "billed_cost": str(billed_cost)},
+               "corrected": corrected, "billed_cost": str(billed_cost),
+               "generator": req.generator, "upstream_usage": upstream_raw},
     )
     session.add(rec)
     await session.commit()
     return _record_out(rec)
+
+
+@router.get("/admin/real-stack")
+async def real_stack_status() -> dict:
+    """Report whether the third-party serving stack is reachable, and which model.
+
+    Recorded with the external-validity results so the provenance of the `generator:
+    "real"` records is part of the artifact rather than a claim in the prose.
+    """
+    try:
+        return await real_server.health()
+    except real_server.UpstreamUnavailable as exc:
+        return {"reachable": False, "base_url": real_server.BASE_URL, "error": str(exc)}

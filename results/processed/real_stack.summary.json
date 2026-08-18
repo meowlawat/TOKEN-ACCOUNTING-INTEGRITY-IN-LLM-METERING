@@ -1,0 +1,94 @@
+{
+  "source": "real_stack_20260818T152742Z.json",
+  "upstream": {
+    "reachable": true,
+    "base_url": "http://host.docker.internal:8899",
+    "model": "models/SmolLM2-135M-Instruct-Q8_0.gguf",
+    "status": {
+      "status": "ok"
+    }
+  },
+  "parameters": {
+    "prompt": "List three primary colours and explain briefly why they are called primary.",
+    "seed": 1337,
+    "max_tokens": 48,
+    "price_tier": "medium",
+    "reps": 5
+  },
+  "upstream_usage_variance": {
+    "prompt_tokens": {
+      "n": 260,
+      "distinct": [
+        43
+      ],
+      "mean": 43.0,
+      "stdev": 0.0
+    },
+    "completion_tokens": {
+      "n": 260,
+      "distinct": [
+        48
+      ],
+      "mean": 48.0,
+      "stdev": 0.0
+    },
+    "cached_tokens": {
+      "n": 260,
+      "distinct": [
+        42
+      ],
+      "mean": 42.0,
+      "stdev": 0.0
+    }
+  },
+  "m1_cells": 12,
+  "m2_cells": 48,
+  "disagreements": [],
+  "disagreement_count": 0,
+  "generator_dependent_cells": [
+    {
+      "architecture": "client",
+      "manipulation": "drop_reasoning",
+      "mock_efficiency": 0.3237,
+      "real_efficiency": 0.0,
+      "reason": "no reasoning tokens exist on this stack, so the manipulation has nothing to drop"
+    },
+    {
+      "architecture": "client_logged",
+      "manipulation": "drop_reasoning",
+      "mock_efficiency": 0.3237,
+      "real_efficiency": 0.0,
+      "reason": "no reasoning tokens exist on this stack, so the manipulation has nothing to drop"
+    },
+    {
+      "architecture": "client_total",
+      "manipulation": "under_report_output_50",
+      "mock_efficiency": 0.2662,
+      "real_efficiency": -0.7103,
+      "reason": "flat-total pricing over-charges by so much on this token mix that an under-declared total still exceeds the authoritative category cost"
+    },
+    {
+      "architecture": "client_total",
+      "manipulation": "under_report_output_90",
+      "mock_efficiency": 0.5252,
+      "real_efficiency": -0.3964,
+      "reason": "flat-total pricing over-charges by so much on this token mix that an under-declared total still exceeds the authoritative category cost"
+    },
+    {
+      "architecture": "client_total",
+      "manipulation": "drop_reasoning",
+      "mock_efficiency": 0.2662,
+      "real_efficiency": -1.0868,
+      "reason": "no reasoning tokens exist on this stack, so the manipulation has nothing to drop"
+    }
+  ],
+  "generator_dependent_count": 5,
+  "cached_split": {
+    "prompts_tested": 3,
+    "repeats_per_prompt": 4,
+    "any_cost_varies": true,
+    "prompts_with_varying_cost": 3,
+    "mean_cost_spread_pct": 25.256,
+    "max_cost_spread_pct": 31.738
+  }
+}

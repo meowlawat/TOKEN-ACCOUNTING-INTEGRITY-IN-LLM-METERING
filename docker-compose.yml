@@ -46,6 +46,12 @@ services:
       HF_HOME: /tokcache/hf
       HF_HUB_OFFLINE: "1"
       TRANSFORMERS_OFFLINE: "1"
+      # Optional third-party serving stack (llama.cpp llama-server) on the host, used
+      # only by requests that ask for generator="real". Unset/unreachable is fine: the
+      # default mock generator does not touch it.
+      REAL_LLM_URL: ${REAL_LLM_URL:-http://host.docker.internal:8899}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "8000:8000"
     volumes:

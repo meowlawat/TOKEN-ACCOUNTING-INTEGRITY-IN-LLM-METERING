@@ -27,3 +27,5 @@ paper/*.out
 !results/environment.json
 formal/.run/
 formal/states/
+vendor/llama/
+vendor/models/
