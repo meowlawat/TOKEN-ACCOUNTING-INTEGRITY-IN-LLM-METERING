@@ -1,10 +1,10 @@
 \begin{table}[t]\centering
-\caption{M1 under asynchronous settlement with a continuously running accounting worker. With an honest pipeline the mean exposure window tracks the configured reconciliation delay and the leak reconciles to exactly zero: asynchronous accounting is late, not lossy. Duplicate events are suppressed idempotently. A lost event leaks permanently. Whether the `delayed\\_event' straggler (fixed 1 s) appears lost or merely late depends on the observation horizon (4x the delay, floored at 400 ms), which is a property of the observer, not of the architecture.}
+\caption{M1 under asynchronous settlement with a continuously running accounting worker. With an honest pipeline the mean exposure window tracks the configured reconciliation delay and the leak reconciles to exactly zero: asynchronous accounting is late, not lossy. Duplicate events are suppressed idempotently. A lost event leaks permanently. Whether the `delayed\_event' straggler (fixed 1 s) appears lost or merely late depends on the observation horizon (4x the delay, floored at 400 ms), which is a property of the observer, not of the architecture.}
 \label{tab:asyncm1}
 \resizebox{\linewidth}{!}{%
 \begin{tabular}{llllllll}
 \toprule
-delay (ms) & fault & delivered ($) & charged ($) & leak ($) & window mean (ms) & window p95 (ms) & reconciled \\
+delay (ms) & fault & delivered (\$) & charged (\$) & leak (\$) & window mean (ms) & window p95 (ms) & reconciled \\
 \midrule
 0 & none & 0.325500 & 0.325500 & 0.000000 & 14.0 & 8.3 & yes \\
 0 & lost\_event & 0.306000 & 0.000000 & 0.306000 & - & - & NO \\

@@ -81,8 +81,11 @@ def write_table(name: str, header: list[str], rows: list[list], caption: str, la
     (TAB / f"{name}.md").write_text("\n".join(md) + "\n", encoding="utf-8")
 
     def esc(x):
-        return (str(x).replace("_", r"\_").replace("&", r"\&").replace("%", r"\%")
-                .replace("^", r"\^{}").replace(">", r"$>$").replace("<", r"$<$"))
+        # Escape the literal dollar FIRST: the > / < replacements below deliberately
+        # introduce math mode, so escaping afterwards would mangle them.
+        return (str(x).replace("$", r"\$").replace("_", r"\_").replace("&", r"\&")
+                .replace("%", r"\%").replace("^", r"\^{}")
+                .replace(">", r"$>$").replace("<", r"$<$"))
 
     tex = [r"\begin{table}[t]\centering",
            r"\caption{" + esc(caption) + "}", r"\label{" + label + "}",

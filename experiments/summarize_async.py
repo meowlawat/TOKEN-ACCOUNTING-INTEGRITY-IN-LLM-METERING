@@ -50,8 +50,10 @@ def write_table(name, header, rows, caption, label):
     (TAB / f"{name}.md").write_text("\n".join(md) + "\n", encoding="utf-8")
 
     def esc(x):
-        return (str(x).replace("_", r"\_").replace("%", r"\%").replace("&", r"\&")
-                .replace(">", r"$>$").replace("<", r"$<$"))
+        # Escape the literal dollar FIRST: the > / < replacements below deliberately
+        # introduce math mode, so escaping afterwards would mangle them.
+        return (str(x).replace("$", r"\$").replace("_", r"\_").replace("%", r"\%")
+                .replace("&", r"\&").replace(">", r"$>$").replace("<", r"$<$"))
     tex = [r"\begin{table}[t]\centering", r"\caption{" + esc(caption) + "}",
            r"\label{" + label + "}", r"\resizebox{\linewidth}{!}{%",
            r"\begin{tabular}{" + "l" * len(header) + "}", r"\toprule",
@@ -90,7 +92,7 @@ def main() -> None:
                 "configured reconciliation delay and the leak reconciles to exactly zero: "
                 "asynchronous accounting is late, not lossy. Duplicate events are "
                 "suppressed idempotently. A lost event leaks permanently. Whether the "
-                "`delayed\\_event' straggler (fixed 1 s) appears lost or merely late "
+                "`delayed_event' straggler (fixed 1 s) appears lost or merely late "
                 "depends on the observation horizon (4x the delay, floored at 400 ms), "
                 "which is a property of the observer, not of the architecture.",
                 "tab:asyncm1")

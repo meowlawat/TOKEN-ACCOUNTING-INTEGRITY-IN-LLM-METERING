@@ -63,8 +63,10 @@ def write_table(name, header, rows, caption, label):
     (TAB / f"{name}.md").write_text("\n".join(md) + "\n", encoding="utf-8")
 
     def esc(x):
-        return (str(x).replace("_", r"\_").replace("%", r"\%").replace("&", r"\&")
-                .replace(">", r"$>$").replace("<", r"$<$"))
+        # Escape the literal dollar FIRST: the > / < replacements below deliberately
+        # introduce math mode, so escaping afterwards would mangle them.
+        return (str(x).replace("$", r"\$").replace("_", r"\_").replace("%", r"\%")
+                .replace("&", r"\&").replace(">", r"$>$").replace("<", r"$<$"))
     tex = [r"\begin{table}[t]\centering", r"\caption{" + esc(caption) + "}",
            r"\label{" + label + "}", r"\resizebox{\linewidth}{!}{%",
            r"\begin{tabular}{" + "l" * len(header) + "}", r"\toprule",
@@ -127,7 +129,7 @@ def main() -> None:
                 "SmolLM2-135M-Instruct, CPU). Same gateway, same architectures, same "
                 "accounting; only the token source changed. Vulnerable architectures still "
                 "leak on abort and collapse to zero at completion; reserve+reconcile still "
-                "leaks nothing. `pre\\_debit' over-charges an aborting client, which is a "
+                "leaks nothing. `pre_debit' over-charges an aborting client, which is a "
                 "separate defect discussed in the economic analysis.",
                 "tab:realm1")
 
@@ -188,7 +190,7 @@ def main() -> None:
                      "spread"],
                     cs_rows,
                     "The authoritative cost of a byte-identical request on a real serving "
-                    "stack. `cached\\_tokens' is a prefix-cache split reported by the "
+                    "stack. `cached_tokens' is a prefix-cache split reported by the "
                     "server; because cached input is priced 10x below uncached input, the "
                     "provider's own honest charge for the same request changes with server "
                     "cache state. The mock generator cannot exhibit this.",
