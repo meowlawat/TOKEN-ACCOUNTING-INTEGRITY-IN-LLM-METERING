@@ -8,7 +8,7 @@ measured result from the experiment corpus. The formal model says *which propert
 fails and *on every schedule*; the experiment says *how much value* leaks when it
 does. Neither substitutes for the other, which is the point of reporting both.
 
-**Totals.** 40 checks over 10 configurations, 28,363 distinct states, **0 disagreements** with the pre-declared expectations.
+**Totals.** 40 checks over 10 configurations, 27,526 distinct states, **0 disagreements** with the pre-declared expectations.
 
 ## `b0_vulnerable`
 
@@ -20,23 +20,23 @@ does. Neither substitutes for the other, which is the point of reporting both.
 ```
 b0_vulnerable -- LedgerConservation violated in 21 steps (157 distinct states explored)
   1. Initial predicate  snapshot=(r1 :> 0 @@ r2 :> 0) balance=2    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  2. AuthorizeRead      snapshot=(r1 :> 0 @@ r2 :> 2) balance=2    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+  2. AuthorizeRead      snapshot=(r1 :> 2 @@ r2 :> 0) balance=2    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
   3. AuthorizeRead      snapshot=(r1 :> 2 @@ r2 :> 2) balance=2    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
   4. ReserveWrite       snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  5. ReserveWrite       snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  6. Begin              snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  7. Begin              snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  8. StartStream        snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  9. StartStream        snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
- 10. Deliver            snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 0 @@ r2 :> 1) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
- 11. Deliver            snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 1 @@ r2 :> 1) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
- 12. Deliver            snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 1 @@ r2 :> 2) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
- 13. Complete           snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 1 @@ r2 :> 2) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
- 14. AccountComplete    snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 1 @@ r2 :> 2) debit=(r1 :> 0 @@ r2 :> 2) refund=(r1 :> 0 @@ r2 :> 0)
- 15. Reconcile          snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 1 @@ r2 :> 2) debit=(r1 :> 0 @@ r2 :> 2) refund=(r1 :> 0 @@ r2 :> 0)
- 16. Deliver            snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 2 @@ r2 :> 2) debit=(r1 :> 0 @@ r2 :> 2) refund=(r1 :> 0 @@ r2 :> 0)
- 17. Finish             snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 2 @@ r2 :> 2) debit=(r1 :> 0 @@ r2 :> 2) refund=(r1 :> 0 @@ r2 :> 0)
- 18. Complete           snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 2 @@ r2 :> 2) debit=(r1 :> 0 @@ r2 :> 2) refund=(r1 :> 0 @@ r2 :> 0)
+  5. Begin              snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+  6. StartStream        snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+  7. Deliver            snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 1 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+  8. Deliver            snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+  9. Complete           snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+ 10. AccountComplete    snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+ 11. Reconcile          snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+ 12. Finish             snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+ 13. ReserveWrite       snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+ 14. Begin              snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+ 15. StartStream        snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+ 16. Deliver            snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 2 @@ r2 :> 1) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+ 17. Deliver            snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 2 @@ r2 :> 2) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+ 18. Complete           snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 2 @@ r2 :> 2) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
  19. AccountComplete    snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 2 @@ r2 :> 2) debit=(r1 :> 2 @@ r2 :> 2) refund=(r1 :> 0 @@ r2 :> 0)
  20. Reconcile          snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 2 @@ r2 :> 2) debit=(r1 :> 2 @@ r2 :> 2) refund=(r1 :> 0 @@ r2 :> 0)
  21. Finish             snapshot=(r1 :> 2 @@ r2 :> 2) balance=0    delivered=(r1 :> 2 @@ r2 :> 2) debit=(r1 :> 2 @@ r2 :> 2) refund=(r1 :> 0 @@ r2 :> 0)
@@ -57,7 +57,7 @@ b0_vulnerable -- LedgerConservation violated in 21 steps (157 distinct states ex
 - **Model-checked:** violates AccountingIntegrity.
 
 ```
-m1_post_completion -- AccountingIntegrity violated in 7 steps (180 distinct states explored)
+m1_post_completion -- AccountingIntegrity violated in 7 steps (47 distinct states explored)
   1. Initial predicate  balance=4    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
   2. AtomicReserve      balance=4    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
   3. StartStream        balance=4    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
@@ -75,20 +75,19 @@ m1_post_completion -- AccountingIntegrity violated in 7 steps (180 distinct stat
 - **Model-checked:** violates AccountingIntegrity, RefundBounded.
 
 ```
-m1_reserve_refund_on_abort -- AccountingIntegrity violated in 9 steps (203 distinct states explored)
+m1_reserve_refund_on_abort -- AccountingIntegrity violated in 8 steps (54 distinct states explored)
   1. Initial predicate  balance=4    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
   2. AtomicReserve      balance=2    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
   3. Begin              balance=2    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
   4. StartStream        balance=2    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
   5. Deliver            balance=2    delivered=(r1 :> 1 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  6. Deliver            balance=2    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  7. Abort              balance=2    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  8. AbortBypass        balance=4    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 2 @@ r2 :> 0)
-  9. Finish             balance=4    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 2 @@ r2 :> 0)
+  6. Abort              balance=2    delivered=(r1 :> 1 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+  7. AbortBypass        balance=4    delivered=(r1 :> 1 @@ r2 :> 0) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 2 @@ r2 :> 0)
+  8. Finish             balance=4    delivered=(r1 :> 1 @@ r2 :> 0) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 2 @@ r2 :> 0)
 ```
 
 ```
-m1_reserve_refund_on_abort -- RefundBounded violated in 7 steps (138 distinct states explored)
+m1_reserve_refund_on_abort -- RefundBounded violated in 7 steps (33 distinct states explored)
   1. Initial predicate  balance=4    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
   2. AtomicReserve      balance=2    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
   3. Begin              balance=2    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
@@ -106,17 +105,17 @@ m1_reserve_refund_on_abort -- RefundBounded violated in 7 steps (138 distinct st
 - **Model-checked:** violates Solvency.
 
 ```
-m1_no_reserve_settle -- Solvency violated in 12 steps (324 distinct states explored)
+m1_no_reserve_settle -- Solvency violated in 12 steps (238 distinct states explored)
   1. Initial predicate  balance=2    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
   2. AtomicReserve      balance=2    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
   3. StartStream        balance=2    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  4. AtomicReserve      balance=2    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  5. Deliver            balance=2    delivered=(r1 :> 0 @@ r2 :> 1) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  6. StartStream        balance=2    delivered=(r1 :> 0 @@ r2 :> 1) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  7. Deliver            balance=2    delivered=(r1 :> 1 @@ r2 :> 1) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  8. Deliver            balance=2    delivered=(r1 :> 2 @@ r2 :> 1) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  9. Complete           balance=2    delivered=(r1 :> 2 @@ r2 :> 1) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
- 10. AccountComplete    balance=0    delivered=(r1 :> 2 @@ r2 :> 1) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+  4. Deliver            balance=2    delivered=(r1 :> 1 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+  5. Deliver            balance=2    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+  6. Abort              balance=2    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+  7. AtomicReserve      balance=2    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+  8. AccountAbort       balance=0    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+  9. StartStream        balance=0    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+ 10. Deliver            balance=0    delivered=(r1 :> 2 @@ r2 :> 1) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
  11. Abort              balance=0    delivered=(r1 :> 2 @@ r2 :> 1) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
  12. AccountAbort       balance=-1   delivered=(r1 :> 2 @@ r2 :> 1) debit=(r1 :> 2 @@ r2 :> 1) refund=(r1 :> 0 @@ r2 :> 0)
 ```
@@ -136,31 +135,29 @@ m1_no_reserve_settle -- Solvency violated in 12 steps (324 distinct states explo
 - **Model-checked:** violates AccountingIntegrity, RefundBounded.
 
 ```
-m2_client -- AccountingIntegrity violated in 11 steps (303 distinct states explored)
+m2_client -- AccountingIntegrity violated in 10 steps (101 distinct states explored)
   1. Initial predicate  balance=4    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
   2. AtomicReserve      balance=2    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
   3. Begin              balance=2    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
   4. StartStream        balance=2    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  5. AtomicReserve      balance=0    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  6. Deliver            balance=0    delivered=(r1 :> 1 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  7. Deliver            balance=0    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  8. Abort              balance=0    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  9. AccountAbort       balance=1    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 1 @@ r2 :> 0)
- 10. Reconcile          balance=1    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 1 @@ r2 :> 0)
- 11. Finish             balance=1    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 1 @@ r2 :> 0)
+  5. Deliver            balance=2    delivered=(r1 :> 1 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+  6. Deliver            balance=2    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+  7. Abort              balance=2    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+  8. AccountAbort       balance=3    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 1 @@ r2 :> 0)
+  9. Reconcile          balance=3    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 1 @@ r2 :> 0)
+ 10. Finish             balance=3    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 1 @@ r2 :> 0)
 ```
 
 ```
-m2_client -- RefundBounded violated in 9 steps (211 distinct states explored)
+m2_client -- RefundBounded violated in 8 steps (49 distinct states explored)
   1. Initial predicate  balance=4    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
   2. AtomicReserve      balance=2    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  3. AtomicReserve      balance=0    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  4. Begin              balance=0    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  5. StartStream        balance=0    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  6. Deliver            balance=0    delivered=(r1 :> 1 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  7. Deliver            balance=0    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  8. Complete           balance=0    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
-  9. AccountComplete    balance=1    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 1 @@ r2 :> 0)
+  3. Begin              balance=2    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+  4. StartStream        balance=2    delivered=(r1 :> 0 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+  5. Deliver            balance=2    delivered=(r1 :> 1 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+  6. Deliver            balance=2    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+  7. Abort              balance=2    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 0 @@ r2 :> 0) refund=(r1 :> 0 @@ r2 :> 0)
+  8. AccountAbort       balance=3    delivered=(r1 :> 2 @@ r2 :> 0) debit=(r1 :> 2 @@ r2 :> 0) refund=(r1 :> 1 @@ r2 :> 0)
 ```
 
 ## `m2_server_recount`

@@ -61,8 +61,14 @@ configurations from them at run time.
 
 ## Result
 
-40 checks (10 configurations × 4 invariants), **28,363 distinct states**, ~36 s total.
+40 checks (10 configurations × 4 invariants), **27,526 distinct states**, ~90 s total.
 **All 40 matched the expectation declared in `check.py` before the run; 0 disagreements.**
+
+TLC is run with `-workers 1`. That is slower than `-workers auto`, and deliberate: a run
+that *halts at a counterexample* explores a nondeterministic number of states under
+parallel workers, so the reported totals drifted between runs (28,363 vs 28,317) and the
+artifact stopped being reproducible. Single-worker BFS is deterministic, and the figure
+above now reproduces exactly.
 
 | configuration | Accounting&nbsp;Integrity | Solvency | Ledger&nbsp;Conservation | Refund&nbsp;Bounded |
 |---|---|---|---|---|

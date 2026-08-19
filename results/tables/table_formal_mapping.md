@@ -6,7 +6,7 @@
 | m1 reserve refund on abort | Integrity, Refund bnd (trace 7) | leak > 0 at every abort position; invariant violated |
 | m1 no reserve settle | Solvency (trace 12) | accounting integrity holds; final balance goes NEGATIVE |
 | m1 reserve reconcile | all four hold | $0 leak, 0 invariant violations, balance never negative |
-| m2 client | Integrity, Refund bnd (trace 9) | leakage efficiency 0.583 (prompt A) / 0.595 (prompt B) |
+| m2 client | Integrity, Refund bnd (trace 8) | leakage efficiency 0.583 (prompt A) / 0.595 (prompt B) |
 | m2 server recount | all four hold | leakage efficiency 0.000 across every manipulation |
 | all defenses | all four hold | 16/16 regression checks; 60 cross-validation cells agree |
 | all defenses 3req | all four hold | no configuration produced a violation |

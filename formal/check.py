@@ -129,8 +129,12 @@ def run_one(name: str, inv: str) -> dict:
     # -deadlock disables TLC's deadlock check. Terminal states are the POINT of this
     # model (every request ends DONE or REJECTED and has no successor), so a "deadlock"
     # here is successful termination, not a defect.
+    # -workers 1, deliberately. With parallel workers a run that HALTS at a
+    # counterexample explores a nondeterministic number of states, so the reported totals
+    # drift between runs and the artifact stops being reproducible. Single-worker BFS is
+    # deterministic; the whole matrix still takes well under two minutes.
     cmd = [java_exe(), "-XX:+UseParallelGC", "-cp", str(JAR), "tlc2.TLC",
-           "-config", str(cfg), "-workers", "auto", "-cleanup", "-deadlock",
+           "-config", str(cfg), "-workers", "1", "-cleanup", "-deadlock",
            str(FORMAL / "TokenAccounting.tla")]
     t0 = time.perf_counter()
     p = subprocess.run(cmd, capture_output=True, text=True, cwd=str(FORMAL))

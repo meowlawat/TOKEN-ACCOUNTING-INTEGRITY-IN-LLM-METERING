@@ -1,135 +1,197 @@
-# Journal Readiness Report
+# Journal readiness report
 
-**Date:** 2026-08-17 · **Commit:** `6fadf26` · **Paper:** `paper/main.pdf` (524 KB,
-compiles with zero overfull boxes and zero undefined references)
+*Regenerated after the journal-upgrade round (formal verification, real serving stack,
+asynchronous accounting). Ratings are argued from artifact evidence, not asserted. Where a
+dimension is weak, the rating says so — a report that scored everything highly would be
+worth nothing.*
 
-Scope of this stage: close the **architectural-generality** gap identified as the single
-largest weakness in the previous assessment. No new attack classes, no broadened threat
-model, and no change to the validated M1/M2/B0 definitions.
+**Baseline for this round:** `audit/journal_upgrade_baseline.md` (commit `a66ade9`).
 
 ---
 
-## 1. What was added
+## 1. What changed in this round
 
-| phase | work | outcome |
-|---|---|---|
-| 1 | Multi-worker topology (nginx → 4 uvicorn workers → shared PG/Redis) | full B0/M1/M2 matrix, concurrency 1–100 |
-| 2 | Distributed topology (nginx LB → 2 gateway containers × 2 workers) | reduced matched matrix, concurrency 10/50 |
-| 3 | Second accounting backend (append-only ledger, derived balance) | 8 genuine cases identical to mutable-row backend; none disagreed (17 cells compared; 5 analytic, 4 vacuous) |
-| 4 | `paper/defense_sufficiency.md` | model-level sufficiency conditions per mechanism |
-| 5 | Economic sensitivity (3 price tiers) | efficiency invariant under uniform scaling |
-| 6 | Statistics extended with cross-topology/backend effect sizes | absolute differences, not spurious p-values |
-| 7 | `paper/journal_reviewer_attack.md` | reviewers A–E; all five leave residual limitations |
-| 8 | Paper updated (abstract, contributions, results, sufficiency, threats) | new §Cross-architecture validation, §Defense Sufficiency Conditions |
-| 9 | Gates re-run on the control with the new code | all pass; 33 claims, 0 unsupported |
+| addition | evidence |
+|---|---|
+| **Machine-checked formal model** | `formal/TokenAccounting.tla` + TLC: 10 configurations × 4 invariants = 40 runs, **27,526 distinct states**, deterministic, **0 disagreements** with pre-declared expectations |
+| **Real third-party serving stack** | `llama.cpp llama-server` + SmolLM2-135M-Instruct: 12 M1 + 48 M2 cells, **0 safety disagreements**; 5 generator-dependent cells reported |
+| **Asynchronous accounting family** | event queue + continuously running worker, delays 0–500 ms, 5 injected pipeline faults |
+| **Cache-split nondeterminism** | honest cost of a byte-identical request varies **22–32%** with server cache state (3/3 prompts) |
+| **Claim matrix upgrade** | `MODEL-CHECKED` class added; **44 claims, 0 UNSUPPORTED** |
 
-## 2. Cross-architecture results
+Two conclusions changed as a result, both from adversarial pressure rather than from
+polishing:
 
-**Topology (96 accounting cells vs the single-worker control): 0 mismatches.**
-Differences are exactly zero or bounded by the price of one delivered token — the
-disconnect-detection jitter already characterized in `reproduction_consistency.md` — and
-never change a verdict. Load demonstrably spread: each ledger row records its serving
-process, and four distinct workers served M1 requests in the multi-worker run
-(101/164/79/136), with both containers serving in the distributed run.
+1. **B0's sufficiency condition was too weak.** Under asynchronous settlement, over-serving
+   appears with *strictly sequential* arrivals 20 ms apart once the reconciliation delay
+   reaches 100 ms — 4 requests over a 2-request budget at 500 ms, balance negative. An
+   atomic guarded decrement provides nothing if it lands after the next authorization. The
+   condition now requires atomicity **on the path that authorizes**.
+2. **M1 orthogonality is now exhaustive rather than exemplary.** All four combinations of
+   (reservation, abort-safe finalization) are model-checked; each single control leaves one
+   of solvency/integrity broken.
 
-**B0 preserved everywhere.** Hardened leaks exactly \$0 at every concurrency in every
-topology, *including across two separate containers* — atomicity is enforced by the
-database, not by process locality. Distributed vulnerable reproduced the control exactly
-(\$0.8910 at c=10, \$4.8510 at c=50).
+---
 
-**Backends: 8 genuine cases agreed; no case disagreed.** *(Restated after the independent
-audit — the earlier "17/17 byte-identical" headline overstated the evidence.)* All 17
-comparison cells agreed, but only 8 genuinely exercised both backends; 5 agree
-analytically (the M2 billed amount is computed before any balance is read) and 4 are
-vacuous: the frozen B0 debit module does not reference the backend abstraction, so those
-B0 cells ran identical code twice. **B0's storage independence is untested.** Agreeing values:
-`M2/client` 0.594 both; `M2/server_recount` 0.000 both;
-`M1/post_completion/abort90` 0.0950/req both.
+## 2. Ratings
 
-**Two genuine multi-worker defects surfaced and are reported as findings**, not hidden:
-the B0 runtime posture was per-process (would have reached 1 of 4 workers → moved to
-Redis), and four workers racing `create_all` crashed with `UniqueViolation` on `pg_class`
-(→ serialized with a PostgreSQL advisory lock).
+### Research problem — **8/10**
+A real security boundary with a clean threat model (honest provider, dishonest client) that
+prior work genuinely does not occupy: provider over-charge, victim bill inflation, and
+intermediary provenance are all cited and all distinct. Loses points because the problem is
+a *quadrant completion* rather than a new class of threat, and because its practical
+severity depends on deployment choices we cannot observe in the wild.
 
-## 3. Dimension ratings
+### Conceptual contribution — **8/10**
+Two crisp architectural distinctions that survive scrutiny and are not in the prior art:
+**reservation ≠ accounting finality** and **usage computation ≠ usage authority**. Both are
+actionable design rules, both are model-checked, and the second contradicts the obvious
+advice ("just recount server-side") with a 58.3% leak from an architecture that recounts
+correctly. Not a 9 because the underlying mechanisms are known and the framing is
+systematization.
 
-| dimension | rating | justification |
-|---|---|---|
-| **Novelty / systematization** | **Moderate** | No primitive-level novelty, stated explicitly throughout. The defensible contribution is the accounting model, the experimentally-distinguishable taxonomy, the orthogonality and authority results, and the cross-architecture validation. Type-B by construction. |
-| **Formal rigor** | **Moderate** | A lifecycle state model, a precise invariant admitting legitimate refunds, and per-mechanism sufficiency conditions with model-vs-implementation separation. **Argued, not mechanized** — no TLA+/Coq/Alloy. |
-| **Architectural generality** | **Good** (was the main gap) | 3 topologies × 2 accounting backends; 96 cells + 17 cases, no divergence. Still one physical host, one PostgreSQL, one Redis, and both backends strongly consistent. |
-| **Empirical rigor** | **Strong** | >10,000 instrumented requests; per-request ledger; ablation isolating load-bearing primitives; 9 lifecycle failure injections; honest-client controls; volume held constant across concurrency. |
-| **Statistical rigor** | **Strong** | Standalone scipy/statsmodels script is the sole source of statistics; deterministic conditions reported as constants with complete separation rather than fake p-values; nonparametric tests and bootstrap CIs where variance is real; effect sizes reported. |
-| **Reproducibility** | **Strong** | Clean reproduction from wiped volumes/results in 56.3 min; provenance manifest with 88 artifact hashes + PDF hash; every figure/table generated from raw data; fail-closed gates proven by fault injection (12/12) and metamorphic checks (22/22). |
-| **External validity** | **Moderate** | Improved from *weak*. Real tokenizers, a local real-model experiment, and cross-topology/backend validation — but no commercial provider, no multi-host, no GPU serving stack, no eventual consistency. |
-| **Defense contribution** | **Strong** | Not merely "the defense works": an ablation shows *which* primitive closes *which* property (finalization ⇒ integrity, reservation ⇒ solvency, orthogonal), that recount must be the billing basis, plus measured overhead at three abstraction levels and an independent re-implementation that agrees on every cross-validated cell. |
-| **Artifact quality** | **Strong** | `ARTIFACT_README.md` written for an external researcher with no Docker experience; three compose topologies; one-command reproduction; claim-evidence matrix with 0 unsupported claims. |
+### Formal rigor — **6/10**
+Real model checking, not prose: 40 exhaustive runs, expectations declared in advance, and a
+model that was *wrong first* and rejected by TLC until corrected. Counterexamples map
+step-for-step onto measured failures. But: no refinement proof to the implementation, a
+finite model (2–3 requests, unit pricing), safety only, no liveness, no parameterized
+result, and the asynchronous family lies outside the model. Honest ceiling for a
+security-venue paper rather than a formal-methods one.
 
-## 4. Venue assessment
+### Empirical rigor — **9/10**
+7,200+ per-request records with three fail-closed integrity gates, gates themselves
+validated by fault injection (12/12) and metamorphic checks (22/22), independent
+recomputation with **zero** project imports (0 discrepancies), a specification-derived
+independent M2 model (0 mismatches), and cross-validation across 60 cells. Statistical
+treatment separates empirical, analytic, and confirmatory results. The withdrawn
+detectability claim demonstrates the process removes claims as well as adding them.
 
-### Computers & Security (Elsevier) — **SUBMITTABLE**
-The architectural-generality objection that previously blocked this is now answered with
-measurement rather than argument, and the artifact/reproducibility standard is above what
-the venue typically requires. Expect reviewers to push on (a) type-B novelty and (b) the
-absence of a commercial-provider or multi-host evaluation. Both are stated as limitations
-rather than defended. **Assessment: submittable now; accept-after-revision is a realistic
-outcome, not a certainty.**
+### Architectural generality — **8/10**
+Three execution topologies (96 cells, 0 mismatches), three accounting families
+(mutable row, append-only ledger, asynchronous event pipeline), and a third-party serving
+stack. The backend-parity claim is stated at its defensible strength (8 genuine cells, not
+17). Held back by: one host, no sharded credit state, B0's storage independence untested,
+and injected rather than observed reconciliation delays.
 
-### IEEE TDSC — **BORDERLINE; NOT RECOMMENDED YET**
-TDSC's bar on formal treatment is the binding constraint. Our sufficiency conditions are
-deductive-within-model and explicitly *not* machine-checked. A credible TDSC submission
-would need mechanized invariants (e.g. TLA+ model checking of the lifecycle, or a proof
-assistant for the sufficiency conditions) and ideally multi-host validation. The empirical
-half would likely satisfy TDSC; the formal half would not. **Assessment: one substantial
-formal-methods iteration away.**
+### Economic analysis — **7/10**
+Leakage efficiency is price-invariant under uniform scaling and the effect of *structural*
+repricing is characterized: which manipulation pays off is a property of the billing
+function (0.000 under category pricing vs 0.741 under flat-total for the same attack).
+Attacker knowledge is graded K0/K1/K2 with the headline attack shown K0-feasible. The
+cache-split result is a genuinely new economic observation about LLM metering. No
+revenue-impact model — deliberately, since any such number would require an invented
+attacker population.
 
-### Springer/Elsevier security venues (e.g. *International Journal of Information
-Security*, *Journal of Information Security and Applications*) — **SUBMITTABLE**
-The systematization + reproducible-artifact profile fits these venues well, and the
-cross-architecture evidence is comfortably sufficient for them. Lower formal-rigor
-expectations than TDSC. **Assessment: a good fit; the strongest expected-value target
-alongside *Computers & Security*.**
+### External validity — **7/10**
+Substantially improved this round: a serving stack we did not write, with real tokenization,
+real streaming, and real usage records, over 60 cells with 0 safety disagreements. The paper
+also reports where effectiveness *does* move (5 cells) rather than only where it does not.
+Ceiling is set by what is ethically and practically off-limits: no commercial provider, no
+production billing API, one small model on CPU.
 
-### Top-tier security conferences (CCS/USENIX/NDSS/S&P) — **NOT RECOMMENDED**
-Unchanged. Type-B novelty plus a single-host testbed would draw novelty and scope
-rejections regardless of measurement quality.
+### Reproducibility — **9/10**
+Everything regenerates from raw data; figures and tables are generated, never hand-edited;
+provenance manifest with 108 artifact hashes plus the PDF hash; the formal checker is
+deterministic by construction (`-workers 1`, chosen after observing state-count drift under
+parallel workers). Docker Compose plus a pip-installable JDK means no manual toolchain
+setup. Not a 10 because a full clean-room reproduction of the *new* material has not yet
+been run end-to-end from wiped volumes.
 
-## 5. Honest verdict on "journal-ready"
+### Artifact quality — **9/10**
+Testbed, attack harness, three defense families, formal model, independent audit code, and
+a reviewer-runnable TLA+ configuration set. Failures are documented in place (the wrong
+first TLA+ model, the manual-drain harness that measured its own sleep, the classifier that
+used outcome value instead of code path). A reader can find every retraction.
 
-**Yes for *Computers & Security* and comparable Springer/Elsevier venues. No for IEEE
-TDSC.**
+### Novelty as primitive — **3/10**
+Low, and stated as such throughout. No new attack primitive; each mechanism is individually
+known; two candidate classes were killed in the novelty audit and a third at a decision
+gate. The paper makes no priority claim.
 
-The specific gap that previously made me withhold a journal recommendation —
-architectural generality — has been closed by measurement: three topologies, two
-accounting backends, 113 compared cells/cases, zero divergences, with load-spread
-evidence recorded per request. What remains is a *different* and narrower set of
-limitations (one physical host, strongly-consistent datastores only, no commercial
-provider, no mechanized proof), all of which are stated in the paper rather than
-defended.
+### Novelty as systematization — **8/10**
+The unifying invariant, the three-dimensional decomposition, the two orthogonality results,
+the pricing-function characterization, and the cache-split observation together constitute a
+contribution that is not assembled anywhere in the cited literature.
 
-I am **not** claiming the work is now beyond criticism. Reviewer A (novelty) and Reviewer
-D (formal rigor) retain valid objections that no amount of additional measurement will
-answer; they require either a different contribution or mechanized verification.
+---
 
-## 6. Remaining limitations (carried forward)
+## 3. Venue assessment
 
-1. **One physical host.** Multi-worker and multi-instance confounds removed; multi-host
-   networking, replica lag, cross-region latency and datastore partitioning untested.
-2. **Both backends strongly consistent.** An eventually-consistent or sharded accounting
-   pipeline could break condition (B0-a) or (M1-a) and is unevaluated.
-3. **No mechanized proof.** Sufficiency is argued within the model, not verified.
-4. **No commercial provider.** The real-model experiment bounds a ratio in one local
-   CPU configuration.
-5. **Type-B novelty.** The mechanisms are known; the contribution is systematization,
-   measurement, and sufficiency analysis.
-6. **Gateway performance at c≥50** remains host-saturated and is excluded from headline
-   performance claims (accounting measurements at those levels are retained and valid).
+Acceptance is not assumed anywhere below. Each entry states what that venue would attack.
 
-## 7. Recommended next step (if pursuing TDSC)
+### Computers & Security — **strong candidate**
+Fits the venue's profile precisely: systematization plus measurement plus defense
+evaluation, with a reproducible artifact.
+**What they will attack:** novelty as primitive (Reviewer A above), and whether a
+single-host testbed with a 135M model supports conclusions about production metering. Both
+are answerable from the artifact — the topology/backend/serving-stack matrix exists — but
+expect a revision request asking for sharper separation between what was measured and what
+is argued. The three-label evidence discipline was built for exactly that question.
 
-A single, well-scoped addition would move the formal rating: encode the lifecycle state
-model and the three sufficiency conditions in TLA+ and model-check that no reachable state
-violates `V(r) ≤ N(r)` under the stated conditions, and that removing each condition
-produces a counterexample trace matching the measured ablation. That would convert
-"argued" into "verified" and pair naturally with the existing empirical necessity
-evidence. Multi-host validation would be the second priority.
+### IEEE TDSC — **submittable, likely major revision**
+The formal work raises this from "not ready" to "arguable".
+**What they will attack:** the absence of a refinement proof, the finite model, and
+safety-only checking. A TDSC reviewer may reasonably ask for a parameterized argument or a
+mechanized link between specification and implementation. Neither exists, and the paper says
+so rather than obscuring it. Realistic outcome: major revision with a demand for stronger
+formal ties, or rejection on formal depth.
+
+### ETTIS / comparable Springer conference — **ready**
+Comfortably above bar on empirical rigor and artifact quality.
+**What they will attack:** relatively little; the more likely risk is that the contribution
+reads as too incremental for a novelty-seeking PC member.
+
+### INDICON — **ready**
+Well above the typical bar for empirical depth and reproducibility.
+**What they will attack:** scope framing; the paper may read as narrow for a broad-audience
+venue, and the formal section will be skimmed.
+
+### Top-tier security conference (S&P / USENIX / CCS / NDSS) — **not recommended**
+**What they will attack:** primitive novelty, decisively. These venues reward new attack
+classes or new defenses with strong guarantees. This paper has neither and does not pretend
+to. A submission would likely be rejected on "known mechanisms, systematized" regardless of
+execution quality.
+
+---
+
+## 4. Remaining limitations (complete list)
+
+1. No refinement proof from the TLA+ specification to the implementation.
+2. Formal model is finite (2–3 requests, 2 chunks, unit pricing) and safety-only.
+3. Asynchronous accounting is measured but **not** formally modelled.
+4. Reconciliation delays are injected, not observed in production.
+5. B0's independence from the storage backend remains untested (the frozen debit module
+   never routes through the abstraction).
+6. One host; no sharded or partitioned credit state; no consensus failures.
+7. One real serving stack, one small model, one prompt family.
+8. The cache-split nondeterminism is a property of this stack's prefix cache; no claim is
+   made about hosted APIs.
+9. Pricing tiers are synthetic; no revenue-impact model.
+10. Detectability is withdrawn entirely — the artifact makes no claim in that dimension.
+11. Attack effectiveness is generator-dependent (5 of 48 M2 cells flipped); only the
+    architectural conclusion is claimed to transfer.
+12. No commercial provider was tested, by explicit ethical constraint.
+
+---
+
+## 5. Verdict
+
+> ## JOURNAL-CANDIDATE
+
+Not *journal-ready* in the unqualified sense, and the gap is specific and nameable rather
+than vague: **there is no mechanized link between the specification and the implementation**,
+and the asynchronous family — which produced the round's sharpest finding — sits outside the
+formal model. A reviewer at a formal-methods-leaning venue can press on exactly that.
+
+Everything else that a Q1 reviewer would normally reject a paper for has been closed with
+evidence rather than argument. The methodology is not shallow (formal + empirical +
+independent recomputation), not circular (the one circular claim was found by our own audit
+and withdrawn), not single-architecture (three topologies, three accounting families, two
+generators), and not weakly formalized (40 exhaustive model-checking runs against
+expectations fixed in advance).
+
+For *Computers & Security* the paper is a strong candidate now. For TDSC it is submittable
+with a foreseeable demand for deeper formal ties. The honest summary is that this round
+converted the largest reviewer objection — "single-architecture, synchronous, your own
+generator" — into three concrete pieces of evidence, and in the process changed two of the
+paper's own conclusions.

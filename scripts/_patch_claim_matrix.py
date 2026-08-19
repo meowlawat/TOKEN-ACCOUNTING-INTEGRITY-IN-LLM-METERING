@@ -56,7 +56,7 @@ NEW_CLAIMS = '''    # ---- formal verification ---------------------------------
          kind="MODEL-CHECKED", metric="m2_client vs m2_server_recount",
          source="formal/check.py", result_file="results/formal/model_check_results.json"),
     dict(id="C43", section="Formal",
-         claim="All 40 model-checking outcomes (10 configurations x 4 invariants, 28,363 "
+         claim="All 40 model-checking outcomes (10 configurations x 4 invariants, 27,526 "
                "distinct states) matched expectations declared before the run; 0 disagreements.",
          kind="MODEL-CHECKED", metric="pre-declared expectation matrix",
          source="formal/check.py", result_file="results/formal/model_check_results.json"),

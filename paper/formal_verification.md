@@ -13,7 +13,7 @@ A property may hold more than one label; where it does, that is the strongest fo
 evidence this artifact offers, and it is stated explicitly.
 
 **Summary of what was actually run:** 10 configurations × 4 invariants = **40 independent
-TLC runs**, **28,363 distinct states**, ~36 s wall clock, **0 disagreements** with the
+TLC runs**, **27,526 distinct states**, ~90 s wall clock, **0 disagreements** with the
 expectations declared in `formal/check.py` before the run.
 
 ---
