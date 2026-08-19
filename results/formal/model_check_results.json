@@ -80,7 +80,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.81,
+      "seconds": 0.87,
       "states_generated": 271,
       "distinct_states": 157
     },
@@ -91,7 +91,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.79,
+      "seconds": 0.86,
       "states_generated": 271,
       "distinct_states": 157
     },
@@ -102,7 +102,7 @@
       "expected": "VIOLATED",
       "observed": "VIOLATED",
       "agrees": true,
-      "seconds": 0.79,
+      "seconds": 0.88,
       "states_generated": 270,
       "distinct_states": 157,
       "counterexample": [
@@ -389,7 +389,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.83,
+      "seconds": 0.87,
       "states_generated": 271,
       "distinct_states": 157
     },
@@ -400,7 +400,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.8,
+      "seconds": 0.83,
       "states_generated": 53,
       "distinct_states": 37
     },
@@ -411,7 +411,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.78,
+      "seconds": 0.81,
       "states_generated": 53,
       "distinct_states": 37
     },
@@ -422,7 +422,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.81,
+      "seconds": 0.83,
       "states_generated": 53,
       "distinct_states": 37
     },
@@ -433,7 +433,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.81,
+      "seconds": 0.83,
       "states_generated": 53,
       "distinct_states": 37
     },
@@ -444,7 +444,7 @@
       "expected": "VIOLATED",
       "observed": "VIOLATED",
       "agrees": true,
-      "seconds": 0.81,
+      "seconds": 0.86,
       "states_generated": 67,
       "distinct_states": 47,
       "counterexample": [
@@ -549,7 +549,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.81,
+      "seconds": 0.86,
       "states_generated": 613,
       "distinct_states": 324
     },
@@ -560,7 +560,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.81,
+      "seconds": 0.84,
       "states_generated": 613,
       "distinct_states": 324
     },
@@ -571,7 +571,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.82,
+      "seconds": 0.85,
       "states_generated": 613,
       "distinct_states": 324
     },
@@ -582,7 +582,7 @@
       "expected": "VIOLATED",
       "observed": "VIOLATED",
       "agrees": true,
-      "seconds": 0.8,
+      "seconds": 0.85,
       "states_generated": 79,
       "distinct_states": 54,
       "counterexample": [
@@ -711,7 +711,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.83,
+      "seconds": 0.86,
       "states_generated": 685,
       "distinct_states": 361
     },
@@ -722,7 +722,7 @@
       "expected": "VIOLATED",
       "observed": "VIOLATED",
       "agrees": true,
-      "seconds": 0.79,
+      "seconds": 0.83,
       "states_generated": 45,
       "distinct_states": 33,
       "counterexample": [
@@ -827,7 +827,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.81,
+      "seconds": 0.86,
       "states_generated": 657,
       "distinct_states": 336
     },
@@ -838,7 +838,7 @@
       "expected": "VIOLATED",
       "observed": "VIOLATED",
       "agrees": true,
-      "seconds": 0.8,
+      "seconds": 0.85,
       "states_generated": 437,
       "distinct_states": 238,
       "counterexample": [
@@ -1008,7 +1008,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.82,
+      "seconds": 0.89,
       "states_generated": 657,
       "distinct_states": 336
     },
@@ -1019,7 +1019,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.81,
+      "seconds": 0.86,
       "states_generated": 657,
       "distinct_states": 336
     },
@@ -1030,7 +1030,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.8,
+      "seconds": 1.07,
       "states_generated": 723,
       "distinct_states": 361
     },
@@ -1041,7 +1041,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.8,
+      "seconds": 0.85,
       "states_generated": 723,
       "distinct_states": 361
     },
@@ -1052,7 +1052,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.85,
+      "seconds": 0.9,
       "states_generated": 723,
       "distinct_states": 361
     },
@@ -1063,7 +1063,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.88,
+      "seconds": 0.86,
       "states_generated": 723,
       "distinct_states": 361
     },
@@ -1074,7 +1074,7 @@
       "expected": "VIOLATED",
       "observed": "VIOLATED",
       "agrees": true,
-      "seconds": 0.82,
+      "seconds": 0.86,
       "states_generated": 170,
       "distinct_states": 101,
       "counterexample": [
@@ -1218,7 +1218,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.8,
+      "seconds": 0.88,
       "states_generated": 723,
       "distinct_states": 361
     },
@@ -1229,7 +1229,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.82,
+      "seconds": 0.98,
       "states_generated": 723,
       "distinct_states": 361
     },
@@ -1240,7 +1240,7 @@
       "expected": "VIOLATED",
       "observed": "VIOLATED",
       "agrees": true,
-      "seconds": 0.8,
+      "seconds": 0.9,
       "states_generated": 72,
       "distinct_states": 49,
       "counterexample": [
@@ -1358,95 +1358,95 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.86,
-      "states_generated": 723,
-      "distinct_states": 361
-    },
-    {
-      "config": "m2_server_recount",
-      "mechanism": "M2",
-      "invariant": "Solvency",
-      "expected": "HOLDS",
-      "observed": "HOLDS",
-      "agrees": true,
-      "seconds": 0.86,
-      "states_generated": 723,
-      "distinct_states": 361
-    },
-    {
-      "config": "m2_server_recount",
-      "mechanism": "M2",
-      "invariant": "LedgerConservation",
-      "expected": "HOLDS",
-      "observed": "HOLDS",
-      "agrees": true,
-      "seconds": 0.8,
-      "states_generated": 723,
-      "distinct_states": 361
-    },
-    {
-      "config": "m2_server_recount",
-      "mechanism": "M2",
-      "invariant": "RefundBounded",
-      "expected": "HOLDS",
-      "observed": "HOLDS",
-      "agrees": true,
-      "seconds": 0.83,
-      "states_generated": 723,
-      "distinct_states": 361
-    },
-    {
-      "config": "all_defenses",
-      "mechanism": "ALL",
-      "invariant": "AccountingIntegrity",
-      "expected": "HOLDS",
-      "observed": "HOLDS",
-      "agrees": true,
-      "seconds": 0.83,
-      "states_generated": 279,
-      "distinct_states": 172
-    },
-    {
-      "config": "all_defenses",
-      "mechanism": "ALL",
-      "invariant": "Solvency",
-      "expected": "HOLDS",
-      "observed": "HOLDS",
-      "agrees": true,
-      "seconds": 0.82,
-      "states_generated": 279,
-      "distinct_states": 172
-    },
-    {
-      "config": "all_defenses",
-      "mechanism": "ALL",
-      "invariant": "LedgerConservation",
-      "expected": "HOLDS",
-      "observed": "HOLDS",
-      "agrees": true,
-      "seconds": 0.8,
-      "states_generated": 279,
-      "distinct_states": 172
-    },
-    {
-      "config": "all_defenses",
-      "mechanism": "ALL",
-      "invariant": "RefundBounded",
-      "expected": "HOLDS",
-      "observed": "HOLDS",
-      "agrees": true,
-      "seconds": 0.83,
-      "states_generated": 279,
-      "distinct_states": 172
-    },
-    {
-      "config": "all_defenses_3req",
-      "mechanism": "ALL",
-      "invariant": "AccountingIntegrity",
-      "expected": "HOLDS",
-      "observed": "HOLDS",
-      "agrees": true,
       "seconds": 0.94,
+      "states_generated": 723,
+      "distinct_states": 361
+    },
+    {
+      "config": "m2_server_recount",
+      "mechanism": "M2",
+      "invariant": "Solvency",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.87,
+      "states_generated": 723,
+      "distinct_states": 361
+    },
+    {
+      "config": "m2_server_recount",
+      "mechanism": "M2",
+      "invariant": "LedgerConservation",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.99,
+      "states_generated": 723,
+      "distinct_states": 361
+    },
+    {
+      "config": "m2_server_recount",
+      "mechanism": "M2",
+      "invariant": "RefundBounded",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.87,
+      "states_generated": 723,
+      "distinct_states": 361
+    },
+    {
+      "config": "all_defenses",
+      "mechanism": "ALL",
+      "invariant": "AccountingIntegrity",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.88,
+      "states_generated": 279,
+      "distinct_states": 172
+    },
+    {
+      "config": "all_defenses",
+      "mechanism": "ALL",
+      "invariant": "Solvency",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.86,
+      "states_generated": 279,
+      "distinct_states": 172
+    },
+    {
+      "config": "all_defenses",
+      "mechanism": "ALL",
+      "invariant": "LedgerConservation",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 0.86,
+      "states_generated": 279,
+      "distinct_states": 172
+    },
+    {
+      "config": "all_defenses",
+      "mechanism": "ALL",
+      "invariant": "RefundBounded",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 1.04,
+      "states_generated": 279,
+      "distinct_states": 172
+    },
+    {
+      "config": "all_defenses_3req",
+      "mechanism": "ALL",
+      "invariant": "AccountingIntegrity",
+      "expected": "HOLDS",
+      "observed": "HOLDS",
+      "agrees": true,
+      "seconds": 1.06,
       "states_generated": 12586,
       "distinct_states": 4807
     },
@@ -1457,7 +1457,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.91,
+      "seconds": 0.96,
       "states_generated": 12586,
       "distinct_states": 4807
     },
@@ -1468,7 +1468,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.93,
+      "seconds": 1.03,
       "states_generated": 12586,
       "distinct_states": 4807
     },
@@ -1479,7 +1479,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.93,
+      "seconds": 0.95,
       "states_generated": 12586,
       "distinct_states": 4807
     }

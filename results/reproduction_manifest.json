@@ -1,12 +1,12 @@
 {
   "manifest_version": 1,
-  "generated_at": "2026-08-19T01:14:44Z",
+  "generated_at": "2026-08-19T01:16:12Z",
   "reproduction_status": "UNKNOWN",
   "runtime_seconds": null,
   "runtime_human": null,
   "git": {
-    "commit": "229128869146922ef1e211346c0f6ce8e7907a34",
-    "short": "2291288",
+    "commit": "13d374c98f161d6bdd7aaf827144a52f4c42ff09",
+    "short": "13d374c",
     "branch": "master",
     "dirty": true
   },
@@ -576,7 +576,7 @@
     }
   },
   "paper_pdf": {
-    "sha256": "5c7359289bfba960d8692222d8c131ffaeb117c351083c52b9b331c8fe591383",
+    "sha256": "efd80db791d408a9f1727479a10476369d7f38f339cf4d08113d236310fda6af",
     "bytes": 570047
   }
 }
