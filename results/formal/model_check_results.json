@@ -80,7 +80,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.87,
+      "seconds": 0.89,
       "states_generated": 271,
       "distinct_states": 157
     },
@@ -91,7 +91,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.86,
+      "seconds": 0.85,
       "states_generated": 271,
       "distinct_states": 157
     },
@@ -102,7 +102,7 @@
       "expected": "VIOLATED",
       "observed": "VIOLATED",
       "agrees": true,
-      "seconds": 0.88,
+      "seconds": 0.84,
       "states_generated": 270,
       "distinct_states": 157,
       "counterexample": [
@@ -389,7 +389,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.87,
+      "seconds": 0.82,
       "states_generated": 271,
       "distinct_states": 157
     },
@@ -411,7 +411,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.81,
+      "seconds": 0.83,
       "states_generated": 53,
       "distinct_states": 37
     },
@@ -549,7 +549,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.86,
+      "seconds": 0.88,
       "states_generated": 613,
       "distinct_states": 324
     },
@@ -560,7 +560,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.84,
+      "seconds": 0.89,
       "states_generated": 613,
       "distinct_states": 324
     },
@@ -571,7 +571,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.85,
+      "seconds": 0.86,
       "states_generated": 613,
       "distinct_states": 324
     },
@@ -582,7 +582,7 @@
       "expected": "VIOLATED",
       "observed": "VIOLATED",
       "agrees": true,
-      "seconds": 0.85,
+      "seconds": 0.86,
       "states_generated": 79,
       "distinct_states": 54,
       "counterexample": [
@@ -700,7 +700,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.85,
+      "seconds": 0.84,
       "states_generated": 685,
       "distinct_states": 361
     },
@@ -711,7 +711,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.86,
+      "seconds": 0.84,
       "states_generated": 685,
       "distinct_states": 361
     },
@@ -722,7 +722,7 @@
       "expected": "VIOLATED",
       "observed": "VIOLATED",
       "agrees": true,
-      "seconds": 0.83,
+      "seconds": 0.82,
       "states_generated": 45,
       "distinct_states": 33,
       "counterexample": [
@@ -838,7 +838,7 @@
       "expected": "VIOLATED",
       "observed": "VIOLATED",
       "agrees": true,
-      "seconds": 0.85,
+      "seconds": 0.83,
       "states_generated": 437,
       "distinct_states": 238,
       "counterexample": [
@@ -1008,7 +1008,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.89,
+      "seconds": 0.86,
       "states_generated": 657,
       "distinct_states": 336
     },
@@ -1030,7 +1030,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 1.07,
+      "seconds": 0.86,
       "states_generated": 723,
       "distinct_states": 361
     },
@@ -1041,7 +1041,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.85,
+      "seconds": 0.87,
       "states_generated": 723,
       "distinct_states": 361
     },
@@ -1052,7 +1052,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.9,
+      "seconds": 0.88,
       "states_generated": 723,
       "distinct_states": 361
     },
@@ -1063,7 +1063,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.86,
+      "seconds": 0.88,
       "states_generated": 723,
       "distinct_states": 361
     },
@@ -1218,7 +1218,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.88,
+      "seconds": 0.85,
       "states_generated": 723,
       "distinct_states": 361
     },
@@ -1229,7 +1229,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.98,
+      "seconds": 0.85,
       "states_generated": 723,
       "distinct_states": 361
     },
@@ -1240,7 +1240,7 @@
       "expected": "VIOLATED",
       "observed": "VIOLATED",
       "agrees": true,
-      "seconds": 0.9,
+      "seconds": 0.82,
       "states_generated": 72,
       "distinct_states": 49,
       "counterexample": [
@@ -1358,7 +1358,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.94,
+      "seconds": 0.84,
       "states_generated": 723,
       "distinct_states": 361
     },
@@ -1369,7 +1369,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.87,
+      "seconds": 0.85,
       "states_generated": 723,
       "distinct_states": 361
     },
@@ -1380,7 +1380,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.99,
+      "seconds": 0.85,
       "states_generated": 723,
       "distinct_states": 361
     },
@@ -1391,7 +1391,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.87,
+      "seconds": 0.9,
       "states_generated": 723,
       "distinct_states": 361
     },
@@ -1402,7 +1402,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.88,
+      "seconds": 0.89,
       "states_generated": 279,
       "distinct_states": 172
     },
@@ -1413,7 +1413,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.86,
+      "seconds": 0.87,
       "states_generated": 279,
       "distinct_states": 172
     },
@@ -1424,7 +1424,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.86,
+      "seconds": 0.87,
       "states_generated": 279,
       "distinct_states": 172
     },
@@ -1435,7 +1435,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 1.04,
+      "seconds": 0.85,
       "states_generated": 279,
       "distinct_states": 172
     },
@@ -1446,7 +1446,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 1.06,
+      "seconds": 0.97,
       "states_generated": 12586,
       "distinct_states": 4807
     },
@@ -1457,7 +1457,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 0.96,
+      "seconds": 0.93,
       "states_generated": 12586,
       "distinct_states": 4807
     },
@@ -1468,7 +1468,7 @@
       "expected": "HOLDS",
       "observed": "HOLDS",
       "agrees": true,
-      "seconds": 1.03,
+      "seconds": 1.0,
       "states_generated": 12586,
       "distinct_states": 4807
     },

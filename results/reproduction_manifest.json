@@ -1,12 +1,12 @@
 {
   "manifest_version": 1,
-  "generated_at": "2026-08-19T01:16:12Z",
+  "generated_at": "2026-08-19T02:08:45Z",
   "reproduction_status": "UNKNOWN",
   "runtime_seconds": null,
   "runtime_human": null,
   "git": {
-    "commit": "13d374c98f161d6bdd7aaf827144a52f4c42ff09",
-    "short": "13d374c",
+    "commit": "4b0163e7072cb56eff64c0e75c0999d702a104f0",
+    "short": "4b0163e",
     "branch": "master",
     "dirty": true
   },
@@ -136,7 +136,7 @@
       "command": "tectonic main.tex (x2)"
     }
   ],
-  "artifact_count": 109,
+  "artifact_count": 131,
   "artifacts": {
     "results/raw/ablation_20260816T130426Z.json": {
       "sha256": "0c0ac802ac9d486ae47980bb36b8f721d9f23617ccbbf82c436cfd75e86a2e3e",
@@ -345,6 +345,94 @@
     "results/tables/gateway_recount.md": {
       "sha256": "291fb6a8b66cf82589d2c7e4094f9fc9a427502e0fd6d708ffe90216cafefd67",
       "bytes": 2328
+    },
+    "results/tables/ieee/table_async_b0.tex": {
+      "sha256": "41d17f8063b957f8fb88e8d9eb6e978dade67cbc38c4a27e1874b14b5bf4de81",
+      "bytes": 964
+    },
+    "results/tables/ieee/table_async_m1.tex": {
+      "sha256": "e83e056ea7c0b8e869c7b03a1207f5f1b965013b37a5b259ffb1991692754d50",
+      "bytes": 2786
+    },
+    "results/tables/ieee/table_b0_baseline.tex": {
+      "sha256": "a0fe525dc3c1141fbbaea89d4c53bb11536110b24cea74703f806d8458555e38",
+      "bytes": 1220
+    },
+    "results/tables/ieee/table_backend_generality.tex": {
+      "sha256": "cf7a12b6d78ec92dba3bf4481fd0af694c717ede46675828d917a1acafa76a36",
+      "bytes": 2859
+    },
+    "results/tables/ieee/table_cached_split.tex": {
+      "sha256": "16ef9c410ec3ca975b052adc1c43f2b64a842e858251a067f36a14f183943357",
+      "bytes": 934
+    },
+    "results/tables/ieee/table_defense_summary.tex": {
+      "sha256": "b154e68e48f426dd8bb88f1ae1a97f71e76217b65987fdd6d48137459e307aa1",
+      "bytes": 829
+    },
+    "results/tables/ieee/table_economic_sensitivity.tex": {
+      "sha256": "6f9cfcc463f1334bd9a9dbc8785a0dd883fcc1f0905b83df29d4336ce52828fa",
+      "bytes": 2281
+    },
+    "results/tables/ieee/table_failure_modes.tex": {
+      "sha256": "a12b1b9df2a6a78105a3a97e3888c39c3a5547eaf83ae79123f0434f5acb4dd1",
+      "bytes": 2173
+    },
+    "results/tables/ieee/table_formal_mapping.tex": {
+      "sha256": "7b685f7223740a11540806c82fb5100d57e243a213fb23446d184e07aeb65163",
+      "bytes": 1607
+    },
+    "results/tables/ieee/table_formal_matrix.tex": {
+      "sha256": "0f69938f3b99b398803baf94cb70303ee2c3b8ae1db378432bdf7abf969e607e",
+      "bytes": 1378
+    },
+    "results/tables/ieee/table_m1_ablation.tex": {
+      "sha256": "6471ce3b615bc6fc3d86575d27361eb76d079e7c46dbb0cbaeddc2cbc9455577",
+      "bytes": 930
+    },
+    "results/tables/ieee/table_m1_concurrency.tex": {
+      "sha256": "08523af082caaad06606ab5dee71d5a5cfd6bb023c53c3d8f1fc7adb33a379d2",
+      "bytes": 705
+    },
+    "results/tables/ieee/table_m1_property_matrix.tex": {
+      "sha256": "5e3e1578fb9176c752df5166d809bfab13f6434e6ed96a8927f9d63b426e22cf",
+      "bytes": 1053
+    },
+    "results/tables/ieee/table_m1_results.tex": {
+      "sha256": "0e92f0f8afff9febd8f22ddd5441b894b58b1495d4d338735719326488686d96",
+      "bytes": 1909
+    },
+    "results/tables/ieee/table_m2_ablation.tex": {
+      "sha256": "58ba0356d1808320d716538c1566ffe1599320274e59c9513e9911289ce7fae7",
+      "bytes": 851
+    },
+    "results/tables/ieee/table_m2_concurrency.tex": {
+      "sha256": "20e2ccda98f2ec6521299de2b8a7de9a671203ac80782a4e08dec3fe69550ef3",
+      "bytes": 772
+    },
+    "results/tables/ieee/table_m2_formal.tex": {
+      "sha256": "e681c00161104d8b746354973f9059c6daf7f47e261b5d3e23d1bd9997dab01d",
+      "bytes": 2595
+    },
+    "results/tables/ieee/table_m2_results.tex": {
+      "sha256": "2f9a92a8431e177f616f4c6afbe6ac0308a6744219655f932d1e613016f81251",
+      "bytes": 3548
+    },
+    "results/tables/ieee/table_quadrant.tex": {
+      "sha256": "219b2a3ecf9adba1c86211abdddc0ebb4d78b488d9473fe3481a731d46838c17",
+      "bytes": 897
+    },
+    "results/tables/ieee/table_real_stack_m1.tex": {
+      "sha256": "7e6d77dc3a6632fc2c7cbac00fd6ccff544ac5de83f5abc9299a9829c66cbedd",
+      "bytes": 1672
+    },
+    "results/tables/ieee/table_real_stack_m2.tex": {
+      "sha256": "22c9a17e1d2df05c898fdbc9626f841dcba9e4021bcc4e8acff6b15554f8b71e",
+      "bytes": 3749
+    },
+    "results/tables/ieee/table_topology_generality.tex": {
+      "sha256": "0ebbefd439616bccce353cf3e04a98aa80817dc74830ecfe3eb707edd7dfc75a",
+      "bytes": 10185
     },
     "results/tables/stats_output.txt": {
       "sha256": "2d9d38f6ceba28827c784a9257ecfe7263468f2bf86f32ac09cd91b9cec811da",

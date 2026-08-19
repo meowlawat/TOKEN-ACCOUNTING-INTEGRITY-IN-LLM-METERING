@@ -1,0 +1,17 @@
+%% Adversary directions. Hand-authored (a taxonomy, not a measurement).
+\begin{table*}[t]
+\caption{Adversary directions in LLM inference accounting. Prior work covers the first
+three rows; this paper studies the fourth.}
+\label{tab:quadrant}
+\centering
+\begin{tabular}{llll}
+\toprule
+Adversary & Goal & Representative work & Studied here \\
+\midrule
+Provider & Over-charge an honest client & CoIn~\cite{coin}, Invisible Tokens~\cite{invisible}, Token Inflation~\cite{tokeninflation} & no \\
+Third party & Inflate a \emph{victim's} bill & Denial-of-Wallet~\cite{dow,dowreview}, OWASP LLM10~\cite{owasp}, LLMjacking~\cite{llmjacking} & no \\
+Intermediary & Misroute or forge provenance & AEX~\cite{aex}, gateway-path provenance~\cite{gwprov} & no \\
+\textbf{Client} & \textbf{Under-pay for received inference} & \textbf{---} & \textbf{yes} \\
+\bottomrule
+\end{tabular}
+\end{table*}
