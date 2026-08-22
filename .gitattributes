@@ -1,0 +1,12 @@
+# Normalize line endings in the repository so an edit made on Windows does not
+# produce a whole-file diff. Text files are stored LF; checkouts get the platform
+# convention.
+* text=auto eol=lf
+
+# Binary artifacts must never be normalized.
+*.png    binary
+*.pdf    binary
+*.jar    binary
+*.gguf   binary
+*.zip    binary
+*.model  binary

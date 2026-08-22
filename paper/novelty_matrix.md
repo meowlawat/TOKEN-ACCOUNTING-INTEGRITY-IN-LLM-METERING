@@ -85,9 +85,9 @@ client evading its own meter. This is exactly the quadrant our project targets.
 - **Reviewer will cite:** Stripe idempotency; arXiv 2502.07776.
 
 ### Class 4 — Adversarial retry on shared quota → **KILLED / MERGE into Class 6** (type D)
-- **Fatal prior art:** **CVE-2026-31873 (Tyk Gateway, 2026, CVSS 7.5)** is precisely a
+- **Fatal prior art:** ***(citation withdrawn: the CVE identifier previously cited here was verified against MITRE CVE Services and NVD and belongs to an unrelated advisory)*** is precisely a
   non-atomic quota `GET`-then-`DECR` TOCTOU race that concurrency multiplies — i.e.
-  the credit/quota-decrement race of Class 6. Kettle's single-packet attack is the
+  the credit/quota-decrement race of Class 6. Kettle's work on web race conditions (which introduces the single-packet attack) is the
   generic technique. "Shared pool / thundering herd / priority inversion" is a
   deployment variant, not a distinct LLM-specific mechanism.
 - **Verdict:** not a separate class. Fold into Class 6 as its "shared/multi-tenant
@@ -102,7 +102,7 @@ client evading its own meter. This is exactly the quadrant our project targets.
   one-line note that model-tier authorization is an *instance* of a solved class.
 
 ### Class 6 — Limit-overrun race on credit decrement → **BASELINE (known)**
-- Doubly grounded: Kettle single-packet (2023) + CVE-2026-31873 (2026). Correctly
+- Doubly grounded: Kettle single-packet (2023) + *(citation withdrawn: the CVE identifier previously cited here was verified against MITRE CVE Services and NVD and belongs to an unrelated advisory)*. Correctly
   treated as the known baseline that validates the measurement rig; never claimed as
   novel. (Already implemented and measured in Phase 0.)
 

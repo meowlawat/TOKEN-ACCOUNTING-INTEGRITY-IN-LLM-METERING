@@ -1,31 +1,117 @@
+# ---------------------------------------------------------------------------
+# Python
+# ---------------------------------------------------------------------------
 __pycache__/
 *.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
 .venv/
 venv/
-.env
-*.egg-info/
+env/
+ENV/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.coverage
+htmlcov/
+.tox/
 
-# Experiment outputs: keep the directory, ignore generated artifacts.
+# ---------------------------------------------------------------------------
+# Secrets and credentials -- never commit. `.env.example` is the template and
+# is tracked deliberately.
+# ---------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+credentials
+credentials.*
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+id_rsa
+id_rsa.*
+id_ed25519
+id_ed25519.*
+.netrc
+.npmrc
+.docker/config.json
+
+# ---------------------------------------------------------------------------
+# Large downloadable artifacts. The research is reproducible without these:
+# every one has a documented download or regeneration command in the README.
+# ---------------------------------------------------------------------------
+# regenerate with scripts/populate_tokenizer_cache.sh
+tokenizer_cache/
+# llama.cpp binary + GGUF weights; download commands in the README
+vendor/
+# TLC; download command in formal/README.md
+formal/tools/*.jar
+*.gguf
+*.safetensors
+*.bin
+*.pt
+*.onnx
+models/
+.cache/
+huggingface/
+
+# ---------------------------------------------------------------------------
+# Experiment scratch. Raw scientific data under results/raw/, results/processed/,
+# results/tables/ and results/figures/ IS tracked -- it is the evidence.
+# ---------------------------------------------------------------------------
 results/*.json
 results/*.csv
 results/*.png
 !results/.gitkeep
-
-# Tokenizer artifact cache (populate via scripts/populate_tokenizer_cache.sh)
-tokenizer_cache/
-
-# LaTeX build artifacts
-paper/main.log
-paper/*.aux
-paper/*.out
-
-# Provenance records must be tracked (they are the reproducibility evidence)
 !results/reproduction_manifest.json
 !results/environment.json
 formal/.run/
 formal/states/
-vendor/llama/
-vendor/models/
+states/
+*.tmp
+*.bak
+*.orig
+
+# ---------------------------------------------------------------------------
+# LaTeX build artifacts. Final PDFs are tracked; intermediates are not.
+# ---------------------------------------------------------------------------
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.bbl
+*.blg
+*.nav
+*.snm
+*.vrb
+paper/_p*.png
+paper/ieeetest/
+
+# ---------------------------------------------------------------------------
+# Docker / runtime
+# ---------------------------------------------------------------------------
+*.tar
+docker-compose.override.yml
+pgdata/
+
+# ---------------------------------------------------------------------------
+# Editors and OS
+# ---------------------------------------------------------------------------
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini

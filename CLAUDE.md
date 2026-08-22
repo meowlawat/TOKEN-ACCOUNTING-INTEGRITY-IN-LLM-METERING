@@ -86,11 +86,11 @@ Revised taxonomy (honest provider, dishonest client, goal = underpay):
 - **B0 — Credit/quota-decrement race** *(KNOWN BASELINE — not a contribution; was Class 6,
   now ABSORBS old Class 4)* — non-atomic check+decrement TOCTOU on a credit/quota counter,
   incl. shared/multi-tenant pools. Cite: Kettle single-packet attack (PortSwigger, 2023) +
-  **CVE-2026-31873 (Tyk Gateway, 2026, CVSS 7.5)**. Already implemented + measured in Phase 0.
+  ***(citation withdrawn: the CVE identifier previously cited here was verified against MITRE CVE Services and NVD and belongs to an unrelated advisory)***. Already implemented + measured in Phase 0.
 
 **KILLED classes (do NOT implement as contributions):**
 - ~~Class 4 (Adversarial retry on shared quota)~~ → **merged into B0**. Identical TOCTOU
-  quota-decrement race (CVE-2026-31873, Kettle). Type D (rebrand).
+  quota-decrement race (Kettle). Type D (rebrand).
 - ~~Class 5 (Entitlement-metadata tampering)~~ → **removed**. Textbook OWASP API3:2023
   (BOPLA / mass assignment) + API1:2023 (BOLA). Non-LLM. Type D (rebrand).
 
@@ -116,7 +116,7 @@ kill it is **2 novel reframes (M1, M2) + baseline B0**, still PASS under the
 systematization/measurement framing. **Note (correction from Phase 0):** the
 earlier CLAUDE.md line citing "the 2025 *Computers & Security* race-condition
 methodology paper" was **not verified** in the Phase 1 search and should not be cited;
-use Kettle (2023) + CVE-2026-31873 (2026) for the baseline instead.
+use Kettle (2023) + *(citation withdrawn: the CVE identifier previously cited here was verified against MITRE CVE Services and NVD and belongs to an unrelated advisory)* for the baseline instead.
 
 ---
 

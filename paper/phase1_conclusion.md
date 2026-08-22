@@ -72,7 +72,7 @@ already checks — so the testbed generalizes to M1–M3 with modest extension.
 
 ### Class 4 — Adversarial retry on shared quota → **KILLED (merge into baseline)**
 Its mechanism is a non-atomic check-then-decrement TOCTOU race on a quota counter,
-identical to Class 6. **CVE-2026-31873 (Tyk Gateway, 2026, CVSS 7.5)** is exactly this
+identical to Class 6. ***(citation withdrawn: the CVE identifier previously cited here was verified against MITRE CVE Services and NVD and belongs to an unrelated advisory)*** is exactly this
 (`GET` then `DECR`, concurrency multiplies the allowance); Kettle's single-packet
 attack is the generic technique. "Shared pool / thundering herd / priority inversion"
 is a deployment variant, not a distinct LLM-specific mechanism. **Reason to kill:**
@@ -99,7 +99,7 @@ open.
 | **M1** | Metering-commit-timing evasion | accounting after completion vs before inference | novel reframe (B) | new-api #5235; Cancellation Tax |
 | **M2** | Usage-record authority evasion | server recount vs client/upstream-declared usage | novel reframe (B), strongest | CWE-807; Token Inflation |
 | **M3** | Inference-cache billing evasion | inference vs billing idempotency; cache authz | novel reframe (B/E), weak | Stripe idempotency; Auditing Prompt Caching |
-| **B0** | Credit/quota-decrement race | non-atomic check+decrement TOCTOU (incl. shared pools) | **BASELINE (known)** | Kettle 2023; CVE-2026-31873 |
+| **B0** | Credit/quota-decrement race | non-atomic check+decrement TOCTOU (incl. shared pools) | **BASELINE (known)** | Kettle 2023; *(CVE citation withdrawn — the identifier belongs to an unrelated advisory)* |
 
 Removed: old Class 4 (→ B0 variant), old Class 5 (→ OWASP, out of scope).
 All four are unified by the single safety property in §A.
@@ -126,7 +126,7 @@ stream-abort/refund gap appears as a single deployed-gateway bug (new-api #5235)
 an operations writeup (the "Cancellation Tax," framed as honest over-pay, not client
 fraud); "trust the reported token count" is the generic CWE-807 with an unmeasured
 LLM instantiation; concurrent quota-decrement races are a known web-race primitive
-(Kettle 2023) with a recent CVE (Tyk CVE-2026-31873); cache/idempotency reuse is a
+(Kettle 2023) with a recent CVE (Tyk *(CVE citation withdrawn — the identifier belongs to an unrelated advisory)*); cache/idempotency reuse is a
 deliberately-built cost-saving feature (semantic caching, Stripe idempotency); and
 plan tampering is OWASP API3:2023.
 

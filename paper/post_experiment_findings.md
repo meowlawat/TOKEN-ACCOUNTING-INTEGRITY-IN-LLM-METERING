@@ -142,7 +142,7 @@ thread-pool deployment would amortize it.
    limitation); it is now closed with a negative result.
 3. **The unverified "2025 *Computers & Security* race-condition methodology"
    citation** — removed from `attacks/class6_credit_race.py`, replaced with the two
-   verified sources (Kettle 2023; CVE-2026-31873).
+   verified sources (Kettle 2023; *(CVE citation withdrawn — the identifier belongs to an unrelated advisory)*).
 
 ## 8. What claims should be weakened (or sharpened)?
 

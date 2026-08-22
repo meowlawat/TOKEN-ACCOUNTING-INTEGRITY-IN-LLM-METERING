@@ -1,8 +1,8 @@
 # Class 6 Methodology — Limit-Overrun Race on Credit Decrement
 
 **Status:** KNOWN BASELINE (not a contribution). Reproduced end-to-end to validate
-the measurement rig before Phase 1. Prior art: Kettle's single-packet attack
-(PortSwigger, 2023) and **CVE-2026-31873** (Tyk API Gateway, 2026, CVSS 7.5 — a
+the measurement rig before Phase 1. Prior art: Kettle's work on web race conditions (which introduces the single-packet attack)
+(PortSwigger, 2023) and ***(CVE citation withdrawn — the identifier belongs to an unrelated advisory)*** (Tyk API Gateway, 2026, CVSS 7.5 — a
 non-atomic `GET`-then-`DECR` quota-decrement race), both confirmed in the Phase 1
 audit. (An earlier draft cited an unverified "2025 *Computers & Security*
 race-condition methodology paper"; it was not found in the Phase 1 search and has

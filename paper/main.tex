@@ -73,7 +73,7 @@ already known in isolation: a deployed LLM gateway refunds pre-consumed quota wh
 usage record is missing after a client disconnect~\cite{newapi5235}; ``never trust client
 input in a security decision'' is CWE-807, and a metered-token proxy already mitigates an
 encoding-induced ``silent zero-debit''~\cite{aperture247}; concurrent quota-decrement races
-are a classic web-race primitive with a recent CVE~\cite{kettle,cve2026}; and practitioner
+are a classic web-race primitive~\cite{kettle}; and practitioner
 guidance already warns that retries and disconnects must not cause token
 leakage~\cite{practice}. Accordingly, \textbf{M1 and M2 are systematization and
 measurement contributions, and B0 is a known baseline}; we make no priority claim.
@@ -186,7 +186,7 @@ establishes that hidden-token accounting can be inflated and is hard to
 verify~\cite{coin,invisible,tokeninflation}; Denial-of-Wallet and LLMjacking establish
 victim-side economic exposure~\cite{dow,llmjacking}; attestation work establishes
 intermediary-side provenance~\cite{aex,gwprov}. Generic quota races are well
-understood~\cite{kettle,cve2026}. What we found no prior study of, \emph{in our targeted
+understood~\cite{kettle}. What we found no prior study of, \emph{in our targeted
 corpus}, is an evaluation of client-side under-payment under an honest-provider threat
 model across representative metering architectures with a common measurement and an
 ablation of the enforcement primitives. This is a bounded negative from a targeted
@@ -879,7 +879,7 @@ production system; all experiments ran against the local testbed shipped with th
 artifact, whose harness defaults to \texttt{localhost} and contains no third-party
 endpoints. No credentials, real user data, or production billing APIs were used. The
 public artifacts we cite as prior evidence (a GitHub issue~\cite{newapi5235}, a
-PR~\cite{aperture247}, and a CVE~\cite{cve2026}) were public before this work and are not
+PR~\cite{aperture247}) were public before this work and are not
 our findings. Every attack in the artifact is paired with a defense, and the testbed is
 released so operators can measure their own gateways.
 
@@ -900,8 +900,7 @@ predictable fraction of real inference time.
 \bibitem{llmjacking} Sysdig Threat Research Team. LLMjacking: stolen cloud credentials used for LLM inference, 2024.
 \bibitem{newapi5235} QuantumNous/new-api issue \#5235: streaming requests may refund all pre-consumed quota when final usage is missing after client disconnect, 2026.
 \bibitem{aperture247} lightninglabs/aperture PR \#247: metered draw-down of prepaid L402 tokens; strip \texttt{Accept-Encoding} to prevent a silent zero-debit, 2026.
-\bibitem{kettle} J. Kettle. The single-packet attack: making remote race-conditions `local'. PortSwigger Research, 2023.
-\bibitem{cve2026} CVE-2026-31873: Tyk API Gateway non-atomic quota check/decrement race, 2026.
+\bibitem{kettle} J. Kettle. Smashing the state machine: the true potential of web race conditions. PortSwigger Research, 2023.
 \bibitem{aex} Y. Guan. AEX: Non-Intrusive Multi-Hop Attestation and Provenance for LLM APIs. arXiv:2603.14283, 2026.
 \bibitem{gwprov} F. Wang and Z. Tian. Evidence-Bound Gateway-Path Provenance for Third-Party LLM Inference. arXiv:2606.22560, 2026.
 \bibitem{practice} Industry metering guidance: gateway as enforcement point vs.\ meter as accounting point; retries, partial failures and client disconnects must not cause double billing or token leakage, 2026.

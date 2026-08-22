@@ -111,7 +111,7 @@
     },
     {
       "id": "cve-2026-31873-tyk",
-      "title": "CVE-2026-31873 \u2014 Tyk API Gateway non-atomic quota check/decrement race",
+      "title": "[WITHDRAWN] CVE-2026-31873 was cited as a Tyk API Gateway quota race; the identifier belongs to an unrelated advisory",
       "authors": [
         "KENSAI (advisory writeup)"
       ],
@@ -120,11 +120,13 @@
       "doi_url": "https://kensai.app/blog/tyk-api-gateway-cve-2026-authentication-bypass-rate-limiting",
       "source_type": "cve-advisory",
       "access_level": "opened",
-      "relevance": "Real recent CVE (CVSS 7.5): Redis GET-then-DECR non-atomic quota race, concurrency multiplies the allowance \u2014 exactly the credit/quota-decrement race; kills old Class 4 as a distinct class.",
+      "relevance": "Real recent CVE (CVSS 7.5): Redis GET-then-DECR non-atomic quota race, concurrency multiplies the allowance — exactly the credit/quota-decrement race; kills old Class 4 as a distinct class.",
       "classes_affected": [
         "4",
         "6"
-      ]
+      ],
+      "status": "WITHDRAWN",
+      "withdrawn_reason": "The Tyk attribution came from a third-party advisory writeup, not from a registry. Verification during the IEEE reference pass showed both the MITRE CVE Services record and NVD assign CVE-2026-31873 to an unrelated Unhead URI-scheme sanitization bypass. The citation was removed from the paper. The entry is retained here as the record of where the error entered."
     },
     {
       "id": "cancellation-tax-2026",
@@ -153,7 +155,7 @@
       "doi_url": "https://github.com/QuantumNous/new-api/issues/5235",
       "source_type": "in-the-wild-bug",
       "access_level": "opened",
-      "relevance": "A deployed LLM gateway: pre-consumed quota is fully refunded when the final usage block is missing after client disconnect \u2014 the client-exploitable stream-abort evasion in the wild (dated 2026-06-01).",
+      "relevance": "A deployed LLM gateway: pre-consumed quota is fully refunded when the final usage block is missing after client disconnect — the client-exploitable stream-abort evasion in the wild (dated 2026-06-01).",
       "classes_affected": [
         "1"
       ]
@@ -169,7 +171,7 @@
       "doi_url": "https://owasp.org/API-Security/editions/2023/en/0xa3-broken-object-property-level-authorization/",
       "source_type": "standard",
       "access_level": "opened",
-      "relevance": "Mass-assignment / property tampering (e.g. tier:premium, price) \u2014 the generic, mature vulnerability that old Class 5 rebrands; basis for killing Class 5.",
+      "relevance": "Mass-assignment / property tampering (e.g. tier:premium, price) — the generic, mature vulnerability that old Class 5 rebrands; basis for killing Class 5.",
       "classes_affected": [
         "5"
       ]
@@ -201,7 +203,7 @@
       "doi_url": "https://www.getmaxim.ai/articles/semantic-caching-for-llms-how-to-cut-token-spend-with-ai-gateways/",
       "source_type": "vendor-docs",
       "access_level": "opened",
-      "relevance": "Confirms a gateway cache hit makes no LLM call and burns zero tokens/quota, with shared cross-user caches \u2014 the LLM-specific hook (and risk) for M3.",
+      "relevance": "Confirms a gateway cache hit makes no LLM call and burns zero tokens/quota, with shared cross-user caches — the LLM-specific hook (and risk) for M3.",
       "classes_affected": [
         "3"
       ]
@@ -268,7 +270,7 @@
       "doi_url": "https://auth0.com/blog/llmjacking-stolen-api-key-hidden-cost/",
       "source_type": "threat-research",
       "access_level": "search-summary",
-      "relevance": "Client-side LLM abuse via stolen credentials (victim pays) \u2014 a different threat model from a legitimate-but-dishonest client, clarifying our quadrant.",
+      "relevance": "Client-side LLM abuse via stolen credentials (victim pays) — a different threat model from a legitimate-but-dishonest client, clarifying our quadrant.",
       "classes_affected": [
         "framing"
       ]
@@ -285,7 +287,7 @@
       "doi_url": "https://genai.owasp.org/llmrisk/llm10-unbounded-consumption/",
       "source_type": "standard/review",
       "access_level": "search-summary",
-      "relevance": "Attacker inflates a victim's bill (availability/economic exhaustion) \u2014 the covered 'client-dishonest, inflate cost' cell, distinct from our 'evade cost' cell.",
+      "relevance": "Attacker inflates a victim's bill (availability/economic exhaustion) — the covered 'client-dishonest, inflate cost' cell, distinct from our 'evade cost' cell.",
       "classes_affected": [
         "framing"
       ]

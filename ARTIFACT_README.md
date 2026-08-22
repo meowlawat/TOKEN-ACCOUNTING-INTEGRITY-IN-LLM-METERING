@@ -132,7 +132,7 @@ python -m experiments.summarize_class6      # B0 summary (+ integrity gates)
 python -m experiments.summarize_m1          # M1 summary
 python -m experiments.summarize_m2          # M2 summary
 python -m benchmarks.summarize_benchmarks   # tokenizer + gateway tables/figures
-python -m experiments.summarize_ablation    # ablation/failure/detectability tables
+python -m experiments.summarize_ablation    # ablation + lifecycle failure tables
 python -m experiments.economic_analysis     # formal M2 + economic tables
 python -m experiments.figures               # all .png figures
 python -m experiments.tables                # all .tex/.md tables
@@ -219,3 +219,26 @@ and are cited as prior evidence, not as findings of ours. See
 | What are the limitations? | `paper/threats_to_validity.md` |
 | Does every claim have evidence? | `paper/claim_evidence_matrix.md` |
 | Overall summary | `FINAL_RESEARCH_REPORT.md` |
+
+## 13. Model and tokenizer artifacts
+
+None of the third-party binaries or weights are committed. Each has a documented download,
+and the research reproduces without them being redistributed here.
+
+| artifact | identifier | how to obtain |
+|---|---|---|
+| TLC model checker | `tla2tools.jar`, TLC 2.19 | `curl -sSL -o formal/tools/tla2tools.jar https://github.com/tlaplus/tlaplus/releases/latest/download/tla2tools.jar` |
+| Java runtime | Temurin 25 via `jdk4py` | `pip install jdk4py` — no system JRE needed |
+| Inference server | `llama.cpp` release `b10488` | see the README's real-serving section |
+| Model weights | `unsloth/SmolLM2-135M-Instruct-GGUF`, file `SmolLM2-135M-Instruct-Q8_0.gguf` (Q8_0, 138 MiB) | `curl -L -o vendor/models/SmolLM2-135M-Instruct-Q8_0.gguf https://huggingface.co/unsloth/SmolLM2-135M-Instruct-GGUF/resolve/main/SmolLM2-135M-Instruct-Q8_0.gguf` |
+| Transformers model (timing experiment) | `HuggingFaceTB/SmolLM2-135M` | fetched by `scripts/populate_tokenizer_cache.sh` |
+| Tokenizers | tiktoken `cl100k_base` / `o200k_base`, HF fast Llama tokenizer, SentencePiece | `bash scripts/populate_tokenizer_cache.sh` (one-time, needs network) |
+
+The container runs with `HF_HUB_OFFLINE=1` and `TRANSFORMERS_OFFLINE=1` and mounts
+`tokenizer_cache/` read-only, so no network access happens at request time. That is what
+makes the tokenizer benchmark timings meaningful.
+
+**Expected fingerprints.** `results/reproduction_manifest.json` records a SHA-256 for every
+tracked artifact plus the compiled PDF, and `results/environment.json` records the
+environment the reported numbers came from. Compare against those rather than against
+wall-clock timings, which vary by host.

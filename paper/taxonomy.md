@@ -54,7 +54,7 @@ Token Inflation measures the mirror (provider over-report).
 
 Non-atomic check-then-decrement TOCTOU on a credit/quota counter; concurrency
 multiplies the allowance. Absorbs old Class 4 (shared/multi-tenant quota). Prior art:
-Kettle single-packet (2023); CVE-2026-31873 (Tyk, 2026). Used to validate the rig and
+Kettle single-packet (2023); *(CVE citation withdrawn — the identifier belongs to an unrelated advisory)*. Used to validate the rig and
 to contrast a *generic* economic race with the *LLM-specific* accounting failures
 (M1/M2). Gate C test — "would this attack work unchanged against a non-LLM API?" —
 **B0: yes** (hence baseline); **M1/M2: no** (they depend on streaming inference and on

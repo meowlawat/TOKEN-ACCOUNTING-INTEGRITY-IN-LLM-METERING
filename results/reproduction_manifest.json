@@ -1,12 +1,12 @@
 {
   "manifest_version": 1,
-  "generated_at": "2026-08-19T02:08:45Z",
+  "generated_at": "2026-08-22T15:57:16Z",
   "reproduction_status": "UNKNOWN",
   "runtime_seconds": null,
   "runtime_human": null,
   "git": {
-    "commit": "4b0163e7072cb56eff64c0e75c0999d702a104f0",
-    "short": "4b0163e",
+    "commit": "4027e238706bf36b15b5607a41b3e6ad07e0c310",
+    "short": "4027e23",
     "branch": "master",
     "dirty": true
   },
@@ -136,7 +136,7 @@
       "command": "tectonic main.tex (x2)"
     }
   ],
-  "artifact_count": 131,
+  "artifact_count": 132,
   "artifacts": {
     "results/raw/ablation_20260816T130426Z.json": {
       "sha256": "0c0ac802ac9d486ae47980bb36b8f721d9f23617ccbbf82c436cfd75e86a2e3e",
@@ -172,6 +172,10 @@
     },
     "results/raw/cross_validation_20260819T011328Z.json": {
       "sha256": "7a7f44caae907f784f89e402bff935f4387fc12761a1bb8aba44f0a0bc2a1ab7",
+      "bytes": 28600
+    },
+    "results/raw/cross_validation_20260822T155129Z.json": {
+      "sha256": "8b575d6d8847951ec87cf91472a2865e53502f8090e994763cad7f05522d93cf",
       "bytes": 28600
     },
     "results/raw/failure_modes_20260816T130439Z.json": {
@@ -664,7 +668,7 @@
     }
   },
   "paper_pdf": {
-    "sha256": "efd80db791d408a9f1727479a10476369d7f38f339cf4d08113d236310fda6af",
-    "bytes": 570047
+    "sha256": "925f41fec6a67d86b67a0143efbde434cfbfd3876a7d2e39f49154db35501cb9",
+    "bytes": 569717
   }
 }

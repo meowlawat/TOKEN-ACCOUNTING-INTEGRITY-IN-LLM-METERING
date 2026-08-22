@@ -231,7 +231,7 @@ Methodology documented in `paper/statistical_analysis.md`; output in
 
 - **Novel primitives: none, and we say so throughout.** M1 has a deployed instance
   (new-api #5235) plus an ops writeup; M2's principle is CWE-807 with a deployed
-  mitigation (aperture #247); B0 is Kettle/Tyk CVE-2026-31873; practitioner guidance
+  mitigation (aperture #247); B0 is Kettle/Tyk *(CVE citation withdrawn — the identifier belongs to an unrelated advisory)*; practitioner guidance
   already warns that disconnects must not cause token leakage.
 - **A fourth adversary axis exists** and is now represented: dishonest *intermediary*
   (AEX, gateway-path provenance). The related-work table presents all four directions.

@@ -19,7 +19,7 @@ findings:
   testbed.
 - **aperture #247** (lightninglabs/aperture) — a public PR mitigating encoding-induced
   silent zero-debit. Cited as prior evidence for M2.
-- **CVE-2026-31873** (Tyk) — a public CVE for the quota-decrement race (B0).
+- ***(CVE citation withdrawn — the identifier belongs to an unrelated advisory)*** (Tyk) — a public CVE for the quota-decrement race (B0).
 
 ## If real-world findings arise later
 

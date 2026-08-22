@@ -53,7 +53,7 @@ all four and not imply the field is empty.
   merely computed) and a detection spectrum.
 
 ### B0 — synchronization
-- **Exact overlap:** complete. Kettle (2023) + CVE-2026-31873 (2026).
+- **Exact overlap:** complete. Kettle (2023) + *(CVE citation withdrawn — the identifier belongs to an unrelated advisory)* (2026).
 - **Exact difference:** none. We use it as a *known baseline* and never claim novelty.
 - **Why still useful:** it is the control that makes the M1/M2 concurrency-invariance
   result meaningful — B0 is concurrency-created, M1/M2 are not.
