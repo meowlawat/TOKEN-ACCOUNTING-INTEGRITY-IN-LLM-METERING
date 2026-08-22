@@ -31,8 +31,8 @@ git rev-parse HEAD                 # must match the remote head
 
 ## Commit
 
-`8775e266d027b2bf6820ca02c7a7eb77c4514226`
-*Research freeze: journal submission artifact v1.0.0*
+`44863fadf27fdeb51ffd94e97a13c12b7983d4c3` — the commit `v1.0.0` points at.
+Its parent `8775e26` is the freeze commit itself; this one adds only this report.
 
 ## Tag
 

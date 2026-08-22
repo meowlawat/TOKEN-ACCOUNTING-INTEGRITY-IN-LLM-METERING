@@ -14,7 +14,7 @@
 | field | value |
 |---|---|
 | Branch | `master` |
-| Freeze commit | recorded in `GITHUB_RELEASE_REPORT.md` at tag time |
+| Freeze commit | `8775e26` (tag `v1.0.0` at `44863fa`, which adds the release report) |
 | Release tag | `v1.0.0` |
 | Freeze date | 2026-08-22 |
 | Predecessor | `4027e23` — IEEE journal manuscript |
