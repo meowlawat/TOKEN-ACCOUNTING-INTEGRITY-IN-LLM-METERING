@@ -14,7 +14,7 @@
 | field | value |
 |---|---|
 | Branch | `master` |
-| Freeze commit | `8775e26` (tag `v1.0.0` at `44863fa`, which adds the release report) |
+| Freeze commit | `8775e26`; tag `v1.0.0` at `d0da72f` (release report + generated inventory counts) |
 | Release tag | `v1.0.0` |
 | Freeze date | 2026-08-22 |
 | Predecessor | `4027e23` — IEEE journal manuscript |

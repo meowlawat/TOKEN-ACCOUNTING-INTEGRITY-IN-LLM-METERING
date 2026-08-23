@@ -31,8 +31,9 @@ git rev-parse HEAD                 # must match the remote head
 
 ## Commit
 
-`44863fadf27fdeb51ffd94e97a13c12b7983d4c3` — the commit `v1.0.0` points at.
-Its parent `8775e26` is the freeze commit itself; this one adds only this report.
+`d0da72f` — the commit `v1.0.0` points at.
+`8775e26` is the freeze commit itself; the two commits after it add this report and
+correct hand-typed inventory counts. No experimental result changed in either.
 
 ## Tag
 
