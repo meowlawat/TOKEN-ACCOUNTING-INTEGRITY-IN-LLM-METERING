@@ -31,9 +31,13 @@ git rev-parse HEAD                 # must match the remote head
 
 ## Commit
 
-`d0da72f` — the commit `v1.0.0` points at.
-`8775e26` is the freeze commit itself; the two commits after it add this report and
-correct hand-typed inventory counts. No experimental result changed in either.
+Whatever `v1.0.0` points at — resolve it with `git rev-list -n1 v1.0.0`.
+
+`8775e26` is the freeze commit itself. The commits after it add this report and
+correct hand-typed inventory counts; no experimental result, formal outcome or
+claim changed in any of them. The hash is deliberately not written out here: a
+document that names the commit recording it can never be accurate, because
+writing the hash changes the hash.
 
 ## Tag
 

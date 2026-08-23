@@ -14,7 +14,7 @@
 | field | value |
 |---|---|
 | Branch | `master` |
-| Freeze commit | `8775e26`; tag `v1.0.0` at `d0da72f` (release report + generated inventory counts) |
+| Freeze commit | `8775e26`; the release tag `v1.0.0` points at the final documentation commit (`git rev-list -n1 v1.0.0`) |
 | Release tag | `v1.0.0` |
 | Freeze date | 2026-08-22 |
 | Predecessor | `4027e23` — IEEE journal manuscript |
