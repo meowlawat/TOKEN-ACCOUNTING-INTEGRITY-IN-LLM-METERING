@@ -1,12 +1,12 @@
 {
   "manifest_version": 1,
-  "generated_at": "2026-08-22T15:57:16Z",
+  "generated_at": "2026-08-23T19:45:25Z",
   "reproduction_status": "UNKNOWN",
   "runtime_seconds": null,
   "runtime_human": null,
   "git": {
-    "commit": "4027e238706bf36b15b5607a41b3e6ad07e0c310",
-    "short": "4027e23",
+    "commit": "5a9314c352cf7849ebf8b993587941181519c270",
+    "short": "5a9314c",
     "branch": "master",
     "dirty": true
   },
@@ -19,7 +19,7 @@
     "docker": "Docker version 29.7.2, build a7dcaa6",
     "docker_compose": "5.3.1",
     "postgres": "postgres (PostgreSQL) 16.15",
-    "redis": "Redis server v=7.4.10 sha=00000000:0 malloc=jemalloc-5.3.0 bits=64 build=d70b7db78d693e15",
+    "redis": "Redis server v=7.4.11 sha=00000000:0 malloc=jemalloc-5.3.0 bits=64 build=fbf7a7d03c2e9219",
     "python_container": "Python 3.11.16",
     "ram_total_gb": 16.9
   },
@@ -136,7 +136,7 @@
       "command": "tectonic main.tex (x2)"
     }
   ],
-  "artifact_count": 132,
+  "artifact_count": 133,
   "artifacts": {
     "results/raw/ablation_20260816T130426Z.json": {
       "sha256": "0c0ac802ac9d486ae47980bb36b8f721d9f23617ccbbf82c436cfd75e86a2e3e",
@@ -176,6 +176,10 @@
     },
     "results/raw/cross_validation_20260822T155129Z.json": {
       "sha256": "8b575d6d8847951ec87cf91472a2865e53502f8090e994763cad7f05522d93cf",
+      "bytes": 28600
+    },
+    "results/raw/cross_validation_20260823T194358Z.json": {
+      "sha256": "7b3b6ac3a72efeef0c0318e7f586ecc9cb7ed28de833abfbd91f86985aae2de1",
       "bytes": 28600
     },
     "results/raw/failure_modes_20260816T130439Z.json": {

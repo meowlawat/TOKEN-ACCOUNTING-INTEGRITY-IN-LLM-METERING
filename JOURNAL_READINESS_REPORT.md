@@ -7,6 +7,19 @@ worth nothing.*
 
 **Baseline for this round:** `audit/journal_upgrade_baseline.md` (commit `a66ade9`).
 
+**Final consistency pass (this update).** An adversarial read of `paper/main_ieee.tex`
+looking specifically for a B0/concurrency contradiction — the abstract's "B0 is not about
+concurrency" against the results section's "leaks only when at least two requests
+overlap." The manuscript was already internally consistent: the results section states the
+baseline's empirical trigger, the figure caption and Section~X.F ("B0 revisited") state the
+general condition, and the sufficiency section, discussion and conclusion all agree with
+each other. No wording changed there. What did change: the index terms carried "LLM
+security" as the first keyword, which reads as model-security scope rather than
+infrastructure-security scope; it was replaced (see the venue note below). Independent
+recomputation, the M2 spec-derived checker, TLC, the regression suites and cross-validation
+were all re-run and remain at zero unexplained discrepancies; the claim matrix is unchanged
+at 44 claims, 0 unsupported.
+
 ---
 
 ## 1. What changed in this round
@@ -127,6 +140,26 @@ single-host testbed with a 135M model supports conclusions about production mete
 are answerable from the artifact — the topology/backend/serving-stack matrix exists — but
 expect a revision request asking for sharper separation between what was measured and what
 is argued. The three-label evidence discipline was built for exactly that question.
+
+**Scope positioning, stated explicitly because it matters for desk review.** Some security
+venues currently exclude papers whose principal subject is the security *of* AI/ML models
+themselves (adversarial robustness, model privacy, prompt injection). This paper is not
+that. The LLM is the workload that makes the metering boundary interesting; the object of
+study throughout is accounting infrastructure — authorization, reservation, debit,
+reconciliation, billing authority. Nothing in the contribution touches model behavior,
+robustness, or output safety. The index terms and abstract were checked against this
+distinction during the final consistency pass, and the one keyword ("LLM security") that
+could have read as model-security scope was replaced with terms naming the actual subject
+(usage metering, quota enforcement, accounting reconciliation).
+
+### ACM TOPS (Transactions on Privacy and Security) — **plausible, higher novelty/formal risk**
+TOPS publishes rigorous systems-security work and would engage seriously with the formal
+verification and the cross-architecture measurement. **What they will attack:** the same
+primitive-novelty objection as everywhere else, likely pressed harder than at Computers &
+Security, and the same formal gap as TDSC — no refinement proof, a finite model. TOPS
+reviewers tend to expect either stronger novelty or stronger formal guarantees than this
+paper claims; it is a plausible target, not a comfortable one, and the honest expectation is
+a harder review than Computers & Security with a similar or lower acceptance probability.
 
 ### IEEE TDSC — **submittable, likely major revision**
 The formal work raises this from "not ready" to "arguable".
