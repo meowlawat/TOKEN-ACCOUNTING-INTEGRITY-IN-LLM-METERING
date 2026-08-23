@@ -1,6 +1,6 @@
 # Release manifest — v1.0.0
 
-What is in the release, and why each part is there. 302 tracked files.
+What is in the release, and why each part is there. 311 tracked files.
 
 ---
 
@@ -64,17 +64,17 @@ audit baselines.
 Real-tokenizer microbenchmarks and gateway recount benchmarks; nginx configurations for the
 multi-worker and distributed topologies.
 
-## `scripts/` (14)
+## `scripts/` (15)
 
 Reproduction entry points (`reproduce_all.sh` / `.ps1`), the tokenizer-cache populator, the
 reference verifier and the two release audits. The `_patch_*.py` files are one-shot,
 idempotent edits kept for provenance: they show exactly how the manuscript was transformed.
 
-## `results/` (131) — the scientific evidence
+## `results/` (132) — the scientific evidence
 
 | path | count | contents |
 |---|---|---|
-| `results/raw/` | 33 | Per-request records from every experiment: B0, M1, M2, topology sweeps, backend comparison, real serving stack, asynchronous accounting, cached-split probe, cross-validation. **Superseded datasets are retained** where they support auditability. |
+| `results/raw/` | 34 | Per-request records from every experiment: B0, M1, M2, topology sweeps, backend comparison, real serving stack, asynchronous accounting, cached-split probe, cross-validation. **Superseded datasets are retained** where they support auditability. |
 | `results/processed/` | 18 | Summaries produced by the summarizers, each gated. |
 | `results/tables/` | 67 | Generated Markdown and LaTeX tables, including the `ieee/` variants. |
 | `results/figures/` | 9 | Generated figures. |

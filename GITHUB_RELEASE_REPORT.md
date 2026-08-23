@@ -70,11 +70,11 @@ scientific evidence.
 
 ## Scientific artifacts preserved
 
-**All of it.** 310 tracked files.
+**All of it.** 311 tracked files.
 
 | kind | detail |
 |---|---|
-| Raw data | 23 datasets in `results/raw/` plus the topology sub-sweeps — B0, M1, M2, topology, backend comparison, real serving stack, asynchronous accounting, cached-split probe, cross-validation |
+| Raw data | 34 files in `results/raw/` covering B0, M1, M2, the topology sweeps, backend comparison, real serving stack, asynchronous accounting, the cached-split probe and cross-validation |
 | Processed summaries | 18 files, each produced through a fail-closed integrity gate |
 | Tables | 67 generated Markdown/LaTeX files including the IEEE variants |
 | Figures | 9 generated figures |

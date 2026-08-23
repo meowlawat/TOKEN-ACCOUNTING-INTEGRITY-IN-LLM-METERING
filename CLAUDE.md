@@ -1,5 +1,10 @@
 # CLAUDE.md — Token-Accounting Integrity Research Project
 
+> **FROZEN at v1.0.0.** This file is the project's working context and records decisions
+> made along the way, including ones later reversed. For the final state read
+> `RELEASE_FREEZE.md`; for the paper read `paper/main_ieee.pdf`. Where this file and the
+> release documents disagree, the release documents win.
+
 > Drop this file in the root of your project folder. Claude Code reads it automatically
 > and uses it as persistent context. Update it as the project evolves.
 
@@ -85,8 +90,10 @@ Revised taxonomy (honest provider, dishonest client, goal = underpay):
   violation distinct from M2. **Not implemented.**
 - **B0 — Credit/quota-decrement race** *(KNOWN BASELINE — not a contribution; was Class 6,
   now ABSORBS old Class 4)* — non-atomic check+decrement TOCTOU on a credit/quota counter,
-  incl. shared/multi-tenant pools. Cite: Kettle single-packet attack (PortSwigger, 2023) +
-  ***(citation withdrawn: the CVE identifier previously cited here was verified against MITRE CVE Services and NVD and belongs to an unrelated advisory)***. Already implemented + measured in Phase 0.
+  incl. shared/multi-tenant pools. Cite: Kettle, "Smashing the state machine" (PortSwigger,
+  2023), which introduces the single-packet attack. A CVE was also cited here and is
+  **withdrawn** — the identifier belongs to an unrelated advisory. Implemented and measured
+  in Phase 0.
 
 **KILLED classes (do NOT implement as contributions):**
 - ~~Class 4 (Adversarial retry on shared quota)~~ → **merged into B0**. Identical TOCTOU
@@ -104,8 +111,9 @@ client-authoritative billing leaks up to 0.58 (90% output under-report) / 0.74
 (total/subtotal mismatch under flat total pricing) leakage efficiency, and the
 exploitable manipulation set depends on the billing basis; server-authoritative archs
 (`server_recount`, `hybrid_reconcile`, `upstream`) leak 0 across all 8 manipulations.
-Defense overhead: M1 reserve-reconcile +9.8 ms; M2 recount +0.1 ms (mock; tokenizer cost
-NOT captured — key limitation). Impl: `app/architectures/`, `app/accounting/`,
+Defense overhead: M1 reserve-reconcile +9.8 ms; M2 recount was originally reported as
++0.1 ms against the mock tokenizer, which was misleading and has since been superseded by
+three-level measurement (standalone tokenizer, gateway, and a local real model). Impl: `app/architectures/`, `app/accounting/`,
 `app/m_routes.py`; experiments `run_m1/run_m2/run_overhead`, summarizers, `regression_m`
 (16/16), figures/tables/power_analysis. Paper: `paper/main.tex` → `paper/main.pdf`
 (compiled with tectonic). Contribution framing = systematization + measurement + defense,
@@ -116,7 +124,9 @@ kill it is **2 novel reframes (M1, M2) + baseline B0**, still PASS under the
 systematization/measurement framing. **Note (correction from Phase 0):** the
 earlier CLAUDE.md line citing "the 2025 *Computers & Security* race-condition
 methodology paper" was **not verified** in the Phase 1 search and should not be cited;
-use Kettle (2023) + *(citation withdrawn: the CVE identifier previously cited here was verified against MITRE CVE Services and NVD and belongs to an unrelated advisory)* for the baseline instead.
+use Kettle (2023) for the baseline instead. A CVE identifier was also cited here and has
+since been withdrawn: verification against MITRE CVE Services and NVD showed it belongs to
+an unrelated advisory.
 
 ---
 
@@ -167,7 +177,11 @@ use Kettle (2023) + *(citation withdrawn: the CVE identifier previously cited he
 
 - **ASR** — Attack Success Rate (% of trials that under-pay).
 - **$-leak** — dollar value of inference obtained but not billed, per attack.
-- **Detectability** — does the app's own metering log the discrepancy? (yes/no/partial)
+- ~~**Detectability**~~ — **WITHDRAWN.** This metric was defined as "does the app's own
+  metering log the discrepancy?" and implemented by *assigning* a level from architecture
+  metadata rather than measuring evidence. Our own audit contradicted it and the claim was
+  retracted; see `audit/confirmation_bias.md` and `experiments/detectability.py`. Do not
+  reintroduce it.
 - **Defense overhead** — added latency (mean + p50/p95/p99) and sustained throughput (ops/sec),
   measured with the endurance-trial methodology (100+ trials).
 - **Safety property** to verify for defenses: *no completed response without a committed,
