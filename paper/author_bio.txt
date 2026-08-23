@@ -1,0 +1,21 @@
+Author biography (Computers & Security submission)
+====================================================
+
+STATUS: TODO -- placeholder only. No biography or achievements have been invented for
+this file. The author must supply verified content before submission.
+
+Required by the journal's author guide: a short biography (education, current
+affiliation, research interests) and a passport-style photograph per author.
+
+What can be stated from verified project context, for the author to expand or replace:
+
+  - Name: Hardik
+  - Affiliation: Department of Computer Science and Data Analytics, Indian Institute
+    of Technology Patna, India
+
+Everything beyond this (specific coursework, prior publications beyond this
+manuscript, awards, memberships, positions) must be supplied by the author directly.
+Do not let an editor or automated tool fill in unverified biographical claims here.
+
+Photograph: not provided. Supply a passport-style image separately per the journal's
+current submission-system requirements.
