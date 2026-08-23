@@ -75,7 +75,7 @@ scientific evidence.
 
 ## Scientific artifacts preserved
 
-**All of it.** 311 tracked files.
+**All of it.** 312 tracked files.
 
 | kind | detail |
 |---|---|

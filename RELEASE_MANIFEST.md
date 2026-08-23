@@ -1,6 +1,6 @@
 # Release manifest — v1.0.0
 
-What is in the release, and why each part is there. 311 tracked files.
+What is in the release, and why each part is there. 312 tracked files.
 
 ---
 
@@ -64,7 +64,7 @@ audit baselines.
 Real-tokenizer microbenchmarks and gateway recount benchmarks; nginx configurations for the
 multi-worker and distributed topologies.
 
-## `scripts/` (15)
+## `scripts/` (16)
 
 Reproduction entry points (`reproduce_all.sh` / `.ps1`), the tokenizer-cache populator, the
 reference verifier and the two release audits. The `_patch_*.py` files are one-shot,
