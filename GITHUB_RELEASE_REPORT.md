@@ -4,26 +4,10 @@
 
 ## Repository URL
 
-**NOT CONFIGURED.** `git remote -v` returns nothing, and the GitHub CLI (`gh`) is not
-installed on this machine. No remote was invented, and nothing was pushed.
+**https://github.com/meowlawat/TOKEN-ACCOUNTING-INTEGRITY-IN-LLM-METERING** (public)
 
-The release is complete and tagged **locally**. To publish it, configure a remote you own
-and push — nothing else about the release needs to change:
-
-```bash
-cd "E:\se paper"
-git remote add origin https://github.com/<your-account>/<repo>.git
-git push -u origin master
-git push origin v1.0.0
-```
-
-If you would rather keep it private, create the repository as private first; the push
-command is identical. After pushing, verify with:
-
-```bash
-git ls-remote --tags origin        # expect refs/tags/v1.0.0
-git rev-parse HEAD                 # must match the remote head
-```
+Pushed successfully. Remote `main` and local `HEAD` are identical, and the `v1.0.0` tag is
+on the remote.
 
 ## Branch
 
@@ -46,17 +30,45 @@ Integrity"*
 
 ## Release
 
-**BLOCKED.** A GitHub release cannot be created without a remote and an authenticated
-`gh`. Once the remote exists and `gh auth login` has been run:
+**NOT CREATED** — the GitHub CLI is not installed on this machine, so a release object
+could not be created from here. The tag is pushed, so creating one is a single step in the
+web UI (Releases → Draft a new release → choose `v1.0.0`), or from any machine with `gh`:
 
 ```bash
-gh release create v1.0.0 \
-  --title "Token-Accounting Integrity v1.0.0 — Journal Submission Artifact" \
-  --notes-file RELEASE_NOTES.md
+gh release create v1.0.0   --title "Token-Accounting Integrity v1.0.0 — Journal Submission Artifact"   --notes-file RELEASE_NOTES.md
 ```
 
-`RELEASE_NOTES.md` is written and ready to be used as the release body. The paper does not
-need to be attached separately — `paper/main_ieee.pdf` is tracked in the repository.
+`RELEASE_NOTES.md` is written and ready to serve as the release body. The paper does not
+need attaching separately — `paper/main_ieee.pdf` is in the repository.
+
+
+## Author-identity rewrite
+
+GitHub rejected the first push: 38 commits carried a personal email address, and the
+account has *Block command line pushes that expose my email* enabled. That protection was
+doing exactly the right thing, so it was not circumvented.
+
+With the author's explicit approval, `git filter-branch` rewrote the author and committer
+identity on all 38 commits to `178680521+meowlawat@users.noreply.github.com`. Three
+addresses were mapped (`hardikahlawat13@gmail.com`, and the `research@local` /
+`auditor@local` placeholders from early phases). The annotated tag object carried the same
+address in its tagger field and was recreated with the noreply identity.
+
+Verified afterwards: the only addresses anywhere in the history are the noreply address and
+`noreply@github.com`, and `git diff backup-pre-rewrite master` is empty — every file tree is
+byte-identical, only commit metadata changed.
+
+The pre-rewrite history is preserved locally on the branch `backup-pre-rewrite`
+(`d3789f5`). It was never pushed and should be deleted once you are satisfied with the
+remote:
+
+```bash
+git branch -D backup-pre-rewrite
+```
+
+The force-push that followed replaced only GitHub's auto-generated `Initial commit`, whose
+content is preserved inside the rewritten history as `4e024f6`. Nothing unique to the remote
+was lost, which was checked before pushing rather than assumed.
 
 ## Files intentionally excluded
 
@@ -162,8 +174,6 @@ Project directory: **508 MB → 58 MB**, of which 17 MB is `.git` and 37 MB is s
 data. Nothing deleted was scientific evidence, and every deleted item has a documented
 command to restore it.
 
-> **One caveat, stated plainly.** The instruction was to clean up *after* pushing to
-> GitHub. The push did not happen, because there is no remote. The cleanup was therefore
-> limited to items that are regenerable or downloadable, and the repository — which holds
-> the only copy of the research — was left completely intact. Do not delete `E:\se paper`
-> until `git push` has succeeded.
+The push has now succeeded, so the repository is no longer the only copy of the research.
+The cleanup was in any case limited to items that are regenerable or downloadable; nothing
+deleted was scientific evidence.
