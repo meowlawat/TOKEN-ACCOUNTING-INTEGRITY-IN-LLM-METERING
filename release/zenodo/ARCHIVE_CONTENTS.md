@@ -1,14 +1,14 @@
 # Archive contents -- token-accounting-integrity-v1.0.1.zip
 
 Built from the tracked tree at tag `v1.0.1`.
-332 files, 8,090,261 bytes compressed.
+332 files, 8,090,152 bytes compressed.
 
 The archive's identity is its SHA-256, not a commit hash: recording HEAD here
 would be self-referential, since committing this file changes HEAD and the file
 would never settle. The zip is built with sorted entries and fixed timestamps, so
 rebuilding it from the same tracked content reproduces the checksum below exactly.
 
-SHA-256: `08d04b496bfba159d95fcc5e118cb3a0089e554d1dc2557ac372c5b2e8c3e59b`
+SHA-256: `df6fad61fd37fca2a4e9ff95b97701111d75682fd3f0147a7ae6641bf56bf5f4`
 
 Excluded by `.gitignore` (all regenerable; commands in the READMEs):
 
