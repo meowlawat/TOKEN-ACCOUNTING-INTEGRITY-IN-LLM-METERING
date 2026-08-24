@@ -1,14 +1,14 @@
 # Archive contents -- token-accounting-integrity-v1.0.1.zip
 
 Built from the tracked tree at tag `v1.0.1`.
-332 files, 8,090,152 bytes compressed.
+333 files, 8,092,381 bytes compressed.
 
 The archive's identity is its SHA-256, not a commit hash: recording HEAD here
 would be self-referential, since committing this file changes HEAD and the file
 would never settle. The zip is built with sorted entries and fixed timestamps, so
 rebuilding it from the same tracked content reproduces the checksum below exactly.
 
-SHA-256: `df6fad61fd37fca2a4e9ff95b97701111d75682fd3f0147a7ae6641bf56bf5f4`
+SHA-256: `4e4b90bdf30a827b6da554a1aaab82c6c01ac364319ef1bcd1f44e0b6eb10f62`
 
 Excluded by `.gitignore` (all regenerable; commands in the READMEs):
 
@@ -28,6 +28,7 @@ Excluded additionally by this script:
 - `release/zenodo/ARCHIVE_CONTENTS.md`
 - `release/zenodo/SHA256SUMS.txt`
 - `release/zenodo/metadata.md`
+- `release/zenodo/metadata_v1.0.2.md`
 - `scripts/_patch_abstract.py`
 - `scripts/_patch_claim_matrix.py`
 - `scripts/_patch_ieee_abstract.py`
@@ -369,4 +370,5 @@ Excluded additionally by this script:
 - `scripts/render_tikz_figure1.py`
 - `scripts/reproduce_all.ps1`
 - `scripts/reproduce_all.sh`
+- `scripts/set_zenodo_doi.py`
 - `scripts/verify_references.py`
