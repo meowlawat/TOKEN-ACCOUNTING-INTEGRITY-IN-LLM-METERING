@@ -1,21 +1,46 @@
 Author biography (Computers & Security submission)
 ====================================================
 
-STATUS: TODO -- placeholder only. No biography or achievements have been invented for
-this file. The author must supply verified content before submission.
+STATUS: PENDING -- placeholder only. No biography, achievement, degree, position, or
+affiliation detail has been invented for this file. The author must supply verified
+content before submission.
 
-Required by the journal's author guide: a short biography (education, current
-affiliation, research interests) and a passport-style photograph per author.
+The journal's author guide requests, per author, a short biography (education, current
+affiliation, research interests) and a passport-style photograph. The photograph is
+tracked separately in paper/AUTHOR_PHOTO_REQUIRED.md.
+
+Length: keep to roughly 75-100 words. Elsevier does not publish a hard limit for this
+field, so treat that as a house-style target and check the live author guide.
 
 What can be stated from verified project context, for the author to expand or replace:
 
-  - Name: Hardik
+  - Name:        Hardik   <- INCOMPLETE, see note below
   - Affiliation: Department of Computer Science and Data Analytics, Indian Institute
-    of Technology Patna, India
+                 of Technology Patna, India
+  - Research interest evidenced by this manuscript: security and integrity of usage
+    metering and billing for machine-learning inference services; formal specification
+    and model checking of accounting protocols.
 
-Everything beyond this (specific coursework, prior publications beyond this
-manuscript, awards, memberships, positions) must be supplied by the author directly.
-Do not let an editor or automated tool fill in unverified biographical claims here.
+NOTE ON THE NAME. The manuscript, CITATION.cff, and this file all carry the single name
+"Hardik". Elsevier's submission system and Zenodo both expect given name and family name
+as separate fields, and the reference lists of anyone citing this work will need a family
+name. The corresponding-author address supplied for the submission suggests a family
+name, but a surname is not something to infer from an email address and write onto a
+publication. The author must state it explicitly, after which it needs to be updated in
+all three places at once:
 
-Photograph: not provided. Supply a passport-style image separately per the journal's
-current submission-system requirements.
+    paper/main_cose.tex        \author{...}
+    CITATION.cff               authors: family-names / given-names
+    release/zenodo/metadata.md Authors section
+
+Everything beyond the verified items above -- specific coursework, prior publications
+other than this manuscript, awards, memberships, positions held, dates -- must be
+supplied by the author directly. Do not let an editor, a submission system, or an
+automated tool fill in unverified biographical claims here.
+
+------------------------------------------------------------------------------
+BIOGRAPHY TEXT (to be written by the author; this file ships with it still empty):
+
+    [ TODO ]
+
+------------------------------------------------------------------------------

@@ -4,7 +4,9 @@
 
 **GitHub (source code and artifact).**
 https://github.com/meowlawat/TOKEN-ACCOUNTING-INTEGRITY-IN-LLM-METERING, tagged release
-`v1.0.0`. This contains:
+`v1.0.1`, which is the version reported in the manuscript. Tag `v1.0.0` is preserved
+unchanged as the earlier historical snapshot; it differs only in how the B0 condition is
+stated in the accompanying manuscript, and in no measured value. This contains:
 
 - the testbed source code (gateway, architectures, accounting backends);
 - the attack harness and defense implementations;
@@ -23,14 +25,32 @@ archival copy is also intended.
 
 ## Archival repository (dataset DOI)
 
-**Not yet created.** A Zenodo archival snapshot of the `v1.0.0` release is planned prior
-to journal submission, following the standard GitHub-to-Zenodo archiving process
-(Zenodo mints a DOI for a tagged release and preserves it independently of GitHub).
-Until that snapshot exists, the manuscript's data-availability statement reads:
+**Prepared, not yet deposited. No DOI exists.**
+
+The deposition package is built and waiting in `release/zenodo/`:
+
+| file | what it is |
+|---|---|
+| `token-accounting-integrity-v1.0.1.zip` | the archive, built from the tagged commit |
+| `SHA256SUMS.txt` | its SHA-256 checksum |
+| `ARCHIVE_CONTENTS.md` | complete file list, and what was excluded and why |
+| `metadata.md` | every Zenodo form field, filled in |
+
+The archive is rebuilt byte-identically from the same commit by
+`scripts/build_zenodo_archive.py`, so the published checksum stays verifiable by anyone.
+
+What remains requires the author's Zenodo account: create a GitHub release for tag
+`v1.0.1` (Zenodo archives on release creation, not on existing tags), enter the fields
+from `metadata.md`, and publish. Zenodo mints the DOI at that point.
+
+Until then the manuscript's data-availability statement carries an explicit placeholder:
 
 > [ZENODO DOI TO BE INSERTED]
 
-This is a real, tracked blocker. See `paper/SUBMISSION_BLOCKERS.md`.
+That placeholder is deliberate. A DOI that has not been minted must not appear anywhere
+in the manuscript, the artifact, or `CITATION.cff`, in any form that could be mistaken
+for a real identifier. This is a real, tracked blocker. See
+`paper/SUBMISSION_BLOCKERS.md`.
 
 ## What is NOT included
 

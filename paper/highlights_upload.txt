@@ -1,0 +1,5 @@
+A lifecycle model unifies three LLM metering failure dimensions.
+TLA+ model checking: 40 runs, 27,526 states, zero disagreements.
+M1 shows solvency and accounting finality are orthogonal defenses.
+Recounted usage still leaks if billing authority stays client-set.
+Deferred settlement over-serves sequential requests, no concurrency.

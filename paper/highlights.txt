@@ -1,7 +1,10 @@
 Highlights (Computers & Security submission)
 Each bullet is <= 85 characters including spaces; counts below are measured, not
-estimated. Remove this header comment before final upload if the journal requires a
-plain bullet list only.
+estimated. Elsevier allows 3-5 highlights of at most 85 characters each; this file has
+5, the longest being 68.
+
+DO NOT UPLOAD THIS FILE. It carries these annotations. Upload
+`paper/highlights_upload.txt`, which contains the five bullets and nothing else.
 
 - A lifecycle model unifies three LLM metering failure dimensions. [64]
 - TLA+ model checking: 40 runs, 27,526 states, zero disagreements. [64]
