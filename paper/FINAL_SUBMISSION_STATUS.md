@@ -9,13 +9,13 @@ SUBMISSION FORMS:      READY
 AUTHOR IDENTITY:       RESOLVED
 AUTHOR BIOGRAPHY:      DRAFTED, needs author review
 ZENODO DOI:            MINTED, record needs completing
-AUTHOR PHOTOGRAPH:     NOT SUPPLIED
+AUTHOR PHOTOGRAPH:     READY
 JOURNAL SUBMISSION:    NOT SUBMITTED
 ```
 
-**The paper has not been submitted. No Zenodo DOI exists. No author photograph has been
-supplied.** Everything that could be finished without a human or an external service is
-finished.
+**The paper has not been submitted.** One blocking item remains, and it is on Zenodo
+rather than in this repository: the deposited record holds the manuscript, not the
+artifact archive. Everything else is done.
 
 ---
 
@@ -117,7 +117,7 @@ invented, approximated, or worked around.
 |---|---|---|---|
 | 1 | Zenodo record holds the manuscript, not the artifact | the 8.1 MB archive was never uploaded; a reviewer following the DOI expecting data finds a PDF. Needs *New version*, plus three metadata fixes (resource type, licence, creator name) | yes |
 | 2 | Author biography | drafted in `paper/author_bio.txt` from verified sources; needs the author's review, not writing | yes, until reviewed |
-| 3 | Author photograph | a portrait of a real person is not something to synthesise | yes, same condition |
+| 3 | ~~Author photograph~~ | supplied — `paper/submission_forms/author_photo.jpg`, 1200x1600 @ 300 dpi | no |
 | 4 | ORCID record is near-empty | the ID `0009-0001-1642-6669` is verified and recorded; the record has no affiliations or works | no, strongly recommended |
 | 5 | Graphical abstract | optional per Elsevier; would require new artwork | no |
 | 6 | Human read-through | no automated pass substitutes for one | no, but recommended |

@@ -83,9 +83,15 @@ with every claim traced to its source and a list of what was deliberately left o
 why. Read it and correct it — it is a biography of a real person and should not go out
 unread.
 
-**Photograph: still open, and not closeable here.** `paper/AUTHOR_PHOTO_REQUIRED.md`
-records the requirements. A portrait of a real person is not something to synthesise or
-substitute.
+**Photograph: SUPPLIED.** `paper/submission_forms/author_photo.jpg` — 1200x1600 px at
+300 dpi, JPEG, white background, passport framing. Prepared by
+`scripts/prepare_author_photo.py` from the author's own photograph: framing and format
+only, no retouching. Details and provenance in `paper/AUTHOR_PHOTO_REQUIRED.md`.
+
+The source had been through Gemini for background removal. The author confirmed it is a
+real photograph of them rather than a synthetic likeness before it was packaged; an
+AI-generated portrait presented as an author photograph would be a fabricated record and
+would not have been used.
 
 **Status: BLOCKING** if the journal's current submission system enforces this field;
 check the live author guide, since requirements can change.

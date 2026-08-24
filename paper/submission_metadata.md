@@ -99,8 +99,8 @@ repository is MIT, and the creator name renders as ". , . hardik .". See
 | `paper/submission_forms/cover_letter.txt` | cover letter, paste-ready plain text |
 | `paper/submission_forms/declaration_of_interests.docx` | Elsevier declaration-of-interests form, completed |
 | `paper/submission_forms/suggested_reviewers.md` | reviewer suggestions (enter in Editorial Manager) |
-| `paper/author_bio.txt` | author biography — **PENDING, not yet written** |
-| `paper/AUTHOR_PHOTO_REQUIRED.md` | photograph — **PENDING, not supplied** |
+| `paper/author_bio.txt` | author biography — 85 words, **needs author review** |
+| `paper/submission_forms/author_photo.jpg` | author photograph, 1200x1600 @ 300 dpi |
 
 Do not upload `paper/highlights.txt`; it carries working annotations. The paste-ready
 version is `paper/highlights_upload.txt`.

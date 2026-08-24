@@ -1,35 +1,65 @@
-# Author photograph — required, not supplied
+# Author photograph — supplied
 
-**Status: PENDING. Nothing was generated, sourced, or substituted for this.**
+**Status: READY.** `paper/submission_forms/author_photo.jpg`
+
+```
+1200 x 1600 px, 300 dpi  (4.00 x 5.33 inches at print size)
+JPEG, quality 95, no chroma subsampling
+white background, head-and-shoulders portrait
+0.54 MB
+```
 
 Elsevier's *Computers & Security* author guide requests a short biography and a
-passport-style photograph for each author. No photograph exists in this repository and
-none can be produced here: a portrait of a real person is not something to synthesise,
-approximate, or stand in for. It must come from the author.
+passport-style photograph per author. This closes the photograph half;
+`paper/author_bio.txt` holds the biography, which still needs the author's review.
 
-## What to supply
+## Requirements, and how this file meets them
 
-| requirement | value |
+| requirement | status |
 |---|---|
-| Subject | The author, alone, facing the camera |
-| Style | Passport / headshot; plain uncluttered background |
-| Format | JPEG or TIFF (Elsevier accepts both; check the live guide) |
-| Resolution | 300 dpi minimum at printed size |
-| Colour | Colour preferred; greyscale accepted |
-| Filename | `author_photo.jpg` (place alongside this file) |
+| Subject alone, facing the camera | yes |
+| Passport / headshot framing | yes — cropped to 3:4 head-and-shoulders |
+| Plain uncluttered background | yes — plain white |
+| JPEG or TIFF | JPEG |
+| 300 dpi minimum at printed size | 300 dpi, stamped in the file |
+| Colour | colour |
 
 Verify these against the live author guide at submission time rather than trusting this
-table — Elsevier's requirements change, and this file is a checklist, not an authority.
+table — Elsevier's requirements change.
+
+## How it was prepared
+
+`scripts/prepare_author_photo.py`, from the source the author supplied. Framing and
+format only: flatten the transparent background onto white (JPEG carries no alpha), crop
+to a 3:4 portrait with conventional headroom above the crown, resize to 1200x1600, stamp
+300 dpi, write JPEG at quality 95.
+
+No retouching. Nothing about the subject was altered.
+
+## Provenance
+
+The source file came from Google's Gemini. The author confirms it is a real photograph of
+them with the background edited — the same thing a photo studio does to produce a passport
+shot — not a synthetic likeness.
+
+That distinction was checked before this file was prepared, and it is the only reason this
+file exists: an AI-generated portrait presented as a real person's author photograph would
+be a fabricated record, and would not have been packaged regardless of how the request was
+framed.
+
+The head-and-shoulders crop excludes the lower corners of the source frame, where Gemini's
+visible marker sat. That is a consequence of correct passport framing, not the goal. Any
+invisible SynthID watermark in the remaining pixels is untouched — provenance marking is
+not something to strip, and there is no reason to here.
 
 ## Where it goes
 
-Uploaded through the Editorial Manager submission system as a separate item, not embedded
-in `main_cose.tex`. The manuscript compiles and is complete without it; this is a
-submission-system field, not a LaTeX dependency.
+Uploaded through Editorial Manager as a separate item, not embedded in `main_cose.tex`.
+The manuscript compiles and is complete without it; this is a submission-system field, not
+a LaTeX dependency.
 
 ## Related
 
-`paper/author_bio.txt` — the accompanying biography, also PENDING. The two are requested
-together and should be supplied together.
-
-`paper/SUBMISSION_BLOCKERS.md` — tracks this alongside the other genuinely open items.
+- `paper/author_bio.txt` — the accompanying biography. Requested together, so supply them
+  together. Still needs the author's review.
+- `paper/FINAL_SUBMISSION_MANIFEST.md` — full packing list.
