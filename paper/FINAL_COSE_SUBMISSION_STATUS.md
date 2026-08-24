@@ -1,5 +1,12 @@
 # Final C&S submission status
 
+> **SUPERSEDED by `paper/FINAL_SUBMISSION_STATUS.md`.** This file records the earlier
+> pre-submission cleanup pass and is kept because it documents what was fixed then. Its
+> numbers are from that pass and are now stale in three places: the gate has 31 checks,
+> not 30; the total word count is 10,064, not 10,010; and the submission artwork is
+> `Figure_1.pdf`/`Figure_1.png` through `Figure_6.png`, not `Figure_1..Figure_5`. Read the
+> superseding file for current status.
+
 Final pre-submission cleanup pass: correct the hidden B0 inconsistency in the IEEE
 source, verify the Elsevier manuscript did not regress, and record what remains blocked.
 
