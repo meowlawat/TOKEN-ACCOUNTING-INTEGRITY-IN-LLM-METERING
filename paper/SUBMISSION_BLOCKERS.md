@@ -23,7 +23,7 @@ the record has to change, and a concept DOI survives that.
 **1a. It contains the manuscript, not the artifact. BLOCKING.**
 
 The record holds `main_cose.tex` (77,041 bytes) and `main_cose.pdf` (2,376,354 bytes).
-It does not hold `token-accounting-integrity-v1.0.1.zip` — the 334-file, 8.1 MB archive
+It does not hold `token-accounting-integrity-v1.0.1.zip` — the 332-file, 8.1 MB archive
 with the raw data, processed results, tables, figures, TLA+ model, harnesses, defenses,
 and audit code.
 

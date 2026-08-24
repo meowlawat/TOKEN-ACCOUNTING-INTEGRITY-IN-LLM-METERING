@@ -49,7 +49,7 @@ The deposition package is built and waiting in `release/zenodo/`:
 
 | file | what it is |
 |---|---|
-| `token-accounting-integrity-v1.0.1.zip` | the archive — 334 files, 8.1 MB |
+| `token-accounting-integrity-v1.0.1.zip` | the archive — 332 files, 8.1 MB |
 | `SHA256SUMS.txt` | its SHA-256 checksum |
 | `ARCHIVE_CONTENTS.md` | complete file list, and what was excluded and why |
 | `metadata.md` | every Zenodo form field |
