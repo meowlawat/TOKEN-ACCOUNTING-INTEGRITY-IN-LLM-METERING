@@ -1,9 +1,9 @@
 # Archive contents -- token-accounting-integrity-v1.0.1.zip
 
-Built from git commit `4cfd54e882af256539d902c77b8059b028e8064d` (tag `v1.0.1`).
-327 files, 8,069,566 bytes compressed.
+Built from git commit `a8f10700b020462b68babc58806a7787258f5665` (tag `v1.0.1`).
+331 files, 8,080,745 bytes compressed.
 
-SHA-256: `c16186e9af04630de2331325b5cd2ed725a46db2ec2a8f92abb6b73503c23def`
+SHA-256: `0ee3fcb607fa8637773c10e8aa5141f24d705bf85427f76b5a6027488b64242d`
 
 Excluded by `.gitignore` (all regenerable; commands in the READMEs):
 
@@ -16,6 +16,9 @@ Excluded by `.gitignore` (all regenerable; commands in the READMEs):
 Excluded additionally by this script:
 
 - `CLAUDE.md`
+- `release/zenodo/ARCHIVE_CONTENTS.md`
+- `release/zenodo/SHA256SUMS.txt`
+- `release/zenodo/metadata.md`
 - `scripts/_patch_abstract.py`
 - `scripts/_patch_claim_matrix.py`
 - `scripts/_patch_ieee_abstract.py`
@@ -146,8 +149,11 @@ Excluded additionally by this script:
 - `formal/cfg/m2_server_recount.cfg`
 - `formal/check.py`
 - `paper/.gitkeep`
+- `paper/AUTHOR_PHOTO_REQUIRED.md`
 - `paper/COSE_SUBMISSION_READINESS.md`
 - `paper/FINAL_COSE_SUBMISSION_STATUS.md`
+- `paper/FINAL_SUBMISSION_MANIFEST.md`
+- `paper/FINAL_SUBMISSION_STATUS.md`
 - `paper/IEEE_FINALIZATION_REPORT.md`
 - `paper/SUBMISSION_BLOCKERS.md`
 - `paper/accounting_state_model.md`
@@ -174,6 +180,7 @@ Excluded additionally by this script:
 - `paper/formal_empirical_mapping.md`
 - `paper/formal_verification.md`
 - `paper/highlights.txt`
+- `paper/highlights_upload.txt`
 - `paper/ieee_format_audit.md`
 - `paper/ieee_reference_audit.md`
 - `paper/journal_reviewer_attack.md`
