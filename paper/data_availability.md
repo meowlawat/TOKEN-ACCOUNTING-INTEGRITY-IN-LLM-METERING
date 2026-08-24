@@ -25,32 +25,37 @@ archival copy is also intended.
 
 ## Archival repository (dataset DOI)
 
-**Prepared, not yet deposited. No DOI exists.**
+**DOI minted.**
+
+```
+Concept DOI (all versions, always latest):  10.5281/zenodo.22085827
+Version DOI (v1.0.1):                       10.5281/zenodo.22085828
+Record:                                     https://zenodo.org/records/22085828
+```
+
+The manuscript cites the **concept** DOI. That is deliberate: a concept DOI resolves to
+the most recent version of the record, so it stays correct when a new version is
+deposited — which is exactly what has to happen next (see below). The version DOI is also
+given, for anyone who wants the precise snapshot this paper reports.
+
+**The record is not yet complete.** As deposited it contains only `main_cose.tex` and
+`main_cose.pdf` — the manuscript, not the artifact. Until the archive below is uploaded as
+a new version, the sentence "all raw experimental data are released" is true of GitHub but
+not of the Zenodo record. See `paper/SUBMISSION_BLOCKERS.md` item 1.
+
+The deposition package is built and waiting in `release/zenodo/`:
 
 The deposition package is built and waiting in `release/zenodo/`:
 
 | file | what it is |
 |---|---|
-| `token-accounting-integrity-v1.0.1.zip` | the archive, built from the tagged commit |
+| `token-accounting-integrity-v1.0.1.zip` | the archive — 334 files, 8.1 MB |
 | `SHA256SUMS.txt` | its SHA-256 checksum |
 | `ARCHIVE_CONTENTS.md` | complete file list, and what was excluded and why |
-| `metadata.md` | every Zenodo form field, filled in |
+| `metadata.md` | every Zenodo form field |
 
-The archive is rebuilt byte-identically from the same commit by
+The archive is rebuilt byte-identically from the same tracked content by
 `scripts/build_zenodo_archive.py`, so the published checksum stays verifiable by anyone.
-
-What remains requires the author's Zenodo account: create a GitHub release for tag
-`v1.0.1` (Zenodo archives on release creation, not on existing tags), enter the fields
-from `metadata.md`, and publish. Zenodo mints the DOI at that point.
-
-Until then the manuscript's data-availability statement carries an explicit placeholder:
-
-> [ZENODO DOI TO BE INSERTED]
-
-That placeholder is deliberate. A DOI that has not been minted must not appear anywhere
-in the manuscript, the artifact, or `CITATION.cff`, in any form that could be mistaken
-for a real identifier. This is a real, tracked blocker. See
-`paper/SUBMISSION_BLOCKERS.md`.
 
 ## What is NOT included
 

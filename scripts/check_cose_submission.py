@@ -177,6 +177,14 @@ def main() -> None:
     else:
         checks.append(("Compile log available", False, "main_cose.log missing"))
 
+    # ---- Zenodo DOI is real, not a placeholder ---------------------------------------
+    # The manuscript must never ship with an unminted-DOI placeholder, and must never
+    # carry a DOI string that was written before Zenodo issued one.
+    checks.append(("No unminted-DOI placeholder remains",
+                   "ZENODO DOI TO BE INSERTED" not in s, "n/a"))
+    checks.append(("Zenodo concept DOI present in data availability",
+                   "10.5281/zenodo.22085827" in s, "n/a"))
+
     # ---- every float cited in the text ----------------------------------------------
     # Elsevier requires each figure and table to be referred to in the body. Shipping an
     # uncited float is invisible in the compiled PDF -- it renders fine -- so it needs an

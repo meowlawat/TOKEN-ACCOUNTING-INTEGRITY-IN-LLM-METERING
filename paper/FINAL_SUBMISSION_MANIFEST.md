@@ -3,7 +3,7 @@
 Everything that exists, what it is for, and whether it is ready. This is the packing
 list; `paper/FINAL_SUBMISSION_STATUS.md` is the verdict.
 
-Verified state at the time of writing: `scripts/check_cose_submission.py` 32/32,
+Verified state at the time of writing: `scripts/check_cose_submission.py` 34/34,
 `scripts/count_cose_metrics.py` abstract 248 / total 10,025, PDF 25 pages 0 blank, 0
 undefined references, 0 undefined citations, 0 duplicate labels, 2 cosmetic overfull
 boxes (2.6 pt and 6.8 pt).
@@ -69,8 +69,15 @@ reproduction scripts. Confirmed to contain no key material, credentials, model w
 tokenizer cache, Docker volumes, LaTeX intermediates, OS metadata, or absolute local
 paths.
 
-**No DOI exists.** `SHA256SUMS.txt` and `ARCHIVE_CONTENTS.md` are written after the
-archive, so they are not inside it; that is intended, since they describe it.
+**DOI minted:** concept `10.5281/zenodo.22085827` (cited in the paper, always resolves to
+the latest version), version `10.5281/zenodo.22085828`, record
+https://zenodo.org/records/22085828.
+
+**The record does not yet contain this archive** — only the manuscript was deposited.
+Uploading the zip as a new Zenodo version is blocker 1 and must happen before submission,
+or the data-availability statement is false. `SHA256SUMS.txt` and `ARCHIVE_CONTENTS.md`
+are written after the archive, so they are not inside it; that is intended, since they
+describe it.
 
 ## 4. Author-facing working files, not for upload
 
@@ -84,7 +91,7 @@ annotated version — upload `highlights_upload.txt` instead.
 
 | script | what it checks |
 |---|---|
-| `scripts/check_cose_submission.py` | 32 fail-closed submission checks |
+| `scripts/check_cose_submission.py` | 34 fail-closed submission checks |
 | `scripts/count_cose_metrics.py` | word, section, float, and citation counts |
 | `scripts/check_float_citations.py` | every float is referred to in the text |
 | `scripts/build_zenodo_archive.py` | deposition archive and checksum |

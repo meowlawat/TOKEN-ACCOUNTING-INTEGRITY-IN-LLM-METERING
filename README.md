@@ -281,8 +281,17 @@ See `audit/confirmation_bias.md`.
 
 ## Citation
 
-See [`CITATION.cff`](./CITATION.cff). The manuscript is prepared for journal submission; it
-is not peer-reviewed and no DOI has been minted.
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22085827.svg)](https://doi.org/10.5281/zenodo.22085827)
+
+See [`CITATION.cff`](./CITATION.cff).
+
+The archival record is Zenodo [10.5281/zenodo.22085827](https://doi.org/10.5281/zenodo.22085827)
+— a concept DOI, which always resolves to the latest version. The version archived for the
+manuscript is [10.5281/zenodo.22085828](https://doi.org/10.5281/zenodo.22085828).
+
+**The manuscript is under submission to Elsevier *Computers & Security*. It is not
+peer-reviewed and has not been accepted.** The Zenodo DOI is a dataset/artifact identifier
+and is not evidence of publication.
 
 ## License
 

@@ -30,8 +30,9 @@ keywords:
   - model checking
   - TLA+
 repository-code: "https://github.com/meowlawat/TOKEN-ACCOUNTING-INTEGRITY-IN-LLM-METERING"
-# doi: none assigned; do not add one that has not been minted. The Zenodo deposition is
-# built and waiting in release/zenodo/ -- add the DOI here once Zenodo issues it.
+# Concept DOI: always resolves to the latest Zenodo version, so it stays correct when a
+# new version is deposited. The version-specific DOI for v1.0.1 is 10.5281/zenodo.22085828.
+doi: "10.5281/zenodo.22085827"
 preferred-citation:
   type: unpublished
   title: "Token-Accounting Integrity in LLM Metering: A Systematic Study of Client-Side Under-Payment"

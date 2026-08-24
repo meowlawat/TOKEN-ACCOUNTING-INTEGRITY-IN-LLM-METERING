@@ -4,28 +4,68 @@ Concrete, unresolved items that must be closed before `paper/main_cose.tex` is a
 submitted to Computers & Security. Nothing below was fabricated to make this list look
 shorter than it is.
 
-## 1. Zenodo DOI still required before submission
+## 1. Zenodo record is incomplete and mis-typed
 
-`paper/main_cose.tex`'s Data Availability section currently references the GitHub
-release directly and states that an archival Zenodo snapshot is intended. Elsevier and
-most funders now expect a persistent dataset DOI, not just a GitHub URL. Action:
+**The DOI exists.**
 
-The deposition is prepared and waiting. `release/zenodo/` contains the archive
-(`token-accounting-integrity-v1.0.1.zip`, built from the tagged commit), its SHA-256
-checksum, its complete file list, and `metadata.md` with every Zenodo form field already
-filled in. What remains is the part only a human with the account can do:
+```
+Concept DOI (cited in the manuscript):  10.5281/zenodo.22085827
+Version DOI (v1.0.1):                   10.5281/zenodo.22085828
+Record:                                 https://zenodo.org/records/22085828
+```
 
-1. Connect the GitHub repository to Zenodo (https://zenodo.org/account/settings/github/),
-   or upload the prepared archive manually.
-2. Create a GitHub release for tag `v1.0.1` — Zenodo archives on release creation, not on
-   existing tags, so a fresh release is needed even though the tag already exists.
-3. Enter the fields from `release/zenodo/metadata.md`. Note that the Authors field needs
-   the name question in item 7 resolved first.
-4. Zenodo mints the DOI. Insert it in place of `[ZENODO DOI TO BE INSERTED]` in
-   `paper/main_cose.tex` and `paper/data_availability.md`, add it to `CITATION.cff`, then
-   re-run `python scripts/check_cose_submission.py`.
+The manuscript, `CITATION.cff`, and `paper/data_availability.md` all now carry the concept
+DOI, which always resolves to the latest version of the record. That choice matters here:
+the record has to change, and a concept DOI survives that.
 
-**Status: BLOCKING.** Do not submit with a placeholder DOI string in the manuscript.
+**Four problems with the record as deposited.**
+
+**1a. It contains the manuscript, not the artifact. BLOCKING.**
+
+The record holds `main_cose.tex` (77,041 bytes) and `main_cose.pdf` (2,376,354 bytes).
+It does not hold `token-accounting-integrity-v1.0.1.zip` — the 334-file, 8.1 MB archive
+with the raw data, processed results, tables, figures, TLA+ model, harnesses, defenses,
+and audit code.
+
+The paper's data-availability statement says all raw experimental data are released. That
+is true of GitHub. It is not true of the Zenodo record, and a reviewer who follows the DOI
+expecting data will find a PDF. Fix this before submitting.
+
+Zenodo locks files after publication, so this needs **New version** rather than an edit:
+
+1. Open https://zenodo.org/records/22085828 and choose *New version*.
+2. Upload `release/zenodo/token-accounting-integrity-v1.0.1.zip`.
+3. Decide whether the manuscript PDF stays (see 1b).
+4. Publish. A new version DOI is minted; the concept DOI in the paper keeps working, so
+   **no manuscript edit is needed**.
+
+**1b. Resource type is "Journal article". Should be Dataset or Software.**
+
+Two things are wrong with this. The deposition is an artifact archive, not an article. And
+this paper is not published in any journal — a Zenodo record typed as "Journal article"
+implies it is. Change it to **Dataset** (or Software) in *Edit* → *Resource type*;
+metadata is editable without a new version.
+
+Separately, be aware that depositing the full manuscript PDF makes it a **preprint**.
+Elsevier permits preprints, but it is worth declaring at submission rather than leaving an
+editor to discover it. If you did not intend to publish a preprint, remove the PDF when
+you create the new version in 1a.
+
+**1c. Licence says CC-BY-4.0; the repository is MIT.**
+
+`LICENSE` in the repository is MIT, and the archive is mostly code. CC-BY is a
+content licence and is a poor fit for software. Set the record to **MIT** to match, or if
+you want CC-BY for the data specifically, say so explicitly in the description so the two
+do not silently contradict each other. Editable without a new version.
+
+**1d. Creator name renders as ". , . hardik .".**
+
+The name fields were filled in a way that produces that citation string. For the mononym,
+put `Hardik` in the family-name field and leave given-name empty. While you are there, add
+the ORCID `0009-0001-1642-6669` and the affiliations. Editable without a new version.
+
+**Status: BLOCKING for 1a.** 1b, 1c and 1d are metadata edits that take a few minutes and
+should be done in the same sitting.
 
 ## 2. Corresponding-author email choice — RESOLVED
 

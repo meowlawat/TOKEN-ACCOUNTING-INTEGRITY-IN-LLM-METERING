@@ -74,9 +74,17 @@ Release tag reported in the paper: `v1.0.1`
 Earlier tag `v1.0.0` is preserved unchanged as the historical snapshot.
 
 ## Zenodo / archival DOI
-**No DOI exists.** The deposition package is built and waiting in `release/zenodo/`
-(archive, SHA-256 checksum, file list, and every form field in `metadata.md`). Publishing
-it requires the author's Zenodo account. See `paper/SUBMISSION_BLOCKERS.md` item 1.
+
+```
+Concept DOI (cited in the manuscript):  10.5281/zenodo.22085827
+Version DOI (v1.0.1):                   10.5281/zenodo.22085828
+Record:                                 https://zenodo.org/records/22085828
+```
+
+**The record still needs work before submission** — it currently holds only the
+manuscript, its resource type says "Journal article", its licence says CC-BY-4.0 where the
+repository is MIT, and the creator name renders as ". , . hardik .". See
+`paper/SUBMISSION_BLOCKERS.md` item 1.
 
 ## Files to upload
 

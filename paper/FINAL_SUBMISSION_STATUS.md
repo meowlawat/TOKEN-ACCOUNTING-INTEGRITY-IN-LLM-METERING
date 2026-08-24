@@ -8,7 +8,7 @@ ARCHIVE PACKAGE:       READY
 SUBMISSION FORMS:      READY
 AUTHOR IDENTITY:       RESOLVED
 AUTHOR BIOGRAPHY:      DRAFTED, needs author review
-ZENODO DOI:            NOT MINTED
+ZENODO DOI:            MINTED, record needs completing
 AUTHOR PHOTOGRAPH:     NOT SUPPLIED
 JOURNAL SUBMISSION:    NOT SUBMITTED
 ```
@@ -22,7 +22,7 @@ finished.
 ## Verification results
 
 ```
-scripts/check_cose_submission.py     32/32 PASS
+scripts/check_cose_submission.py     34/34 PASS
 abstract words                       248        (limit 250)
 total words (body + references)      10,025     (limit 12,000)
 keywords                             9          (range 5-10)
@@ -115,7 +115,7 @@ invented, approximated, or worked around.
 
 | # | item | why it is open | blocking? |
 |---|---|---|---|
-| 1 | Zenodo DOI | needs the author's Zenodo account; package is built and waiting in `release/zenodo/` | yes |
+| 1 | Zenodo record holds the manuscript, not the artifact | the 8.1 MB archive was never uploaded; a reviewer following the DOI expecting data finds a PDF. Needs *New version*, plus three metadata fixes (resource type, licence, creator name) | yes |
 | 2 | Author biography | drafted in `paper/author_bio.txt` from verified sources; needs the author's review, not writing | yes, until reviewed |
 | 3 | Author photograph | a portrait of a real person is not something to synthesise | yes, same condition |
 | 4 | ORCID record is near-empty | the ID `0009-0001-1642-6669` is verified and recorded; the record has no affiliations or works | no, strongly recommended |
@@ -134,18 +134,19 @@ Exact remediation steps for each are in `paper/SUBMISSION_BLOCKERS.md`.
 
 Once items 1-4 are closed:
 
-1. Resolve the author name; update `paper/main_cose.tex`, `CITATION.cff`, and
-   `release/zenodo/metadata.md` together.
-2. Write `paper/author_bio.txt`; supply the photograph per
-   `paper/AUTHOR_PHOTO_REQUIRED.md`.
-3. Create the GitHub release for tag `v1.0.1`; deposit to Zenodo using
-   `release/zenodo/metadata.md`; record the minted DOI.
-4. Insert the DOI in `paper/main_cose.tex` and `paper/data_availability.md`, replacing
-   `[ZENODO DOI TO BE INSERTED]`. Add it to `CITATION.cff`.
-5. Recompile: `tectonic -X compile paper/main_cose.tex`.
-6. Re-run `python scripts/check_cose_submission.py` — must stay 32/32.
-7. Upload the files listed in `paper/FINAL_SUBMISSION_MANIFEST.md` §1 to Editorial
-   Manager.
+1. Fix the Zenodo record — upload `release/zenodo/token-accounting-integrity-v1.0.1.zip`
+   as a **New version**, set resource type to Dataset, set the licence to MIT, and repair
+   the creator name and ORCID. Details in `paper/SUBMISSION_BLOCKERS.md` item 1. **No
+   manuscript edit is needed afterwards**: the paper cites the concept DOI, which follows
+   the record forward.
+2. Read and correct `paper/author_bio.txt`.
+3. Supply the author photograph per `paper/AUTHOR_PHOTO_REQUIRED.md`.
+4. Populate the ORCID record (affiliations, the two accepted papers).
+5. Upload the files listed in `paper/FINAL_SUBMISSION_MANIFEST.md` §1 to Editorial
+   Manager, entering the mononym in the last-name field.
+
+The manuscript itself needs no further edits. It compiles at 34/34 with the DOI in place;
+recompile only if you change something.
 
 ---
 

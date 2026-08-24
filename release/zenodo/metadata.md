@@ -5,16 +5,29 @@ the Token-Accounting Integrity artifact. Nothing here is a placeholder to be fil
 later except where explicitly marked **PENDING** — those are values Zenodo itself
 generates, or values only the author can supply.
 
-**No DOI exists yet.** It is minted by Zenodo at publication. Do not cite one, do not add
-one to `CITATION.cff`, and do not write one into the manuscript before it has been issued.
+**The DOI now exists**, and this file is kept as the record of what the deposition should
+contain — because the record as first published does not match it.
+
+```
+Concept DOI (cited in the manuscript):  10.5281/zenodo.22085827
+Version DOI (v1.0.1):                   10.5281/zenodo.22085828
+Record:                                 https://zenodo.org/records/22085828
+```
+
+**Deposited so far:** `main_cose.tex` and `main_cose.pdf` only.
+**Not deposited:** `token-accounting-integrity-v1.0.1.zip`, which is the actual artifact.
+
+The fields below are the ones to enter. Where the live record disagrees with them, the
+live record is wrong. `paper/SUBMISSION_BLOCKERS.md` item 1 lists the four fixes and which
+of them need a *New version* rather than a metadata edit.
 
 ---
 
 ## Upload type
 
 ```
-Type:            Dataset
-Publication date: <the date you press Publish>
+Type:            Dataset          <- live record says "Journal article"; change it
+Publication date: 2026-08-24
 ```
 
 Zenodo also offers "Software". This deposition is chosen as **Dataset** because its
@@ -84,10 +97,11 @@ value. See `RELEASE_NOTES.md`.
 ## License
 
 ```
-MIT (code and data)
+MIT (code and data)               <- live record says CC-BY-4.0; change it
 ```
 
-Matches `LICENSE` in the repository. Zenodo's Open Access setting applies.
+Matches `LICENSE` in the repository, which is what the archive mostly contains. CC-BY is a
+content licence and fits software poorly. Zenodo's Open Access setting applies.
 
 ## Keywords
 
@@ -114,6 +128,9 @@ is supplement to      https://github.com/meowlawat/TOKEN-ACCOUNTING-INTEGRITY-IN
 is identical to       Git tag v1.0.1
 is supplement to      <journal DOI>  -- PENDING: add only after acceptance
 ```
+
+Note: the record is currently typed as a journal article, which implies a publication that
+does not exist. The paper is under submission and has not been accepted.
 
 ## Files
 
@@ -143,12 +160,15 @@ never tracked and are therefore absent by construction rather than by filtering.
 
 ## After publishing
 
-Once Zenodo issues the DOI:
+Done already, now that the DOI exists:
 
-1. Add it to `CITATION.cff` (`doi:` field, currently a comment saying none is assigned).
-2. Add it to the manuscript's data-availability statement, replacing the explicit
-   placeholder — `paper/data_availability.md` marks the exact spot.
-3. Add the Zenodo badge to `README.md`.
-4. Re-run `python scripts/check_cose_submission.py`.
+1. `CITATION.cff` carries `doi: 10.5281/zenodo.22085827`.
+2. The manuscript's data-availability statement cites the concept DOI and names the
+   version DOI; the placeholder is gone, and the gate fails if it ever returns.
+3. `README.md` carries the Zenodo badge.
+4. `scripts/check_cose_submission.py` passes 34/34, including two new checks: no
+   unminted-DOI placeholder, and the concept DOI present.
 
-Do none of these before the DOI exists.
+Still to do, on Zenodo rather than here: the four fixes in `paper/SUBMISSION_BLOCKERS.md`
+item 1. Because the manuscript cites the **concept** DOI, publishing a new version does
+not invalidate anything already printed — that is why the concept DOI was chosen.
