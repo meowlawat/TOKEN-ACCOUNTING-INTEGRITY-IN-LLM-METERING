@@ -1,14 +1,14 @@
 # Archive contents -- token-accounting-integrity-v1.0.1.zip
 
 Built from the tracked tree at tag `v1.0.1`.
-334 files, 8,104,916 bytes compressed.
+336 files, 8,641,928 bytes compressed.
 
 The archive's identity is its SHA-256, not a commit hash: recording HEAD here
 would be self-referential, since committing this file changes HEAD and the file
 would never settle. The zip is built with sorted entries and fixed timestamps, so
 rebuilding it from the same tracked content reproduces the checksum below exactly.
 
-SHA-256: `c79d3f97d3742e95a95b9bf4dd93cc4181715bf835fce05f92d0b45f72c57bbd`
+SHA-256: `6a2abb1ba1df037e5231c24c83479b8c9a7bacd8b289f2346c73add081b3380d`
 
 Excluded by `.gitignore` (all regenerable; commands in the READMEs):
 
@@ -211,6 +211,7 @@ Excluded additionally by this script:
 - `paper/reviewer_attack.md`
 - `paper/scope_of_formal_claims.md`
 - `paper/statistical_analysis.md`
+- `paper/submission_forms/author_photo.jpg`
 - `paper/submission_forms/cover_letter.txt`
 - `paper/submission_forms/declaration_of_interests.docx`
 - `paper/submission_forms/suggested_reviewers.md`
@@ -362,6 +363,7 @@ Excluded additionally by this script:
 - `scripts/count_cose_metrics.py`
 - `scripts/make_ieee_tables.py`
 - `scripts/populate_tokenizer_cache.sh`
+- `scripts/prepare_author_photo.py`
 - `scripts/release_inventory.py`
 - `scripts/render_cose_figures.py`
 - `scripts/render_tikz_figure1.py`
