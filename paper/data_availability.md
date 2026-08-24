@@ -29,8 +29,8 @@ archival copy is also intended.
 
 ```
 Concept DOI (all versions, always latest):  10.5281/zenodo.22085827
-Version DOI (v1.0.1):                       10.5281/zenodo.22085828
-Record:                                     https://zenodo.org/records/22085828
+Version DOI (v1.0.2, complete artifact):    10.5281/zenodo.22086254
+Version DOI (v1.0.1, manuscript only):      10.5281/zenodo.22085828
 ```
 
 The manuscript cites the **concept** DOI. That is deliberate: a concept DOI resolves to

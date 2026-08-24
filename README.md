@@ -285,9 +285,9 @@ See `audit/confirmation_bias.md`.
 
 See [`CITATION.cff`](./CITATION.cff).
 
-The archival record is Zenodo [10.5281/zenodo.22085827](https://doi.org/10.5281/zenodo.22085827)
-— a concept DOI, which always resolves to the latest version. The version archived for the
-manuscript is [10.5281/zenodo.22085828](https://doi.org/10.5281/zenodo.22085828).
+The archival record is Zenodo [10.5281/zenodo.22086254](https://doi.org/10.5281/zenodo.22086254), version 1.0.2, containing the
+complete artifact. The concept DOI
+[10.5281/zenodo.22085827](https://doi.org/10.5281/zenodo.22085827) always resolves to the latest version.
 
 **The manuscript is under submission to Elsevier *Computers & Security*. It is not
 peer-reviewed and has not been accepted.** The Zenodo DOI is a dataset/artifact identifier

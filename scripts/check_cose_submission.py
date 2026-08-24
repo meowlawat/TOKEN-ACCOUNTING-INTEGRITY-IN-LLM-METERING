@@ -184,6 +184,13 @@ def main() -> None:
                    "ZENODO DOI TO BE INSERTED" not in s, "n/a"))
     checks.append(("Zenodo concept DOI present in data availability",
                    "10.5281/zenodo.22085827" in s, "n/a"))
+    # The active data DOI must be the v1.0.2 deposition, which holds the complete
+    # artifact. The v1.0.1 deposition contained only the manuscript; citing it would
+    # point a reviewer at a PDF where the paper promises raw data.
+    checks.append(("Active data DOI is the v1.0.2 deposition",
+                   "10.5281/zenodo.22086254" in s, "n/a"))
+    checks.append(("Superseded v1.0.1 DOI absent from the manuscript",
+                   "10.5281/zenodo.22085828" not in s, "n/a"))
 
     # ---- every float cited in the text ----------------------------------------------
     # Elsevier requires each figure and table to be referred to in the body. Shipping an

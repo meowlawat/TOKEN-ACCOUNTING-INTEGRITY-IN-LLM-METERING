@@ -76,9 +76,9 @@ Earlier tag `v1.0.0` is preserved unchanged as the historical snapshot.
 ## Zenodo / archival DOI
 
 ```
-Concept DOI (cited in the manuscript):  10.5281/zenodo.22085827
-Version DOI (v1.0.1):                   10.5281/zenodo.22085828
-Record:                                 https://zenodo.org/records/22085828
+Version DOI (cited in the manuscript):  10.5281/zenodo.22086254   (v1.0.2, complete artifact)
+Concept DOI (resolves to latest):       10.5281/zenodo.22085827
+Superseded deposition (v1.0.1):         10.5281/zenodo.22085828
 ```
 
 **The record still needs work before submission** — it currently holds only the

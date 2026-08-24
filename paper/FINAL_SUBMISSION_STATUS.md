@@ -1,156 +1,143 @@
 # Final submission status — Computers & Security
 
 ```
-MANUSCRIPT:            READY
-FIGURES:               READY
-DECLARATIONS:          READY
-ARCHIVE PACKAGE:       READY
-SUBMISSION FORMS:      READY
-AUTHOR IDENTITY:       RESOLVED
-AUTHOR BIOGRAPHY:      DRAFTED, needs author review
-ZENODO DOI:            MINTED, record needs completing
-AUTHOR PHOTOGRAPH:     READY
-JOURNAL SUBMISSION:    NOT SUBMITTED
+Zenodo DOI:                 10.5281/zenodo.22086254   (v1.0.2, complete artifact)
+PDF:                        PASS
+Abstract:                   248 words         (limit 250)
+Article:                    10,061 words      (limit 12,000)
+Figures:                    6/6 cited
+Tables:                     6/6 cited
+Undefined citations:        0
+Undefined references:       0
+Duplicate labels:           0
+DOI check:                  PASS
+Submission checker:         PASS  (36/36)
+Git:                        CLEAN
+Scientific files changed:   NO
+Final manuscript:           READY
 ```
 
-**The paper has not been submitted.** One blocking item remains, and it is on Zenodo
-rather than in this repository: the deposited record holds the manuscript, not the
-artifact archive. Everything else is done.
+**FINAL VERDICT: READY FOR EDITORIAL MANAGER.**
+
+**The paper has not been submitted.** Nothing in this repository submits it. The portal
+work is yours; `paper/EDITORIAL_MANAGER_FINAL_CHECKLIST.md` is the field-by-field guide.
 
 ---
 
-## Verification results
+## Zenodo — verified against the live record
+
+The v1.0.2 deposition is public, typed **Dataset**, and holds the complete artifact.
 
 ```
-scripts/check_cose_submission.py     34/34 PASS
-abstract words                       248        (limit 250)
-total words (body + references)      10,052     (limit 12,000)
-keywords                             9          (range 5-10)
-references                           26         (all 26 cited)
-in-text citations                    49
-figures                              6          (all cited)
-tables                               6          (all cited)
-compiled length                      25 pages, 0 blank
-undefined references                 0
-undefined citations                  0
-duplicate labels                     0
-overfull boxes                       2          (2.6 pt, 6.8 pt -- cosmetic)
+Version DOI    10.5281/zenodo.22086254     cited in the manuscript
+Concept DOI    10.5281/zenodo.22085827     resolves to the latest version
+Superseded     10.5281/zenodo.22085828     v1.0.1, manuscript only — not cited anywhere
 ```
 
-## Scientific regression
+The deposited archive was checked byte-for-byte against the local build rather than
+assumed:
 
 ```
-regression_class6                    19/19 PASS
-regression_m                         16/16 PASS
-metamorphic                          22/22 PASS
-recompute_all                        0 discrepancies
-m2_independent_check                 0 mismatches
-TLC                                  40/40, 27,526 distinct states, 0 disagreements
+size    8,092,411 bytes   local == Zenodo
+MD5     c872a3904d5414c69ce8ff0d27b0aee2   local == Zenodo
+SHA-256 d8147287e9a26bcf2e4e50d198c634e3a095ca3fd6a6bbdcd5db51fdd24971bc
+        matches release/zenodo/SHA256SUMS.txt
 ```
 
+A reviewer who downloads the deposit gets exactly what this repository produced, and the
+published checksum verifies it.
+
+The DOI propagated to all five files that carry it — `paper/main_cose.tex`,
+`CITATION.cff`, `README.md`, `paper/data_availability.md`,
+`paper/submission_metadata.md`. The superseded v1.0.1 DOI appears nowhere in the
+manuscript, and two new gate checks now enforce that: the active DOI must be
+`22086254`, and `22085828` must be absent.
+
+## Manuscript
+
 ```
-raw data changed:                    NO
-processed results changed:           NO
-tables or figures data changed:      NO
-formal model changed:                NO
-measured values changed:             NO
-taxonomy changed:                    NO
-claims added or strengthened:        NO
-references added:                    NO
+pages                 25, 0 blank
+embedded images       5
+fatal LaTeX errors    0
+undefined references  0
+undefined citations   0
+multiply-defined      0
+overfull hboxes       2   (2.61 pt and 6.84 pt — cosmetically negligible)
+overfull vboxes       0
 ```
 
-Every headline number in the manuscript reproduced exactly: B0 linear at \$0.099 per
-additional concurrent request with $R^2 = 1.0000$; M1 request-level attack success 1.000
-vulnerable / 0.000 safe; M2 leakage efficiency 58.3% controlled and 69.0% against the real
-serving stack, 0.000 for every server-authoritative architecture.
+Visually inspected in the rebuilt PDF: title page with the mononym and both affiliations;
+abstract; the nine keywords; the B0 baseline result; M1 orthogonality; M2 usage authority;
+the formal-verification matrix; the asynchronous B0 result; the defense-overhead table;
+the conclusion; the references; and all six declarations.
 
-## What changed in this packaging pass
+Key reported values confirmed present and unchanged: 58.3% and 69.0% M2 leakage, B0 slope
+0.099 with $R^2 = 1.0000$, and "ten configurations and four invariants give 40 independent
+runs over 27,526 distinct states."
 
-Three defects, all editorial, none touching a measured value.
+## Science untouched
 
-**Figure numbering was off by one in the submission artwork.** Figure 1 is the TikZ
-request-lifecycle diagram drawn inline, so it had no file, and the raster figures shipped
-as `Figure_1..Figure_5` while printing as Figure 2..Figure 6. Every separate artwork file
-a reviewer opened would have been mislabelled. Figure 1 is now exported as a vector PDF
-plus a 600 dpi PNG, the rasters are renumbered, and the mapping was verified against the
-printed numbers in the compiled PDF rather than assumed.
+```
+raw data changed:            NO
+processed results changed:   NO
+tables / figures changed:    NO
+formal model changed:        NO
+measured values changed:     NO
+claims added or altered:     NO
+experiments run:             NONE
+```
 
-**Five of twelve floats were never cited in the text** — the state-machine figure, the B0
-figure, the M1 concurrency figure, the M2 heatmap, and the structural-distinction table.
-Elsevier requires every float to be referred to. References were added at the points where
-each was already under discussion, and `check_cose_submission.py` now enforces this as a
-gate check, because an uncited float renders perfectly and so survives a visual pass.
+`git diff` against tag `v1.0.1` over `results/`, `formal/`, `audit/`, `experiments/`,
+`attacks/`, `defenses/`, `app/`, and `benchmarks/` is empty.
 
-**The data-availability statement pointed at tag `v1.0.0`** while the submission artifact
-is `v1.0.1`. Corrected in both the manuscript and `paper/data_availability.md`, with the
-relationship between the two tags stated explicitly and an explicit, clearly-marked
-placeholder where the Zenodo DOI will go.
+## What changed in this pass
 
-Two smaller corrections: a stale header comment describing the IEEE source as still
-carrying an uncorrected B0 claim, fixed at v1.0.1; and "prove orthogonal" changed to "are
-orthogonal" in the abstract, since this paper reserves "prove" for model-checked results
-and M1 orthogonality is established analytically and by model checking rather than proved
-in the sense the paper's own evidence labels use.
+Three things, none of them scientific.
 
-The generative-AI declaration was rewritten to Elsevier's own heading and template
-wording — "During the preparation of this work the author used [tool] in order to
-[reason]. After using this tool, the author reviewed and edited the content as needed and
-takes full responsibility for the content of the publication." The previous version was a
-six-line custom paragraph. The declaration itself is required by Elsevier policy and was
-not removed; the replacement is shorter, standard, and is what the journal asks to see.
-The gate now checks both the exact heading and that the tool is named and responsibility
-accepted (32 checks, was 31).
+**The DOI was verified rather than trusted.** All five files carry `22086254`; the live
+Zenodo record was fetched and confirmed public, typed Dataset, and holding the archive; and
+the deposited bytes were hashed and compared against the local build.
 
-The title page now carries both affiliations and both corresponding-author addresses,
-institutional first, following the author's decisions once their resume and profiles were
-available. The author name stays the mononym "Hardik", also by the author's decision, and
-is now expressed consistently in the manuscript, `CITATION.cff`, and the Zenodo metadata.
+**A stale comment in `CITATION.cff`** still described the v1.0.1 DOI as the version-specific
+one. Corrected to name v1.0.2 as active and v1.0.1 as superseded.
 
-Nothing else in the manuscript's scientific content was touched.
+**The declaration of interests carried a date typo.** It had been filled in as
+`25/08/2006` — twenty years early, predating every reference in the paper. Corrected to
+`25/08/2026`. The document was revalidated afterwards: zip integrity OK, all 14 XML parts
+well-formed. Nothing else in it was touched; the checkbox, name, and affiliations are as
+they were.
 
-## What remains, and who has to do it
+## Author materials
 
-These are the only open items. None can be closed from inside the repository, and none was
-invented, approximated, or worked around.
+```
+name                  Hardik   (mononym — no surname anywhere in the repository)
+ORCID                 0009-0001-1642-6669
+photograph            paper/submission_forms/author_photo.jpg
+                      1200x1600, 300 dpi, JPEG, 541,309 bytes — unmodified this pass
+biography             paper/author_bio.txt — 85 words, needs your read-through
+declaration           paper/submission_forms/declaration_of_interests.docx — dated 25/08/2026
+```
 
-| # | item | why it is open | blocking? |
-|---|---|---|---|
-| 1 | Zenodo record holds the manuscript, not the artifact | the 8.1 MB archive was never uploaded; a reviewer following the DOI expecting data finds a PDF. Fix is one *New version* publish — every field prepared in `release/zenodo/metadata_v1.0.2.md`, and `scripts/set_zenodo_doi.py` installs the resulting DOI in one pass | yes |
-| 2 | Author biography | drafted in `paper/author_bio.txt` from verified sources; needs the author's review, not writing | yes, until reviewed |
-| 3 | ~~Author photograph~~ | supplied — `paper/submission_forms/author_photo.jpg`, 1200x1600 @ 300 dpi | no |
-| 4 | ORCID record is near-empty | the ID `0009-0001-1642-6669` is verified and recorded; the record has no affiliations or works | no, strongly recommended |
-| 5 | Graphical abstract | optional per Elsevier; would require new artwork | no |
-| 6 | Human read-through | no automated pass substitutes for one | no, but recommended |
+## Remaining items — none block submission
 
-**Resolved in this pass**, from the author's resume, GitHub profile, and ORCID record:
-the author name (mononym "Hardik", by the author's decision), the affiliations (IIT Patna
-and VIPS — dual enrolment, both now on the title page), the corresponding-author address
-(both, institutional first), and `CITATION.cff` (v1.0.1, repository URL, ORCID,
-affiliation, valid YAML).
+1. **Read `paper/author_bio.txt`.** It was drafted from your resume, GitHub profile, and
+   ORCID record, with every claim traced to its source. It is a biography of a real person
+   and should not go out unread.
+2. **Populate the ORCID record.** `0009-0001-1642-6669` resolves to a page with a given
+   name and nothing else. An ORCID that resolves to a blank page is a weaker signal than
+   none. Add the affiliations and the two accepted papers.
+3. **Two Zenodo metadata fixes**, both editable without a new version:
+   - the licence reads `cc-by-4.0` while the archive ships an MIT `LICENSE` file — the
+     record contradicts its own contents;
+   - the creator name is stored as `., hardik`, so the record cites as `. , . hardik .`.
+4. **Verify reviewer contact details** before entering them. They were deliberately left
+   blank.
+5. **A human read-through.** No automated pass substitutes for one.
 
-Exact remediation steps for each are in `paper/SUBMISSION_BLOCKERS.md`.
-
-## Submission sequence
-
-Once items 1-4 are closed:
-
-1. Fix the Zenodo record — upload `release/zenodo/token-accounting-integrity-v1.0.1.zip`
-   as a **New version**, set resource type to Dataset, set the licence to MIT, and repair
-   the creator name and ORCID. Details in `paper/SUBMISSION_BLOCKERS.md` item 1. **No
-   manuscript edit is needed afterwards**: the paper cites the concept DOI, which follows
-   the record forward.
-2. Read and correct `paper/author_bio.txt`.
-3. Supply the author photograph per `paper/AUTHOR_PHOTO_REQUIRED.md`.
-4. Populate the ORCID record (affiliations, the two accepted papers).
-5. Upload the files listed in `paper/FINAL_SUBMISSION_MANIFEST.md` §1 to Editorial
-   Manager, entering the mononym in the last-name field.
-
-The manuscript itself needs no further edits. It compiles at 34/34 with the DOI in place;
-recompile only if you change something.
+Items 1–4 are each a few minutes. None of them changes the manuscript.
 
 ---
 
 ```
-STATUS: SUBMISSION-READY EXCEPT FOR EXTERNAL AND HUMAN MATERIALS
-NOT SUBMITTED. NO DOI. NO AUTHOR BIOGRAPHY. NO AUTHOR PHOTOGRAPH.
+MANUSCRIPT READY — NOT SUBMITTED
 ```
