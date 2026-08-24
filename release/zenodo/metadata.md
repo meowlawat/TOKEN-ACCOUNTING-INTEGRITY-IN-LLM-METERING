@@ -31,17 +31,19 @@ corpus, and formal model (v1.0.1)
 ## Authors
 
 ```
-Name:         Hardik            <- PENDING: see paper/SUBMISSION_BLOCKERS.md
+Name:         Hardik
 Affiliation:  Department of Computer Science and Data Analytics,
               Indian Institute of Technology Patna, India
-ORCID:        PENDING -- register at https://orcid.org if you do not have one.
-                         Do not enter an ORCID you have not verified belongs to you.
+ORCID:        0009-0001-1642-6669
 ```
 
-The name is recorded here exactly as it appears in the manuscript. Zenodo's author field
-expects family and given names separately, and the manuscript currently carries a single
-name; resolve this before depositing so the deposition, the manuscript, and `CITATION.cff`
-agree.
+The author publishes under the mononym "Hardik", by their own decision; this matches the
+manuscript and `CITATION.cff`. Zenodo's name field accepts a single name — enter it in the
+family-name box and leave the given-name box empty, which is how Zenodo renders mononyms.
+
+The ORCID is verified as the author's: it is the link published on `github.com/meowlawat`,
+the account that owns this repository. Note that the ORCID record itself is currently
+near-empty; filling in affiliations and works before depositing makes it worth citing.
 
 ## Description
 

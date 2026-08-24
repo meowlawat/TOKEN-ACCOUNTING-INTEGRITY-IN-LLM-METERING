@@ -8,13 +8,16 @@ abstract: >-
   synchronization (B0), commitment timing (M1) and usage authority (M2), unified by the
   accounting-integrity property V(r) <= N(r), and pairs every attack with a defense.
 type: software
-version: 1.0.0
-date-released: "2026-08-22"
+version: 1.0.1
+date-released: "2026-08-24"
 license: MIT
 authors:
-  - family-names: Hardik
-    given-names: ""
-    # Enrollment number 03517713524
+  # The author publishes under the mononym "Hardik", by their own decision. CFF requires
+  # a name field; `name` (rather than given-names/family-names) is the schema's own way
+  # of expressing an entity with a single, unsplittable name.
+  - name: "Hardik"
+    orcid: "https://orcid.org/0009-0001-1642-6669"
+    affiliation: "Department of Computer Science and Data Analytics, Indian Institute of Technology Patna, India"
 keywords:
   - LLM security
   - usage metering
@@ -26,15 +29,17 @@ keywords:
   - quota enforcement
   - model checking
   - TLA+
-# repository-code: <set once a GitHub remote is configured>
-# doi: none assigned; do not add one that has not been minted
+repository-code: "https://github.com/meowlawat/TOKEN-ACCOUNTING-INTEGRITY-IN-LLM-METERING"
+# doi: none assigned; do not add one that has not been minted. The Zenodo deposition is
+# built and waiting in release/zenodo/ -- add the DOI here once Zenodo issues it.
 preferred-citation:
   type: unpublished
   title: "Token-Accounting Integrity in LLM Metering: A Systematic Study of Client-Side Under-Payment"
   authors:
-    - family-names: Hardik
-      given-names: ""
+    - name: "Hardik"
+      orcid: "https://orcid.org/0009-0001-1642-6669"
   year: 2026
   notes: >-
-    Manuscript prepared for journal submission (paper/main_ieee.pdf). Not yet
-    peer-reviewed, not accepted, and no DOI has been minted.
+    Manuscript under submission to Elsevier Computers & Security
+    (paper/main_cose.pdf). Not yet peer-reviewed, not accepted, and no DOI has been
+    minted.

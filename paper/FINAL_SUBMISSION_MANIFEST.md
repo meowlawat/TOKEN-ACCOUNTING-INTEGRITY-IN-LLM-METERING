@@ -27,8 +27,9 @@ boxes (2.6 pt and 6.8 pt).
 | `paper/submission_forms/cover_letter.txt` | cover letter, paste-ready plain text | READY |
 | `paper/submission_forms/declaration_of_interests.docx` | Elsevier's form, completed and named | READY |
 | `paper/submission_forms/suggested_reviewers.md` | 5 candidates from the reference list | READY |
-| author biography | journal requests one per author | **PENDING** |
+| `paper/author_bio.txt` | 85-word biography, drafted from verified sources | **NEEDS AUTHOR REVIEW** |
 | author photograph | journal requests one per author | **PENDING** |
+| ORCID `0009-0001-1642-6669` | enter in Editorial Manager; record needs populating | READY |
 
 Filenames match printed figure numbers exactly; this was verified against the compiled
 PDF, not assumed. Figure 1 is drawn in TikZ inside the manuscript and exported separately
@@ -109,16 +110,22 @@ artifact stays byte-identical.
 
 ## 7. What is genuinely not done
 
-Four items, none of which can be closed from inside this repository:
+Two items, neither closeable from inside this repository:
 
 1. **Zenodo DOI** — needs the author's account. Package is ready.
-2. **Author biography** — needs facts only the author has.
-3. **Author photograph** — a portrait of a real person; not something to synthesise.
-4. **Author family name** — the manuscript carries one word; a surname will not be
-   inferred from an email address.
+2. **Author photograph** — a portrait of a real person; not something to synthesise.
 
-Plus two deliberate decisions, not defects: the corresponding-author address (personal
-vs. institutional), and the absence of a graphical abstract (optional per Elsevier, and
-it would require new artwork).
+Plus two that need the author's attention but not their absence:
+
+3. **Author biography** — drafted in `paper/author_bio.txt` from the author's resume,
+   GitHub profile, and ORCID record, every claim traced to its source. Needs reading and
+   correcting, not writing from scratch.
+4. **ORCID record** — the ID is verified and recorded everywhere it belongs, but the
+   record itself is near-empty. Ten minutes at orcid.org.
+
+Resolved since the last pass: the author name (mononym "Hardik", by the author's
+decision), the corresponding-author address (both, institutional first), the affiliations
+(IIT Patna and VIPS, dual enrolment), and `CITATION.cff`. The graphical abstract remains
+deliberately absent — optional per Elsevier, and it would require new artwork.
 
 Detail and exact remediation steps in `paper/SUBMISSION_BLOCKERS.md`.

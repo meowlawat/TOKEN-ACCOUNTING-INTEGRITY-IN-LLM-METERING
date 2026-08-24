@@ -5,14 +5,17 @@ MANUSCRIPT:            READY
 FIGURES:               READY
 DECLARATIONS:          READY
 ARCHIVE PACKAGE:       READY
+SUBMISSION FORMS:      READY
+AUTHOR IDENTITY:       RESOLVED
+AUTHOR BIOGRAPHY:      DRAFTED, needs author review
 ZENODO DOI:            NOT MINTED
-AUTHOR MATERIALS:      NOT SUPPLIED
+AUTHOR PHOTOGRAPH:     NOT SUPPLIED
 JOURNAL SUBMISSION:    NOT SUBMITTED
 ```
 
-**The paper has not been submitted. No Zenodo DOI exists. No author biography or
-photograph has been supplied.** Everything that could be finished without a human or an
-external service is finished.
+**The paper has not been submitted. No Zenodo DOI exists. No author photograph has been
+supplied.** Everything that could be finished without a human or an external service is
+finished.
 
 ---
 
@@ -98,6 +101,11 @@ not removed; the replacement is shorter, standard, and is what the journal asks 
 The gate now checks both the exact heading and that the tool is named and responsibility
 accepted (32 checks, was 31).
 
+The title page now carries both affiliations and both corresponding-author addresses,
+institutional first, following the author's decisions once their resume and profiles were
+available. The author name stays the mononym "Hardik", also by the author's decision, and
+is now expressed consistently in the manuscript, `CITATION.cff`, and the Zenodo metadata.
+
 Nothing else in the manuscript's scientific content was touched.
 
 ## What remains, and who has to do it
@@ -108,13 +116,17 @@ invented, approximated, or worked around.
 | # | item | why it is open | blocking? |
 |---|---|---|---|
 | 1 | Zenodo DOI | needs the author's Zenodo account; package is built and waiting in `release/zenodo/` | yes |
-| 2 | Author biography | needs facts only the author has | yes, if the submission system enforces the field |
+| 2 | Author biography | drafted in `paper/author_bio.txt` from verified sources; needs the author's review, not writing | yes, until reviewed |
 | 3 | Author photograph | a portrait of a real person is not something to synthesise | yes, same condition |
-| 4 | Author family name | the manuscript carries the single word "Hardik"; Editorial Manager and Zenodo both want given and family names separately, and a surname will not be inferred from an email address | yes |
-| 5 | Corresponding-author address | personal vs. institutional; a deliberate choice, not a defect | no |
-| 6 | Graphical abstract | optional per Elsevier; would require new artwork | no |
-| 7 | `CITATION.cff` is behind | still says v1.0.0, no repository URL; should be fixed once, after item 4 | no |
-| 8 | Human read-through | no automated pass substitutes for one | no, but recommended |
+| 4 | ORCID record is near-empty | the ID `0009-0001-1642-6669` is verified and recorded; the record has no affiliations or works | no, strongly recommended |
+| 5 | Graphical abstract | optional per Elsevier; would require new artwork | no |
+| 6 | Human read-through | no automated pass substitutes for one | no, but recommended |
+
+**Resolved in this pass**, from the author's resume, GitHub profile, and ORCID record:
+the author name (mononym "Hardik", by the author's decision), the affiliations (IIT Patna
+and VIPS — dual enrolment, both now on the title page), the corresponding-author address
+(both, institutional first), and `CITATION.cff` (v1.0.1, repository URL, ORCID,
+affiliation, valid YAML).
 
 Exact remediation steps for each are in `paper/SUBMISSION_BLOCKERS.md`.
 

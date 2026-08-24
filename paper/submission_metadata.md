@@ -7,25 +7,29 @@ Under-Payment
 ## Author
 Hardik
 
-*The manuscript carries a single name. Elsevier's Editorial Manager takes given name and
-family name as separate fields, and so does Zenodo. This must be resolved before
-submission — it is tracked as item 7 in `paper/SUBMISSION_BLOCKERS.md`, and a family name
-was deliberately not inferred from the email address.*
+*A mononym, by the author's decision. In Editorial Manager, enter it in the last-name
+field and leave the first-name field empty; the same convention applies in Zenodo.*
 
-## Affiliation
-Department of Computer Science and Data Analytics, Indian Institute of Technology
-Patna, India
+## ORCID
+`0009-0001-1642-6669`
 
-*Note: this affiliation and email were supplied directly by the author for this
-submission. The author's resume also lists an institutional email
-(`hardik24a12res263@iitp.ac.in`); either address can serve as the corresponding-author
-contact, but institutional addresses are conventional for academic corresponding
-authors and may be preferred by the journal. Decide and update
-`\ead{}` in `paper/main_cose.tex` before submitting if you want the institutional
-address instead.*
+*Verified as the author's — it is the link published on `github.com/meowlawat`, the
+account that owns this repository. The record is near-empty as of writing; populate the
+affiliations and accepted works before submitting.*
+
+## Affiliations
+a. Department of Computer Science and Data Analytics, Indian Institute of Technology
+   Patna, India
+b. Vivekananda School of Engineering and Technology, Vivekananda Institute of
+   Professional Studies — Technical Campus, New Delhi, India
+
+*The author is dual-enrolled (IIT Patna, B.Sc. Hons, 2024–2027; VIPS, B.Tech CSE
+Cybersecurity, 2024–2028), so both are listed.*
 
 ## Corresponding author
-Hardik — hardikahlawat13@gmail.com (see note above)
+Hardik — `hardik24a12res263@iitp.ac.in` (institutional, primary) and
+`hardikahlawat13@gmail.com` (personal, durable after graduation). Both are printed in the
+manuscript's corresponding-author footnote, institutional first.
 
 ## Article type
 Full-length research article.
