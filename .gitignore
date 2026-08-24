@@ -115,3 +115,10 @@ pgdata/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# ---------------------------------------------------------------------------
+# Zenodo deposition archive. Rebuilt byte-identically from the tagged commit by
+# scripts/build_zenodo_archive.py; the checksum and file list ARE tracked, so
+# the ~30 MB zip itself does not need to be.
+# ---------------------------------------------------------------------------
+release/zenodo/*.zip
