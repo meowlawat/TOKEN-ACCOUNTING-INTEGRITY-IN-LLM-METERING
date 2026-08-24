@@ -45,28 +45,18 @@ Optional per Elsevier's own guidance and left unmade here, since assembling one 
 require new artwork beyond what exists in the repository (see
 `submission_metadata.md`). Not a blocker, but worth deciding deliberately.
 
-## 5. Residual B0 framing inconsistency inside the FROZEN IEEE manuscript
+## 5. Residual B0 framing inconsistency in the IEEE manuscript — RESOLVED at v1.0.1
 
-This is not a COSE blocker (the COSE manuscript already corrects it), but it is a real
-finding from this conversion pass that should not be silently dropped. The IEEE source
-(`paper/main_ieee.tex`) `\input`s `paper/accounting_state_model_ieee.tex`, which
-contains an uncorrected paragraph and table stating that B0 "needs concurrency: yes" and
-that "B0 leakage is created by concurrency" without qualification — inconsistent with the
-abstract, the B0-revisited subsection, the sufficiency conditions, and the conclusion of
-the same IEEE manuscript, all of which state the general condition established by the
-asynchronous experiment (authorization coupled to economic commitment, not concurrency
-per se). This was not caught by the previous "final consistency pass" because that pass
-grepped `main_ieee.tex` directly and missed the `\input`-ed file.
+**Status: RESOLVED.** `paper/accounting_state_model_ieee.tex` (included by
+`main_ieee.tex` via `\input`) previously stated unconditionally that B0 "needs
+concurrency: yes" and that B0 leakage is "created by concurrency," contradicting the
+corrected condition stated everywhere else in the same manuscript. It was corrected at
+v1.0.1, together with two related fixes giving M1's and M2's concurrency independence
+their correct epistemic status (measured for M1, analytic for M2).
 
-Per this conversion task's explicit instruction, `paper/main_ieee.tex` and its includes
-were **not modified**. The COSE manuscript (`paper/main_cose.tex`) states the corrected,
-already-established general condition throughout, including in its own accounting-state-
-model section and structural table.
-
-**Recommendation:** patch `paper/accounting_state_model_ieee.tex` in a small, separate,
-explicitly-scoped follow-up commit before the IEEE version is used anywhere further (a
-future submission, a preprint upload, etc.), since it currently contradicts itself when
-read start to finish.
+No raw data, measured value, or experimental result changed. The Elsevier manuscript was
+already correct and is byte-identical across the fix. v1.0.1 supersedes v1.0.0 for
+submission use; v1.0.0 is preserved immutable for historical reproducibility.
 
 ## 6. Manuscript still needs a human read-through
 

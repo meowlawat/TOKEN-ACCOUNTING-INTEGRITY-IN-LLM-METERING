@@ -90,38 +90,55 @@ and fails the build on any divergence.
 
 \subsection{Mechanism localization}
 
-\paragraph{B0 (synchronization).} If two concurrent requests read the same
-authorization state $B$ and both commit a decrement derived from it, one decrement is
-lost:
-$\sum_i N(r_i) < \sum_i V(r_i)$. This requires $\ge 2$ concurrent transactions, which
-is why B0 leaks nothing at concurrency~1.
+\paragraph{B0 (synchronization).} In the baseline implementation, if two concurrent
+requests read the same authorization state $B$ and both commit a decrement derived from
+it, one decrement is lost: $\sum_i N(r_i) < \sum_i V(r_i)$. That particular
+manifestation requires $\ge 2$ overlapping transactions, which is why the baseline leaks
+nothing at concurrency~1. The general failure condition is broader than its trigger: it
+holds whenever authorization observes economic state that does not yet include the
+commitments produced by previously authorized service. Overlapping requests are one way
+to create that separation; \S\ref{sec:b0revised} shows that deferred settlement creates
+the same condition under strictly sequential arrivals. The condition is therefore that
+authorization be atomically coupled to economic commitment on the path that authorizes
+service, and the baseline trigger must not be mistaken for the condition itself.
 
 \paragraph{M1 (commitment timing).} If $V(r)>0$ in \textsc{streaming} but the exit
 path taken (\textsc{aborted}) does not reach \textsc{reconciled} with $N(r)\ge V(r)$,
 then $\mathrm{Leak}(r)=V(r)>0$. The defect is in the transition graph, not in a shared
-resource, hence it is concurrency-invariant.
+resource, so the model gives no reason for concurrency to be causal here; under fixed
+request volume we measured identical per-request leakage across concurrency 1--100 in
+the tested architecture (\S\ref{sec:m1}). We report that as a measurement, not as a
+property of all deployments.
 
 \paragraph{M2 (usage authority).} If the billing basis is client-controlled,
 $U_{\text{bill}}=T(U_{\text{true}})$ for an attacker transformation $T$, then
 $\mathrm{Leak}(r)=P(U_{\text{true}})-P(T(U_{\text{true}}))>0$ whenever $P\circ T<P$.
-Authority is a per-request data-provenance property, hence also
-concurrency-invariant.
+Authority is a per-request data-provenance property: under the modelled per-request
+billing function the billed amount reads no shared mutable state, so independence from
+concurrency is analytic, and the sweep serves as an implementation check rather than as
+its evidence.
 
 \begin{table}[t]\centering
-\caption{Structural distinction between the three mechanisms.}
+\caption{Structural distinction between the three mechanisms. ``Baseline trigger'' is
+what exercises the defect in the implementation we measured; it is not the security
+condition. For B0 in particular, overlapping requests are one trigger and deferred
+settlement is another (\S\ref{sec:b0revised}), so the condition is stated in terms of
+authorization/commitment coupling rather than concurrency.}
 \label{tab:structural}
 \resizebox{\linewidth}{!}{%
 \begin{tabular}{llll}
 \toprule
-Mechanism & Defective element & Needs concurrency? & Closed by \\
+Mechanism & Defective element & Baseline trigger & Closed by \\
 \midrule
-B0 & transition atomicity & \textbf{yes} ($\ge 2$) & atomic compare-and-decrement \\
-M1 & transition graph (abort path) & no & abort-inclusive finalization \\
-M2 & data authority at \textsc{accounted} & no & server-authoritative recount \\
+B0 & transition atomicity & overlapping requests ($\ge 2$), or deferred settlement & authorization atomically coupled to commitment on the authorizing path \\
+M1 & transition graph (abort path) & a single abort; no concurrency required & abort-inclusive finalization \\
+M2 & data authority at \textsc{accounted} & a single request; no concurrency required & server-authoritative recount \\
 \bottomrule
 \end{tabular}%
 }
 \end{table}
 
-This predicts the empirical result: B0 leakage is \emph{created} by concurrency, while
-M1/M2 per-request leakage is invariant to it.
+This predicts the empirical result: the baseline B0 manifestation is \emph{created} by
+concurrency, while M1/M2 per-request leakage is invariant to it. \S\ref{sec:b0revised}
+then shows that the concurrency dependence belonged to that baseline trigger rather than
+to the underlying condition.

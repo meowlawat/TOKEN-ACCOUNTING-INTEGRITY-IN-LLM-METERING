@@ -48,7 +48,7 @@ Technology Patna, India}
 Usage-based pricing makes metering a security boundary for LLM inference: value reaches
 the client while accounting is open, and the charge depends on a usage record produced
 at runtime. We study the under-explored direction of that boundary --- an honest
-provider facing a dishonest client --- modelling a metered request as a lifecycle with
+provider facing a dishonest client --- modeling a metered request as a lifecycle with
 one integrity property, $V(r) \le N(r)$, decomposed into state synchronization (B0),
 commitment timing (M1), and usage authority (M2). No new attack primitive is claimed; the
 mechanisms are individually known, and the contribution is their unification,
@@ -170,7 +170,7 @@ total are all K0, since a client can count its own prompt and the tokens it rece
 Inflating the cached-input category is K1, because the cached/uncached split is not
 visible in the response. Dropping hidden reasoning tokens is K2, because that count is
 never exposed. The headline usage-authority result rests on a K0 manipulation and does not
-depend on oracle knowledge; the two non-K0 manipulations are labelled and kept out of the
+depend on oracle knowledge; the two non-K0 manipulations are labeled and kept out of the
 main claim.
 
 \subsection{Integrity property}
@@ -244,7 +244,7 @@ quota races are well-characterized, and \citet{kettle} shows how narrow the expl
 window can be made in practice. The escrow transactional method \citep{escrow} is the
 classical treatment of high-contention counter updates and is the ancestor of the
 reserve-and-reconcile pattern we evaluate. Streaming delivery and client cancellation are
-specified behaviour rather than exotic conditions: server-sent events \citep{sse} define
+specified behavior rather than exotic conditions: server-sent events \citep{sse} define
 an incremental delivery channel the client may close at any time, and HTTP semantics
 \citep{rfc9110} leave the consequences of an aborted response to the application.
 
@@ -260,7 +260,8 @@ llama.cpp \citep{llamacpp} serving SmolLM2-135M-Instruct \citep{smollm2}, with t
 \citep{tiktoken} among the tokenizers benchmarked.
 
 \subsection{Formal methods}
-We specify the lifecycle in TLA+ \citep{tla} and check it with TLC \citep{tlc}. Using
+We specify the lifecycle in TLA+ \citep{tla} and check it with the TLC model checker
+\citep{tlc}. Using
 model checking to find architectural defects that testing misses is established
 industrial practice \citep{awsformal}, and our experience matches the reported pattern:
 the checker's value lay in refuting a specification we believed, not in confirming one.
@@ -416,7 +417,7 @@ metered API --- while M1 and M2 are LLM-relevant accounting dimensions. M1 is on
 interesting where value is delivered progressively over a long-running request, and M2
 only where the billed quantity is a runtime-produced, multi-category vector priced by a
 category-sensitive function. The security subject throughout this paper is the metering
-and accounting infrastructure around inference, not the behaviour, robustness, or output
+and accounting infrastructure around inference, not the behavior, robustness, or output
 safety of the language model itself.
 
 \section{System and Experimental Methodology}
@@ -432,7 +433,7 @@ code.
 
 Pricing is category-wise over three tiers. Leakage \emph{efficiency} --- the fraction of
 true value evaded --- is the headline metric because it is invariant under uniform price
-scaling; absolute dollar figures are labelled as scenario values. The sweeps are: B0
+scaling; absolute dollar figures are labeled as scenario values. The sweeps are: B0
 concurrency $\{1,2,5,10,20,30,50\}$ with 30 repetitions; M1 across architecture, abort
 position, and concurrency $\{1,5,20,50,100\}$; M2 across architecture, manipulation, and
 concurrency. Request volume is held constant across concurrency levels, so that volume
@@ -673,7 +674,7 @@ levels 1 to 100: \$0.0528 per request at every level, identical to four decimal 
 with request-level attack success exactly 1.000 for vulnerable and 0.000 for safe
 architectures. The honest-client control leaked nothing anywhere. We do not claim
 invariance as a proven property of all systems under all loads; this is the measured
-behaviour of the tested architecture, and Section~\ref{sec:discussion} gives the
+behavior of the tested architecture, and Section~\ref{sec:discussion} gives the
 structural reason the model predicts it.
 
 \subsection{M2: usage authority}
@@ -691,7 +692,7 @@ controlled setting, and 69.0\% against the real serving stack of
 Section~\ref{sec:generality}. The manipulation is K0: a client can count the tokens it
 received, so no privileged knowledge is required. Every server-authoritative
 architecture --- server-recount, hybrid-reconcile, and upstream --- drove leakage
-efficiency to 0.000 across all eight manipulations in the tested catalogue.
+efficiency to 0.000 across all eight manipulations in the tested catalog.
 
 Writing $U$ for the true usage vector, $P$ for the pricing function, and $T$ for the
 attacker's transformation of declared usage, a manipulation pays off exactly when
@@ -1032,7 +1033,7 @@ That has an immediate structural consequence. Under category-additive pricing, $
 function actually reads. Declaring a total inconsistent with the subtotals is therefore
 inert, measured at 0.000, because category pricing never reads the declared total. Under
 flat-total pricing, $P(U) = p \cdot \mathrm{total}(U)$, the same manipulation becomes the
-strongest attack in the catalogue at 0.741, while reclassifying output into a discounted
+strongest attack in the catalog at 0.741, while reclassifying output into a discounted
 cached category becomes inert because no category is read at all. Mixed pricing over
 input, output, cached, and reasoning categories sits between the two, and its exploitable
 set is determined by which categories carry distinct prices.
@@ -1114,13 +1115,13 @@ pricing --- and only safety properties are checked. No liveness property and no
 parameterized or inductive result is claimed. There is no refinement proof from
 specification to implementation. The model assumes strongly consistent accounting state,
 so the asynchronous family of Section~\ref{sec:async} lies outside it and its results are
-labelled empirical only. Multi-category pricing and tokenizer disagreement are likewise
-unmodelled.
+labeled empirical only. Multi-category pricing and tokenizer disagreement are likewise
+unmodeled.
 
 \paragraph{External.}
 One serving stack, one small model on CPU, one prompt family. This establishes that the
 architectural conclusions are not artifacts of our own generator; it does not establish
-behaviour on commercial providers, and the cache-split nondeterminism is a property of
+behavior on commercial providers, and the cache-split nondeterminism is a property of
 this stack's prefix cache rather than a claim about hosted APIs. The generator-dependent
 cells we report bound how far per-manipulation magnitudes travel. Reconciliation delays
 are injected rather than observed in production, so the asynchronous result is
@@ -1139,7 +1140,7 @@ not our findings. Every attack in the artifact is paired with a defense, and the
 is released so that operators can measure their own gateways.
 
 \section{Conclusion}
-Client-side under-payment in LLM metering is best modelled as one accounting boundary
+Client-side under-payment in LLM metering is best modeled as one accounting boundary
 with three placements: synchronization, commitment timing, and usage authority.
 Localizing each to a state transition predicts, and our measurements confirm, that
 integrity and solvency are closed by different primitives and that a server-side recount

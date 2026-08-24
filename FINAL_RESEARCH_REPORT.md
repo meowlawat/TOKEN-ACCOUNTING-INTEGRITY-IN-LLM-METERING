@@ -331,3 +331,28 @@ or adjusted; the retracted `detection_level` field remains in stored records so 
 runs stay byte-reproducible. The failures were concentrated entirely in the interpretive
 layer — the places where the artifact described an outcome instead of measuring one —
 which is the finding recorded in `audit/confirmation_bias.md`.
+
+---
+
+## Consistency correction at v1.0.1 (2026-08-24)
+
+A B0 wording discrepancy was found in `paper/accounting_state_model_ieee.tex`, a file
+included by `paper/main_ieee.tex`. It still stated unconditionally that B0 "needs
+concurrency: yes" and that B0 leakage is "created by concurrency." The earlier
+consistency audit searched only the top-level `main_ieee.tex` and never opened the
+included file, which is how the statement survived while the rest of the same manuscript
+already carried the corrected condition.
+
+The correction distinguishes the **baseline trigger** (overlapping requests, in the
+implementation we measured) from the **general security condition** (authorization must
+be atomically coupled to economic commitment on the path that authorizes service, which
+deferred settlement can also break under strictly sequential arrivals). Two related
+fixes in the same file give M1's and M2's concurrency independence their correct
+epistemic status — measured for M1, analytic for M2.
+
+**No raw data changed. No measured value or experimental result changed. No claim was
+added, strengthened, or weakened.** The Elsevier manuscript was already correct and is
+byte-identical across this change. This is a consistency correction, not a new finding.
+
+v1.0.1 supersedes v1.0.0 for submission use; v1.0.0 remains immutable for historical
+reproducibility.

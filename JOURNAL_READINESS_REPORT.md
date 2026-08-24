@@ -7,13 +7,24 @@ worth nothing.*
 
 **Baseline for this round:** `audit/journal_upgrade_baseline.md` (commit `a66ade9`).
 
-**Final consistency pass (this update).** An adversarial read of `paper/main_ieee.tex`
-looking specifically for a B0/concurrency contradiction — the abstract's "B0 is not about
+**Final consistency pass.** An adversarial read of `paper/main_ieee.tex` looking
+specifically for a B0/concurrency contradiction — the abstract's "B0 is not about
 concurrency" against the results section's "leaks only when at least two requests
-overlap." The manuscript was already internally consistent: the results section states the
-baseline's empirical trigger, the figure caption and Section~X.F ("B0 revisited") state the
-general condition, and the sufficiency section, discussion and conclusion all agree with
-each other. No wording changed there. What did change: the index terms carried "LLM
+overlap." Within `main_ieee.tex` itself the manuscript was consistent: the results section
+states the baseline's empirical trigger, the figure caption and Section~X.F ("B0
+revisited") state the general condition, and the sufficiency section, discussion and
+conclusion agree with each other.
+
+> **That conclusion was incomplete, and was corrected at v1.0.1.** The pass searched only
+> the top-level `main_ieee.tex` and never opened the file it pulls in via `\input`.
+> `paper/accounting_state_model_ieee.tex` still asserted unconditionally that B0 "needs
+> concurrency: yes" and that B0 leakage is "created by concurrency" — a real contradiction
+> with the rest of the same manuscript, which survived precisely because the audit's search
+> scope did not follow includes. It is fixed in v1.0.1. The lesson is recorded rather than
+> quietly patched: a consistency audit that greps one file is not an audit of the document
+> that file assembles.
+
+What also changed in that earlier pass: the index terms carried "LLM
 security" as the first keyword, which reads as model-security scope rather than
 infrastructure-security scope; it was replaced (see the venue note below). Independent
 recomputation, the M2 spec-derived checker, TLC, the regression suites and cross-validation
@@ -228,3 +239,28 @@ with a foreseeable demand for deeper formal ties. The honest summary is that thi
 converted the largest reviewer objection — "single-architecture, synchronous, your own
 generator" — into three concrete pieces of evidence, and in the process changed two of the
 paper's own conclusions.
+
+---
+
+## Consistency correction at v1.0.1 (2026-08-24)
+
+A B0 wording discrepancy was found in `paper/accounting_state_model_ieee.tex`, a file
+included by `paper/main_ieee.tex`. It still stated unconditionally that B0 "needs
+concurrency: yes" and that B0 leakage is "created by concurrency." The earlier
+consistency audit searched only the top-level `main_ieee.tex` and never opened the
+included file, which is how the statement survived while the rest of the same manuscript
+already carried the corrected condition.
+
+The correction distinguishes the **baseline trigger** (overlapping requests, in the
+implementation we measured) from the **general security condition** (authorization must
+be atomically coupled to economic commitment on the path that authorizes service, which
+deferred settlement can also break under strictly sequential arrivals). Two related
+fixes in the same file give M1's and M2's concurrency independence their correct
+epistemic status — measured for M1, analytic for M2.
+
+**No raw data changed. No measured value or experimental result changed. No claim was
+added, strengthened, or weakened.** The Elsevier manuscript was already correct and is
+byte-identical across this change. This is a consistency correction, not a new finding.
+
+v1.0.1 supersedes v1.0.0 for submission use; v1.0.0 remains immutable for historical
+reproducibility.

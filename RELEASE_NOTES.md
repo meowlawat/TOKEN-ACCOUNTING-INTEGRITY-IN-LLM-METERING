@@ -1,7 +1,40 @@
-# Release notes — v1.0.0
+# Release notes
 
-**Token-Accounting Integrity in LLM Metering** — frozen journal-submission artifact.
-Released 2026-08-22.
+**Token-Accounting Integrity in LLM Metering** — journal-submission artifact.
+
+## v1.0.1 — scientific consistency correction (2026-08-24)
+
+Supersedes v1.0.0 for submission use. v1.0.0 remains immutable for historical
+reproducibility.
+
+**Corrected.** `paper/accounting_state_model_ieee.tex` — a file included by
+`paper/main_ieee.tex` — still asserted unconditionally that B0 "needs concurrency: yes"
+and that B0 leakage is "created by concurrency." The earlier consistency audit searched
+only the top-level `main_ieee.tex` and never opened the included file, so the statement
+survived while every other part of the same manuscript already stated the corrected
+condition: authorization must be atomically coupled to economic commitment on the path
+that authorizes service, with overlapping requests and deferred settlement each being
+one way to break that coupling.
+
+Two related wording fixes in the same file: M1's bare "concurrency-invariant" now reads
+as a measurement of the tested architecture, and M2's as analytic with the concurrency
+sweep serving as an implementation check — matching the framing the main manuscript
+already used.
+
+**Not changed.** No raw data. No measured value or statistic. No experimental result. No
+claim added, strengthened, or weakened. The Elsevier manuscript `paper/main_cose.tex` is
+byte-identical (it already carried the corrected framing).
+
+This is a consistency correction, not a new scientific finding.
+
+**Verified at v1.0.1:** recompute_all 0 discrepancies; m2_independent_check 0 mismatches;
+TLC 40/40 over 27,526 distinct states, 0 disagreements; regression_class6 19/19;
+regression_m 16/16; metamorphic 22/22; IEEE PDF rebuilt with 0 overfull boxes and 0
+undefined references or citations; C&S submission checker 30/30.
+
+---
+
+## v1.0.0 — original frozen artifact (2026-08-22)
 
 ---
 

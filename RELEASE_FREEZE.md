@@ -169,3 +169,37 @@ MITRE CWE, the GitHub REST API, WHATWG, OWASP — before being cited.
 
 Not accepted, not peer-reviewed, not "Q1-ready", and no DOI has been minted. The correct
 description is **journal submission-ready**.
+
+---
+
+## Superseded by v1.0.1 (scientific consistency correction)
+
+**This document describes the v1.0.0 frozen artifact. For submission use, v1.0.1
+supersedes it.** v1.0.0 remains immutable and is preserved for historical
+reproducibility; it is not withdrawn and its data is unchanged.
+
+**What v1.0.1 corrects.** A B0 wording discrepancy was found inside
+`paper/accounting_state_model_ieee.tex`, a file included by `paper/main_ieee.tex` via
+`\input`. Because the earlier consistency audit searched only the top-level
+`main_ieee.tex`, the included file was never inspected, and it still asserted
+unconditionally that B0 "needs concurrency: yes" and that "B0 leakage is *created* by
+concurrency." That contradicted the corrected condition already stated in the same
+manuscript's abstract, B0-revisited subsection, sufficiency conditions, discussion, and
+conclusion.
+
+**What did not change.** No raw data changed. No measured value, statistic, or
+experimental result changed. No claim was strengthened, weakened, or added. The
+correction aligns the wording of the state-model section with the asynchronous result
+and the sufficiency condition that were *already measured and already stated elsewhere*
+in the same paper. Two secondary wording fixes were made in the same file, for the same
+reason: M1's bare "concurrency-invariant" is now stated as a measurement of the tested
+architecture, and M2's is stated as analytic with the sweep as an implementation check
+— matching how the main manuscript already framed both.
+
+This is a consistency correction, not a new scientific finding.
+
+**Verification at v1.0.1:** recompute_all 0 discrepancies; m2_independent_check 0
+mismatches; TLC 40/40 over 27,526 distinct states with 0 disagreements;
+regression_class6 19/19; regression_m 16/16; metamorphic 22/22. The Elsevier
+manuscript `paper/main_cose.tex` is byte-identical across this change (it already
+carried the corrected framing) and its submission checker still passes 30/30.
