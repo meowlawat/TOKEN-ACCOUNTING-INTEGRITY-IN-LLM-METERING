@@ -14,8 +14,13 @@ are working context rather than archival record.
 This script does not read, regenerate, or modify any experimental data; it only copies
 already-committed bytes into a zip and hashes the result.
 
+Once the archive has been published to Zenodo, this script refuses to rebuild it: the
+published checksum must keep describing the published file. Pass --rebuild to override,
+and only when a new Zenodo version is going to be published for the new bytes.
+
 Usage:
     python scripts/build_zenodo_archive.py
+    python scripts/build_zenodo_archive.py --rebuild   # after clearing DEPOSITED_*
 """
 
 from __future__ import annotations
@@ -30,6 +35,12 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "release" / "zenodo"
 VERSION = "v1.0.1"
 STEM = f"token-accounting-integrity-{VERSION}"
+
+# Set once the archive is published. Guards against rebuilding it out from under the
+# checksum that the Zenodo record and SHA256SUMS.txt both publish. Clear these (or pass
+# --rebuild) only when deliberately preparing a new deposition.
+DEPOSITED_DOI = "10.5281/zenodo.22086254"
+DEPOSITED_SHA256 = "d8147287e9a26bcf2e4e50d198c634e3a095ca3fd6a6bbdcd5db51fdd24971bc"
 
 # Tracked, but not part of the archival record.
 EXCLUDE_EXACT = {
@@ -66,6 +77,26 @@ def sha256(p: Path) -> str:
 
 
 def main() -> None:
+    # The archive this script builds has been PUBLISHED to Zenodo. Rebuilding it from a
+    # tree that has moved on produces different bytes, and SHA256SUMS.txt would then
+    # describe a file nobody can download -- the published checksum would stop verifying
+    # the published deposit. That is a silent integrity failure of exactly the kind this
+    # project is about, so it needs an explicit override rather than a warning.
+    if DEPOSITED_SHA256 and "--rebuild" not in sys.argv:
+        current = sha256(OUT / f"{STEM}.zip") if (OUT / f"{STEM}.zip").exists() else None
+        print(f"REFUSING: this archive is already deposited at DOI {DEPOSITED_DOI}.")
+        print()
+        print(f"  deposited sha256  {DEPOSITED_SHA256}")
+        print(f"  local sha256      {current or '(archive missing)'}")
+        print(f"  agree             {current == DEPOSITED_SHA256}")
+        print()
+        print("Rebuilding would change SHA256SUMS.txt so it no longer describes the file")
+        print("published at that DOI. If you genuinely need a new archive, publish a new")
+        print("Zenodo version for it too, then update DEPOSITED_DOI/DEPOSITED_SHA256 here.")
+        print()
+        print("To rebuild anyway: python scripts/build_zenodo_archive.py --rebuild")
+        sys.exit(1)
+
     dirty = subprocess.run(["git", "status", "--porcelain"], cwd=ROOT,
                            capture_output=True, text=True, check=True).stdout.strip()
     if dirty:
@@ -73,7 +104,6 @@ def main() -> None:
         print("committed state, or its checksum documents nothing.")
         print(dirty)
         sys.exit(1)
-
 
     files = [f for f in tracked_files() if wanted(f)]
     skipped = [f for f in tracked_files() if not wanted(f)]
