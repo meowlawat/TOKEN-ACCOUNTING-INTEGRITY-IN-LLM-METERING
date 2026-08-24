@@ -3,8 +3,8 @@
 Everything that exists, what it is for, and whether it is ready. This is the packing
 list; `paper/FINAL_SUBMISSION_STATUS.md` is the verdict.
 
-Verified state at the time of writing: `scripts/check_cose_submission.py` 31/31,
-`scripts/count_cose_metrics.py` abstract 248 / total 10,064, PDF 25 pages 0 blank, 0
+Verified state at the time of writing: `scripts/check_cose_submission.py` 32/32,
+`scripts/count_cose_metrics.py` abstract 248 / total 10,025, PDF 25 pages 0 blank, 0
 undefined references, 0 undefined citations, 0 duplicate labels, 2 cosmetic overfull
 boxes (2.6 pt and 6.8 pt).
 
@@ -24,7 +24,9 @@ boxes (2.6 pt and 6.8 pt).
 | `paper/figures_cose/Figure_4.png` | Figure 4, M1 concurrency, 600 dpi | READY |
 | `paper/figures_cose/Figure_5.png` | Figure 5, M2 efficiency heatmap, 600 dpi | READY |
 | `paper/figures_cose/Figure_6.png` | Figure 6, tokenizer latency, 600 dpi | READY |
-| `paper/cover_letter.md` | cover letter, paste as text | READY |
+| `paper/submission_forms/cover_letter.txt` | cover letter, paste-ready plain text | READY |
+| `paper/submission_forms/declaration_of_interests.docx` | Elsevier's form, completed and named | READY |
+| `paper/submission_forms/suggested_reviewers.md` | 5 candidates from the reference list | READY |
 | author biography | journal requests one per author | **PENDING** |
 | author photograph | journal requests one per author | **PENDING** |
 
@@ -40,7 +42,7 @@ by `scripts/render_tikz_figure1.py`, which is why the raster series starts at Fi
 | CRediT | 23 | single author, 11 roles enumerated |
 | Competing interest | 24 | none declared |
 | Funding | 24 | no specific grant |
-| Generative AI disclosure | 24 | tools named, scope stated, independent verification asserted, authorship denied |
+| Declaration of generative AI and AI-assisted technologies in the writing process | 24 | Elsevier's own heading and template wording; tool named, responsibility accepted |
 | Data availability | 24 | GitHub tag `v1.0.1`, explicit Zenodo DOI placeholder |
 
 ## 3. Archival deposition — prepared, not published
@@ -81,7 +83,7 @@ annotated version — upload `highlights_upload.txt` instead.
 
 | script | what it checks |
 |---|---|
-| `scripts/check_cose_submission.py` | 31 fail-closed submission checks |
+| `scripts/check_cose_submission.py` | 32 fail-closed submission checks |
 | `scripts/count_cose_metrics.py` | word, section, float, and citation counts |
 | `scripts/check_float_citations.py` | every float is referred to in the text |
 | `scripts/build_zenodo_archive.py` | deposition archive and checksum |

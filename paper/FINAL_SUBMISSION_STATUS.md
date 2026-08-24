@@ -19,9 +19,9 @@ external service is finished.
 ## Verification results
 
 ```
-scripts/check_cose_submission.py     31/31 PASS
+scripts/check_cose_submission.py     32/32 PASS
 abstract words                       248        (limit 250)
-total words (body + references)      10,064     (limit 12,000)
+total words (body + references)      10,025     (limit 12,000)
 keywords                             9          (range 5-10)
 references                           26         (all 26 cited)
 in-text citations                    49
@@ -89,6 +89,15 @@ orthogonal" in the abstract, since this paper reserves "prove" for model-checked
 and M1 orthogonality is established analytically and by model checking rather than proved
 in the sense the paper's own evidence labels use.
 
+The generative-AI declaration was rewritten to Elsevier's own heading and template
+wording — "During the preparation of this work the author used [tool] in order to
+[reason]. After using this tool, the author reviewed and edited the content as needed and
+takes full responsibility for the content of the publication." The previous version was a
+six-line custom paragraph. The declaration itself is required by Elsevier policy and was
+not removed; the replacement is shorter, standard, and is what the journal asks to see.
+The gate now checks both the exact heading and that the tool is named and responsibility
+accepted (32 checks, was 31).
+
 Nothing else in the manuscript's scientific content was touched.
 
 ## What remains, and who has to do it
@@ -122,7 +131,7 @@ Once items 1-4 are closed:
 4. Insert the DOI in `paper/main_cose.tex` and `paper/data_availability.md`, replacing
    `[ZENODO DOI TO BE INSERTED]`. Add it to `CITATION.cff`.
 5. Recompile: `tectonic -X compile paper/main_cose.tex`.
-6. Re-run `python scripts/check_cose_submission.py` — must stay 31/31.
+6. Re-run `python scripts/check_cose_submission.py` — must stay 32/32.
 7. Upload the files listed in `paper/FINAL_SUBMISSION_MANIFEST.md` §1 to Editorial
    Manager.
 

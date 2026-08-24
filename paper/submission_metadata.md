@@ -39,7 +39,7 @@ economic security; streaming inference; accounting reconciliation; model checkin
 | metric | value | requirement |
 |---|---|---|
 | Abstract word count | 248 | <= 250 |
-| Total word count (body + references) | 10,064 | <= 12,000 |
+| Total word count (body + references) | 10,025 | <= 12,000 |
 | Numbered sections | 15 | --- |
 | Unnumbered (declaration) sections | 6 | --- |
 | Figures | 6 (1 vector TikZ diagram + 5 raster at 600 dpi) | --- |
@@ -61,7 +61,7 @@ text; `scripts/check_cose_submission.py` fails if any float is never cited.
 | CRediT authorship contribution statement | 23 |
 | Declaration of competing interest | 24 |
 | Funding | 24 |
-| Generative AI disclosure | 24 |
+| Declaration of generative AI and AI-assisted technologies | 24 |
 | Data availability | 24 |
 
 ## Repository and release
@@ -84,7 +84,9 @@ it requires the author's Zenodo account. See `paper/SUBMISSION_BLOCKERS.md` item
 | `paper/figures_cose/Figure_1.pdf` | Figure 1, vector (preferred) |
 | `paper/figures_cose/Figure_1.png` | Figure 1, 600 dpi raster fallback |
 | `paper/figures_cose/Figure_2.png` .. `Figure_6.png` | Figures 2-6, 600 dpi |
-| `paper/cover_letter.md` | cover letter (paste as text) |
+| `paper/submission_forms/cover_letter.txt` | cover letter, paste-ready plain text |
+| `paper/submission_forms/declaration_of_interests.docx` | Elsevier declaration-of-interests form, completed |
+| `paper/submission_forms/suggested_reviewers.md` | reviewer suggestions (enter in Editorial Manager) |
 | `paper/author_bio.txt` | author biography — **PENDING, not yet written** |
 | `paper/AUTHOR_PHOTO_REQUIRED.md` | photograph — **PENDING, not supplied** |
 
