@@ -24,7 +24,7 @@ artifact archive. Everything else is done.
 ```
 scripts/check_cose_submission.py     34/34 PASS
 abstract words                       248        (limit 250)
-total words (body + references)      10,025     (limit 12,000)
+total words (body + references)      10,052     (limit 12,000)
 keywords                             9          (range 5-10)
 references                           26         (all 26 cited)
 in-text citations                    49
@@ -115,7 +115,7 @@ invented, approximated, or worked around.
 
 | # | item | why it is open | blocking? |
 |---|---|---|---|
-| 1 | Zenodo record holds the manuscript, not the artifact | the 8.1 MB archive was never uploaded; a reviewer following the DOI expecting data finds a PDF. Needs *New version*, plus three metadata fixes (resource type, licence, creator name) | yes |
+| 1 | Zenodo record holds the manuscript, not the artifact | the 8.1 MB archive was never uploaded; a reviewer following the DOI expecting data finds a PDF. Fix is one *New version* publish — every field prepared in `release/zenodo/metadata_v1.0.2.md`, and `scripts/set_zenodo_doi.py` installs the resulting DOI in one pass | yes |
 | 2 | Author biography | drafted in `paper/author_bio.txt` from verified sources; needs the author's review, not writing | yes, until reviewed |
 | 3 | ~~Author photograph~~ | supplied — `paper/submission_forms/author_photo.jpg`, 1200x1600 @ 300 dpi | no |
 | 4 | ORCID record is near-empty | the ID `0009-0001-1642-6669` is verified and recorded; the record has no affiliations or works | no, strongly recommended |

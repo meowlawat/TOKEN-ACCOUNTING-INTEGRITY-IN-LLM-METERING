@@ -4,7 +4,7 @@ Everything that exists, what it is for, and whether it is ready. This is the pac
 list; `paper/FINAL_SUBMISSION_STATUS.md` is the verdict.
 
 Verified state at the time of writing: `scripts/check_cose_submission.py` 34/34,
-`scripts/count_cose_metrics.py` abstract 248 / total 10,025, PDF 25 pages 0 blank, 0
+`scripts/count_cose_metrics.py` abstract 248 / total 10,052, PDF 25 pages 0 blank, 0
 undefined references, 0 undefined citations, 0 duplicate labels, 2 cosmetic overfull
 boxes (2.6 pt and 6.8 pt).
 
@@ -55,7 +55,8 @@ by `scripts/render_tikz_figure1.py`, which is why the raster series starts at Fi
 | `token-accounting-integrity-v1.0.1.zip` | 332 files, 8.1 MB, built from the tracked tree at tag `v1.0.1` |
 | `SHA256SUMS.txt` | checksum of that archive |
 | `ARCHIVE_CONTENTS.md` | full file list, plus what was excluded and why |
-| `metadata.md` | every Zenodo form field, filled in |
+| `metadata.md` | Zenodo form fields for the original deposition |
+| `metadata_v1.0.2.md` | **the corrected deposition** — every field for the New version |
 
 The archive is built by `scripts/build_zenodo_archive.py` from `git ls-files` at HEAD, so
 `.gitignore` remains the single source of truth for exclusions and the archive cannot
@@ -98,6 +99,7 @@ annotated version — upload `highlights_upload.txt` instead.
 | `scripts/render_cose_figures.py` | 600 dpi artwork from frozen plot code |
 | `scripts/render_tikz_figure1.py` | Figure 1 vector + raster export |
 | `scripts/prepare_author_photo.py` | author photograph framing and format |
+| `scripts/set_zenodo_doi.py` | installs the published version DOI across all five files |
 
 ## 6. Scientific regressions, all re-run for this package
 
