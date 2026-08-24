@@ -36,8 +36,8 @@ step 3.
 1. Open https://zenodo.org/records/22085828 and choose **New version**. This preserves the
    existing record — `10.5281/zenodo.22085828` stays resolvable forever as the historical
    v1.0.1 deposition. Do not delete or overwrite it.
-2. Upload `release/zenodo/token-accounting-integrity-v1.0.1.zip` (332 files, 8,090,152
-   bytes; checksum in `release/zenodo/SHA256SUMS.txt`).
+2. Upload `release/zenodo/token-accounting-integrity-v1.0.1.zip` (333 files, ~8.1 MB;
+   exact size and checksum in `release/zenodo/SHA256SUMS.txt`).
 3. Decide whether `main_cose.pdf` stays. Keeping it makes the record a **preprint**, which
    Elsevier permits but expects declared at submission. If a preprint was not intended,
    drop it.

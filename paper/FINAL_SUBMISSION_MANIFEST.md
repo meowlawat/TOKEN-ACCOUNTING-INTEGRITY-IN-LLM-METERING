@@ -52,7 +52,7 @@ by `scripts/render_tikz_figure1.py`, which is why the raster series starts at Fi
 
 | file | what it is |
 |---|---|
-| `token-accounting-integrity-v1.0.1.zip` | 332 files, 8.1 MB, built from the tracked tree at tag `v1.0.1` |
+| `token-accounting-integrity-v1.0.1.zip` | 333 files, ~8.1 MB, built from the tracked tree at tag `v1.0.1` |
 | `SHA256SUMS.txt` | checksum of that archive |
 | `ARCHIVE_CONTENTS.md` | full file list, plus what was excluded and why |
 | `metadata.md` | Zenodo form fields for the original deposition |

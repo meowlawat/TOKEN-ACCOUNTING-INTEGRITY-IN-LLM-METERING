@@ -38,8 +38,8 @@ submission to *Computers & Security* and has not been accepted.
 
 ```
 UPLOAD:      release/zenodo/token-accounting-integrity-v1.0.1.zip
-             332 files, 8,090,152 bytes
-             SHA-256 in release/zenodo/SHA256SUMS.txt
+             333 files, ~8.1 MB
+             exact size and SHA-256 in release/zenodo/SHA256SUMS.txt
 ```
 
 ```
