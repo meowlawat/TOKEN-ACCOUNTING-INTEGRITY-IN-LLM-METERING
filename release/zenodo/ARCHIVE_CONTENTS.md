@@ -1,6 +1,6 @@
 # Archive contents -- token-accounting-integrity-v1.0.1.zip
 
-Built from git commit `a8f10700b020462b68babc58806a7787258f5665` (tag `v1.0.1`).
+Built from git commit `70762a3741723d179ab177286b99aa23ea32ec3b` (tag `v1.0.1`).
 331 files, 8,080,745 bytes compressed.
 
 SHA-256: `0ee3fcb607fa8637773c10e8aa5141f24d705bf85427f76b5a6027488b64242d`

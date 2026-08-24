@@ -70,8 +70,6 @@ def main() -> None:
         print(dirty)
         sys.exit(1)
 
-    commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT,
-                            capture_output=True, text=True, check=True).stdout.strip()
 
     files = [f for f in tracked_files() if wanted(f)]
     skipped = [f for f in tracked_files() if not wanted(f)]
@@ -97,8 +95,13 @@ def main() -> None:
     manifest = [
         f"# Archive contents -- {STEM}.zip",
         "",
-        f"Built from git commit `{commit}` (tag `{VERSION}`).",
+        f"Built from the tracked tree at tag `{VERSION}`.",
         f"{len(files)} files, {size:,} bytes compressed.",
+        "",
+        "The archive's identity is its SHA-256, not a commit hash: recording HEAD here",
+        "would be self-referential, since committing this file changes HEAD and the file",
+        "would never settle. The zip is built with sorted entries and fixed timestamps, so",
+        "rebuilding it from the same tracked content reproduces the checksum below exactly.",
         "",
         f"SHA-256: `{digest}`",
         "",
