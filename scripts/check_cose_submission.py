@@ -172,6 +172,17 @@ def main() -> None:
     else:
         checks.append(("Compile log available", False, "main_cose.log missing"))
 
+    # ---- every float cited in the text ----------------------------------------------
+    # Elsevier requires each figure and table to be referred to in the body. Shipping an
+    # uncited float is invisible in the compiled PDF -- it renders fine -- so it needs an
+    # explicit check rather than a visual pass.
+    all_fig_labels = re.findall(r"\\label\{(fig:[^}]+)\}", s)
+    all_tab_labels = re.findall(r"\\label\{(tab:[^}]+)\}", s)
+    referenced = set(re.findall(r"\\ref\{([^}]+)\}", s))
+    uncited = [x for x in all_fig_labels + all_tab_labels if x not in referenced]
+    checks.append(("Every figure and table is cited in the text",
+                   not uncited, ", ".join(uncited) if uncited else "all cited"))
+
     # ---- report -------------------------------------------------------------------
     failed = [c for c in checks if not c[1]]
     for name, ok, val in checks:

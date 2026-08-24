@@ -5,15 +5,14 @@
 %% raw data, same claims; Elsevier manuscript structure, author-year citations, and
 %% the required declarations.
 %%
-%% One correction is made here that is NOT in the IEEE source: the accounting-state-
-%% model subsection (Sec. 4) stated, uncorrected, that B0 "needs concurrency: yes" and
-%% that "B0 leakage is created by concurrency" without qualification -- an internal
-%% contradiction with the abstract, Sec. 10.4, Sec. 9 and the conclusion, all of which
-%% state the general condition (authorization coupled to economic commitment) that the
-%% asynchronous experiment established. That contradiction lived inside an \input file
-%% the previous consistency pass did not grep. It is corrected only in this file, per
-%% explicit instruction not to modify the frozen IEEE source; see
-%% paper/COSE_SUBMISSION_READINESS.md for the finding.
+%% B0 framing note. The accounting-state-model section (Sec. 4) distinguishes the
+%% BASELINE TRIGGER (overlapping requests, in the implementation measured here) from the
+%% GENERAL CONDITION (authorization must be atomically coupled to economic commitment on
+%% the authorizing path), which deferred settlement can also break under strictly
+%% sequential arrivals. This manuscript carried that distinction from the outset. The
+%% IEEE source originally did not -- an uncorrected "B0 needs concurrency: yes" survived
+%% inside an \input file -- and was corrected at release v1.0.1. Both manuscripts now
+%% agree. See paper/COSE_SUBMISSION_READINESS.md and RELEASE_NOTES.md.
 \documentclass[preprint,3p,authoryear,12pt]{elsarticle}
 
 \usepackage[T1]{fontenc}
@@ -54,7 +53,7 @@ commitment timing (M1), and usage authority (M2). No new attack primitive is cla
 mechanisms are individually known, and the contribution is their unification,
 formalization, measurement, and defense analysis. We check the lifecycle in TLA+ with TLC
 across ten architecture configurations and four invariants, expectations fixed before the
-runs. Reservation and abort-safe finalization prove orthogonal: each alone secures one of
+runs. Reservation and abort-safe finalization are orthogonal: each alone secures one of
 solvency and accounting integrity, and only both secure both. Computing usage correctly
 is not the same as billing from it: an architecture that recounts accurately, stores the
 result, and still charges the client-declared number leaks 58.3\% of delivered value
@@ -274,9 +273,10 @@ negative from a targeted search. It does not establish that no such work exists.
 
 \section{Accounting State Model}
 \label{sec:statemodel}
-We model a metered inference request as a state machine so that each mechanism can be
-localized to a specific transition, establishing that the taxonomy is architectural
-rather than a list of unrelated implementation bugs.
+We model a metered inference request as a state machine (Figure~\ref{fig:statemachine})
+so that each mechanism can be localized to a specific transition, establishing that the
+taxonomy is architectural rather than a list of unrelated implementation bugs.
+Table~\ref{tab:structural} summarizes where each mechanism sits and what closes it.
 
 \begin{figure}[t]
 \centering
@@ -589,13 +589,14 @@ overlap; this is a property of the implemented trigger, and Section~\ref{sec:b0r
 shows a different trigger for the same underlying condition. Mean leakage is \$0.000 at
 concurrency 1, then \$0.099, \$2.871, and \$4.851 at concurrency 2, 30, and 50, growing
 linearly at 0.099 per additional concurrent request with $R^2 = 1.0000$ and $p = 1.9
-\times 10^{-50}$. The hardened atomic compare-and-decrement leaks nothing at every level.
+\times 10^{-50}$ (Figure~\ref{fig:b0}). The hardened atomic compare-and-decrement leaks
+nothing at every level.
 B0 is not a contribution; it validates the rig and supplies the contrast used below.
 Section~\ref{sec:generality} revises the conclusion drawn from it.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{Figure_1.png}
+\includegraphics[width=\linewidth]{Figure_2.png}
 \caption{B0 baseline: mean leakage per trial against concurrency, 30 repetitions per
 cell, deterministic generator. Leakage is created by contention in this baseline
 implementation, growing linearly at 0.099 per additional concurrent request ($R^2 =
@@ -617,7 +618,7 @@ architectures --- debit only after completion, and refund the whole reservation 
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{Figure_2.png}
+\includegraphics[width=\linewidth]{Figure_3.png}
 \caption{M1 leakage against abort position, deterministic generator, concurrency 1,
 medium price tier, 20 requests per cell. The $x$-axis is the fraction of the response
 streamed before the client disconnects; the $y$-axis is mean leakage per request in
@@ -658,7 +659,7 @@ Yes & integrity only & both \\
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{Figure_3.png}
+\includegraphics[width=\linewidth]{Figure_4.png}
 \caption{M1 negative result. Request volume is held constant at 20 requests per cell
 while concurrency varies from 1 to 100 ($x$-axis, log scale); the $y$-axis is mean
 leakage per request and request-level attack success. Both are invariant across the
@@ -672,7 +673,8 @@ level from masquerading as vulnerability.}
 With request volume held constant, per-request leakage was unchanged across concurrency
 levels 1 to 100: \$0.0528 per request at every level, identical to four decimal places,
 with request-level attack success exactly 1.000 for vulnerable and 0.000 for safe
-architectures. The honest-client control leaked nothing anywhere. We do not claim
+architectures (Figure~\ref{fig:m1conc}). The honest-client control leaked nothing
+anywhere. We do not claim
 invariance as a proven property of all systems under all loads; this is the measured
 behavior of the tested architecture, and Section~\ref{sec:discussion} gives the
 structural reason the model predicts it.
@@ -692,7 +694,8 @@ controlled setting, and 69.0\% against the real serving stack of
 Section~\ref{sec:generality}. The manipulation is K0: a client can count the tokens it
 received, so no privileged knowledge is required. Every server-authoritative
 architecture --- server-recount, hybrid-reconcile, and upstream --- drove leakage
-efficiency to 0.000 across all eight manipulations in the tested catalog.
+efficiency to 0.000 across all eight manipulations in the tested catalog
+(Figure~\ref{fig:m2}).
 
 Writing $U$ for the true usage vector, $P$ for the pricing function, and $T$ for the
 attacker's transformation of declared usage, a manipulation pays off exactly when
@@ -713,7 +716,7 @@ It passes, and we present it as a much weaker claim than B0's measured slope.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{Figure_4.png}
+\includegraphics[width=\linewidth]{Figure_5.png}
 \caption{M2 leakage efficiency --- the fraction of delivered value evaded --- by
 architecture (rows) against declared-usage manipulation (columns), deterministic
 generator, medium tier, concurrency 1, 100 requests per cell. Server-authoritative rows
@@ -874,7 +877,7 @@ configuration.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{Figure_5.png}
+\includegraphics[width=\linewidth]{Figure_6.png}
 \caption{Standalone tokenizer recount latency (p50, log--log axes) by engine, workload,
 and input length, over 100 cells whose token lengths were verified exactly. Cost is
 linear in input length, so recount budgets as tokens times a per-token constant. This is

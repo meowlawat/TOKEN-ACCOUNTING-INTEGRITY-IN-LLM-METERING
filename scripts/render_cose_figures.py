@@ -31,14 +31,17 @@ sys.path.insert(0, str(ROOT))
 from experiments import figures as F  # noqa: E402
 from benchmarks import summarize_benchmarks as B  # noqa: E402
 
-# Manuscript figure order (matches main_cose.tex \includegraphics calls) and which
-# generator module produces each one.
+# Manuscript figure numbering. Figure 1 is the TikZ request-lifecycle diagram, drawn
+# inline in the manuscript and exported separately by scripts/render_tikz_figure1.py --
+# so the raster figures below start at Figure_2. Getting this mapping wrong is exactly
+# the off-by-one that would ship artwork whose filenames disagree with the printed
+# figure numbers.
 ORDER = [
-    ("fig_b0_concurrency.png", "Figure_1", F),
-    ("fig_m1_abort_curve.png", "Figure_2", F),
-    ("fig_m1_concurrency.png", "Figure_3", F),
-    ("fig_m2_efficiency_heatmap.png", "Figure_4", F),
-    ("tokenizer_latency.png", "Figure_5", B),
+    ("fig_b0_concurrency.png", "Figure_2", F),
+    ("fig_m1_abort_curve.png", "Figure_3", F),
+    ("fig_m1_concurrency.png", "Figure_4", F),
+    ("fig_m2_efficiency_heatmap.png", "Figure_5", F),
+    ("tokenizer_latency.png", "Figure_6", B),
 ]
 
 
