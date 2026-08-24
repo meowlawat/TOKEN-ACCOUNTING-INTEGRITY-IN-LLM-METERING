@@ -1,1 +1,1 @@
-6a2abb1ba1df037e5231c24c83479b8c9a7bacd8b289f2346c73add081b3380d  token-accounting-integrity-v1.0.1.zip
+08d04b496bfba159d95fcc5e118cb3a0089e554d1dc2557ac372c5b2e8c3e59b  token-accounting-integrity-v1.0.1.zip

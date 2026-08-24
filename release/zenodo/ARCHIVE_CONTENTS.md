@@ -1,14 +1,14 @@
 # Archive contents -- token-accounting-integrity-v1.0.1.zip
 
 Built from the tracked tree at tag `v1.0.1`.
-336 files, 8,641,928 bytes compressed.
+332 files, 8,090,261 bytes compressed.
 
 The archive's identity is its SHA-256, not a commit hash: recording HEAD here
 would be self-referential, since committing this file changes HEAD and the file
 would never settle. The zip is built with sorted entries and fixed timestamps, so
 rebuilding it from the same tracked content reproduces the checksum below exactly.
 
-SHA-256: `6a2abb1ba1df037e5231c24c83479b8c9a7bacd8b289f2346c73add081b3380d`
+SHA-256: `08d04b496bfba159d95fcc5e118cb3a0089e554d1dc2557ac372c5b2e8c3e59b`
 
 Excluded by `.gitignore` (all regenerable; commands in the READMEs):
 
@@ -21,6 +21,10 @@ Excluded by `.gitignore` (all regenerable; commands in the READMEs):
 Excluded additionally by this script:
 
 - `CLAUDE.md`
+- `paper/submission_forms/author_photo.jpg`
+- `paper/submission_forms/cover_letter.txt`
+- `paper/submission_forms/declaration_of_interests.docx`
+- `paper/submission_forms/suggested_reviewers.md`
 - `release/zenodo/ARCHIVE_CONTENTS.md`
 - `release/zenodo/SHA256SUMS.txt`
 - `release/zenodo/metadata.md`
@@ -211,10 +215,6 @@ Excluded additionally by this script:
 - `paper/reviewer_attack.md`
 - `paper/scope_of_formal_claims.md`
 - `paper/statistical_analysis.md`
-- `paper/submission_forms/author_photo.jpg`
-- `paper/submission_forms/cover_letter.txt`
-- `paper/submission_forms/declaration_of_interests.docx`
-- `paper/submission_forms/suggested_reviewers.md`
 - `paper/submission_metadata.md`
 - `paper/taxonomy.md`
 - `paper/threat_model.md`
