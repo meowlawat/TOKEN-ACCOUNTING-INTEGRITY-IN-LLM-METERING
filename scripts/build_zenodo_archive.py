@@ -38,6 +38,10 @@ EXCLUDE_EXACT = {
 EXCLUDE_PREFIX = (
     "scripts/_patch_",    # one-shot manuscript patch scripts, already applied
     "release/zenodo/",    # describes this archive; including it would be circular
+    # Journal submission materials, not research artifacts. The author's photograph and a
+    # signed declaration of interests have no place in a public dataset deposition -- the
+    # archive is evidence for the paper's claims, not a copy of the submission envelope.
+    "paper/submission_forms/",
 )
 
 
