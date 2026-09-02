@@ -128,7 +128,7 @@ release/zenodo/*.zip
 # the build scripts and the mermaid sources are tracked; everything the build
 # regenerates is not.
 # ---------------------------------------------------------------------------
-lab/build/lab_file.pdf
-lab/build/lab_file.tex
-lab/build/diagrams/*.png
-lab/build/assets/img_*.png
+lab/tools/lab_file.pdf
+lab/tools/lab_file.tex
+lab/tools/diagrams/*.png
+lab/tools/assets/img_*.png

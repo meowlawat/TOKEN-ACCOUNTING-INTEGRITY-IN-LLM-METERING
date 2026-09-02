@@ -1,0 +1,32 @@
+flowchart TD
+    C[Client]
+    B[Inference Backend]
+    P1((1.0 Authorise
+Request))
+    P2((2.0 Execute
+Inference))
+    P3((3.0 Compute
+Usage))
+    P4((4.0 Determine
+Billing Basis))
+    P5((5.0 Commit
+Debit))
+    P6((6.0 Record
+Audit))
+    D1[(credits)]
+    D2[(usage_records)]
+    D3[(ledger_entries)]
+
+    C -->|request + api_key| P1
+    D1 -->|balance| P1
+    P1 -->|authorised| P2
+    P2 -->|tokens| C
+    B -->|usage vector| P2
+    P2 --> P3
+    P3 -->|server recount| P4
+    C -.->|declared usage| P4
+    P4 -->|priced cost| P5
+    P5 -->|balance delta| D1
+    P5 --> D3
+    P5 --> P6
+    P6 --> D2

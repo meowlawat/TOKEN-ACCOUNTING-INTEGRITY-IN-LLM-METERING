@@ -1,0 +1,22 @@
+sequenceDiagram
+    participant C as Client
+    participant G as Gateway
+    participant L as LLM Backend
+    participant U as Usage Computation
+    participant A as Billing Authority
+    participant D as Database
+
+    C->>G: POST /m2/complete (prompt, declared_usage)
+    G->>L: generate(prompt)
+    L-->>G: tokens + true usage U
+    G->>U: recount(tokens)
+    U-->>G: server usage vector
+    alt architecture = server_recount (SAFE)
+        G->>A: price(server usage)
+    else architecture = client_logged (VULNERABLE)
+        G->>D: store server recount
+        G->>A: price(declared usage)
+    end
+    A-->>G: cost
+    G->>D: commit debit + write m_record
+    G-->>C: response + billed amount

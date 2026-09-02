@@ -1,0 +1,78 @@
+erDiagram
+    ACCOUNTS ||--|| CREDITS : has
+    ACCOUNTS ||--o{ LEDGER_ENTRIES : records
+    ACCOUNTS ||--o{ USAGE_RECORDS : generates
+    ACCOUNTS ||--o{ TRIALS : owns
+    ACCOUNTS ||--o{ M_TRIALS : owns
+    TRIALS ||--o{ USAGE_RECORDS : groups
+    M_TRIALS ||--o{ M_RECORDS : groups
+
+    ACCOUNTS {
+        int id PK
+        str name
+        str plan
+        str api_key
+        datetime created_at
+    }
+    CREDITS {
+        int account_id PK, FK
+        decimal balance
+        decimal opening_balance
+    }
+    LEDGER_ENTRIES {
+        int id PK
+        int account_id FK
+        decimal delta
+        str kind
+        datetime created_at
+    }
+    TRIALS {
+        str id PK
+        int account_id FK
+        str posture
+        int concurrency
+        int affordable
+        decimal unit_cost
+        decimal initial_balance
+        decimal final_balance
+    }
+    USAGE_RECORDS {
+        int id PK
+        int account_id FK
+        str trial_id FK
+        str request_id
+        int prompt_tokens
+        int completion_tokens
+        decimal cost
+        decimal balance_before
+        decimal balance_after
+        decimal applied_debit
+        bool served
+        bool committed
+        bool refunded
+    }
+    M_TRIALS {
+        str id PK
+        int account_id FK
+        str mechanism
+        str architecture
+        str price_tier
+        decimal initial_balance
+        decimal final_balance
+    }
+    M_RECORDS {
+        int id PK
+        str trial_id FK
+        str architecture
+        int tokens_generated
+        int tokens_delivered
+        int tokens_billed
+        decimal authoritative_cost
+        decimal committed_debit
+        decimal refund
+        decimal net_debit
+        decimal leak
+        bool served
+        bool completed
+        bool invariant_ok
+    }

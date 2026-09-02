@@ -1,0 +1,36 @@
+flowchart TB
+    subgraph Actors_L[" "]
+        HC([Honest Client])
+        DC([Dishonest Client])
+        EX([Experimenter])
+    end
+    subgraph System["Metering Gateway"]
+        U1[Request Completion]
+        U2[Stream Completion]
+        U3[Abort Mid-Stream]
+        U4[Declare Usage]
+        U5[Configure Posture]
+        U6[Select Architecture]
+        U7[Create Trial]
+        U8[Finalise Trial]
+        U9[Audit Trial]
+        U10[Top-up / Reset Account]
+        U11[Drain Async Queue]
+    end
+    subgraph Actors_R[" "]
+        IB([Inference Backend])
+    end
+
+    HC --> U1
+    HC --> U2
+    DC --> U2
+    DC --> U3
+    DC --> U4
+    EX --> U5
+    EX --> U6
+    EX --> U7
+    EX --> U8
+    EX --> U9
+    EX --> U10
+    EX --> U11
+    U2 --> IB

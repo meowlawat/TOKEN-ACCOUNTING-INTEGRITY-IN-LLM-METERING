@@ -1,0 +1,6 @@
+flowchart LR
+    C[Client] ---|"1: request<br/>9: response"| G[Gateway]
+    G ---|"2: generate<br/>3: tokens"| L[LLM Backend]
+    G ---|"4: recount<br/>5: usage"| U[Usage Computation]
+    G ---|"6: price<br/>7: cost"| A[Billing Authority]
+    G ---|"8: commit"| D[(Database)]

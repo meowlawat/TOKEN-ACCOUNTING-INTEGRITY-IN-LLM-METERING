@@ -1,0 +1,10 @@
+flowchart TB
+    subgraph Host2["Developer Host"]
+        PX["proxy"]
+        APPW["app<br/>multiple uvicorn workers"]
+        DB2[("db postgres:16")]
+        RD2[("redis:7")]
+    end
+    PX --> APPW
+    APPW --> DB2
+    APPW --> RD2

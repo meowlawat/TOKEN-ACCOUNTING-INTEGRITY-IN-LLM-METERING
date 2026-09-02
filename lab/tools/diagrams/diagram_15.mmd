@@ -1,0 +1,14 @@
+flowchart TB
+    subgraph Host3["Developer Host"]
+        LB["lb<br/>load balancer"]
+        GA["gateway_a"]
+        GB["gateway_b"]
+        DB3[("db postgres:16")]
+        RD3[("redis:7")]
+    end
+    LB --> GA
+    LB --> GB
+    GA --> DB3
+    GB --> DB3
+    GA --> RD3
+    GB --> RD3

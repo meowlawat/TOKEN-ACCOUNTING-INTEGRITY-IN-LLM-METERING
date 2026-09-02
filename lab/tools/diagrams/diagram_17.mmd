@@ -1,0 +1,21 @@
+flowchart LR
+    A[Problem<br/>Definition] --> B[Novelty<br/>Audit]
+    B --> C[Testbed<br/>Build]
+    C --> D[B0 Baseline<br/>Validates Rig]
+    D --> E[M1/M2<br/>Architectures]
+    E --> F[Attack Harness<br/>+ Experiments]
+    E --> G[TLA+<br/>Specification]
+    G --> H[TLC Model<br/>Checking]
+    F --> I[Defences +<br/>Overhead]
+    I --> J[Cross-arch +<br/>Async]
+    J --> K[Real Stack<br/>Validation]
+    K --> L[Independent<br/>Audit]
+    H --> L
+    L --> M[Manuscript]
+    M --> N[Artifact<br/>Packaging]
+    N --> O[Submission]
+
+    style A fill:#e8e8e8
+    style D fill:#ffe8cc
+    style L fill:#ffe8cc
+    style O fill:#d4edda

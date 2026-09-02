@@ -1,0 +1,53 @@
+classDiagram
+    class Account {
+        +int id
+        +str name
+        +str plan
+        +str api_key
+        +datetime created_at
+    }
+    class Credit {
+        +int account_id
+        +Decimal balance
+        +Decimal opening_balance
+    }
+    class UsageRecord {
+        +int prompt_tokens
+        +int completion_tokens
+        +Decimal cost
+        +Decimal applied_debit
+        +bool served
+        +bool committed
+        +bool refunded
+    }
+    class MRecord {
+        +int tokens_generated
+        +int tokens_delivered
+        +int tokens_billed
+        +Decimal authoritative_cost
+        +Decimal net_debit
+        +Decimal leak
+        +bool invariant_ok
+    }
+    class CommitArch {
+        +str name
+        +bool reserve_before
+        +str on_complete
+        +bool safe
+    }
+    class AuthorityArch {
+        +str name
+        +str basis
+        +bool recounts
+        +bool corrects
+        +bool safe
+    }
+    class Mode {
+        <<enumeration>>
+        vulnerable
+        hardened
+    }
+
+    Account "1" -- "1" Credit
+    Account "1" -- "*" UsageRecord
+    Account "1" -- "*" MRecord

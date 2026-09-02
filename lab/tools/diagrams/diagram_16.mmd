@@ -1,0 +1,24 @@
+gantt
+    title Token-Accounting Integrity — Project Phases (relative weeks)
+    dateFormat  X
+    axisFormat  W%L
+    section Definition
+    Problem definition & threat model      :a1, 0, 2w
+    Literature / novelty audit             :a2, after a1, 2w
+    section Build
+    Testbed & gateway (Phase 0)            :b1, after a2, 3w
+    B0 baseline reproduction               :b2, after b1, 1w
+    M1 / M2 architectures                  :b3, after b2, 3w
+    section Measure
+    Attack harness & experiments           :c1, after b3, 3w
+    Defence implementation & overhead      :c2, after c1, 2w
+    Cross-architecture & async validation  :c3, after c2, 2w
+    Real serving-stack validation          :c4, after c3, 1w
+    section Verify
+    TLA+ specification                     :d1, after b3, 2w
+    TLC model checking & counterexamples   :d2, after d1, 2w
+    Independent audit & regression         :d3, after c4, 2w
+    section Publish
+    Manuscript preparation                 :e1, after d3, 3w
+    Artifact packaging & archival          :e2, after e1, 1w
+    Submission                             :e3, after e2, 1w

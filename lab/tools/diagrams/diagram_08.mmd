@@ -1,0 +1,20 @@
+stateDiagram-v2
+    [*] --> CREATED
+    CREATED --> AUTHORIZED : Authorize
+    CREATED --> REJECTED : insufficient balance
+    AUTHORIZED --> RESERVED : AtomicReserve
+    AUTHORIZED --> EXECUTING : Begin (no reserve)
+    RESERVED --> EXECUTING : Begin
+    EXECUTING --> STREAMING : StartStream
+    STREAMING --> STREAMING : Deliver
+    STREAMING --> ABORTED : Abort
+    STREAMING --> COMPLETED : Finish
+    ABORTED --> ACCOUNTED : AccountAbort
+    ABORTED --> REFUNDED : Refund
+    COMPLETED --> ACCOUNTED : Account
+    ACCOUNTED --> RECONCILED : Reconcile
+    RECONCILED --> DONE
+    ACCOUNTED --> DONE
+    REFUNDED --> DONE
+    REJECTED --> [*]
+    DONE --> [*]

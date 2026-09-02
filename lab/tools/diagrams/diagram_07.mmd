@@ -1,0 +1,4 @@
+flowchart LR
+    O1["arch : AuthorityArch<br/>name = client_logged<br/>basis = client<br/>recounts = true<br/>corrects = false<br/>safe = false"]
+    O2["rec : MRecord<br/>tokens_generated = 100<br/>tokens_delivered = 100<br/>tokens_billed = 10<br/>leak &gt; 0<br/>invariant_ok = false"]
+    O1 --> O2

@@ -1,0 +1,23 @@
+flowchart TD
+    S([Start]) --> A[Read balance]
+    A --> B{Balance sufficient?}
+    B -->|No| R[Reject request] --> E([End])
+    B -->|Yes| C{Reserve before serving?}
+    C -->|Yes| D[Atomic reserve]
+    C -->|No| F[Proceed unreserved]
+    D --> G[Execute inference]
+    F --> G
+    G --> H[Stream tokens to client]
+    H --> I{Client aborted?}
+    I -->|Yes| J{Abort-safe finalisation?}
+    J -->|Yes| K[Account delivered value]
+    J -->|No| L[Refund reservation<br/>LEAK]
+    I -->|No| M[Compute usage]
+    M --> N{Billing basis}
+    N -->|Server recount| O[Charge recounted cost]
+    N -->|Client-declared| P[Charge declared cost<br/>LEAK if under-reported]
+    K --> Q[Write usage_record]
+    L --> Q
+    O --> Q
+    P --> Q
+    Q --> E

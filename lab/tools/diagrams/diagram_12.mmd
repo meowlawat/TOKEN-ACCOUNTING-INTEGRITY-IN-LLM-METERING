@@ -1,0 +1,49 @@
+flowchart TB
+    subgraph GW["Metering Gateway (FastAPI)"]
+        R1[main.py<br/>core routes]
+        R2[m_routes.py<br/>M1/M2 routes]
+        R3[async_routes.py]
+        R4[bench_routes.py]
+    end
+    subgraph ACC["Accounting"]
+        AC1[backends.py]
+        AC2[ledger.py]
+        AC3[usage.py]
+        AC4[async_worker.py]
+    end
+    subgraph ARCH["Architectures"]
+        AR1[commit_timing.py]
+        AR2[usage_authority.py]
+    end
+    subgraph MET["Metering"]
+        M1[debit.py]
+        M2[pricing.py]
+    end
+    subgraph LLM["Inference"]
+        L1[mock.py]
+        L2[real_server.py]
+    end
+    subgraph EXT["External"]
+        PG[(PostgreSQL 16)]
+        RD[(Redis 7)]
+        LC[llama.cpp<br/>SmolLM2-135M]
+    end
+    subgraph RES["Research Harness"]
+        AT[attacks/]
+        DF[defenses/]
+        EXPR[experiments/]
+        FM[formal/ TLA+]
+        AU[audit/]
+    end
+
+    GW --> ACC
+    GW --> ARCH
+    GW --> MET
+    GW --> LLM
+    ACC --> PG
+    ACC --> RD
+    L2 --> LC
+    AT --> GW
+    EXPR --> GW
+    AU -.->|independent recompute| EXPR
+    FM -.->|MODEL-LEVEL| ARCH

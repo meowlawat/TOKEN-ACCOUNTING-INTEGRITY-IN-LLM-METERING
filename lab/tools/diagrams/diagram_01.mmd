@@ -1,0 +1,12 @@
+flowchart LR
+    C[Client]
+    E[Experimenter]
+    B[Inference Backend]
+    S(("Metering
+Gateway"))
+    C -->|completion request| S
+    S -->|streamed tokens| C
+    E -->|posture / architecture config| S
+    S -->|trial audit| E
+    S -->|prompt| B
+    B -->|generated tokens + usage| S

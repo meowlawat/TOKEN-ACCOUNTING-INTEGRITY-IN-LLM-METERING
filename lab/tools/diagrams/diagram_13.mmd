@@ -1,0 +1,10 @@
+flowchart TB
+    subgraph Host["Developer Host (Docker Engine)"]
+        APP["app<br/>uvicorn FastAPI<br/>:8000"]
+        DB[("db<br/>postgres:16-alpine<br/>:5432")]
+        RDS[("redis<br/>redis:7-alpine<br/>:6379")]
+        VOL[(pgdata volume)]
+    end
+    APP --> DB
+    APP --> RDS
+    DB --- VOL
