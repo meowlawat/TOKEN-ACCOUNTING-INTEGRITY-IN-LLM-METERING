@@ -122,3 +122,13 @@ desktop.ini
 # the ~30 MB zip itself does not need to be.
 # ---------------------------------------------------------------------------
 release/zenodo/*.zip
+
+# ---------------------------------------------------------------------------
+# Software Engineering lab practical file. The Markdown source, the built PDF,
+# the build scripts and the mermaid sources are tracked; everything the build
+# regenerates is not.
+# ---------------------------------------------------------------------------
+lab/build/lab_file.pdf
+lab/build/lab_file.tex
+lab/build/diagrams/*.png
+lab/build/assets/img_*.png

@@ -53,6 +53,10 @@ EXCLUDE_PREFIX = (
     # signed declaration of interests have no place in a public dataset deposition -- the
     # archive is evidence for the paper's claims, not a copy of the submission envelope.
     "paper/submission_forms/",
+    # Coursework, not a research artifact. The lab practical file reuses the
+    # project as its subject but is not evidence for any claim in the paper,
+    # and has no place in a dataset deposition.
+    "lab/",
 )
 
 
