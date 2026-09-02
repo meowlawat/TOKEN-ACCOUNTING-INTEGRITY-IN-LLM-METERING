@@ -1,8 +1,18 @@
-# Editorial Manager — final submission checklist
+# Editorial Manager — submission checklist
 
-Everything below is prepared. What remains is the portal work, which only you can do.
-
-**The paper has not been submitted.** Nothing in this repository submits it.
+> **HISTORICAL — the Computers & Security submission is closed.**
+>
+> The manuscript was submitted to Computers & Security on **August 25, 2026**, assigned
+> **COSE-D-26-05174**, and **desk-rejected the same day** by Prof. Steven Furnell,
+> Editor-in-Chief, on journal scope: C&S operates a moratorium on submissions featuring
+> AI/ML as significant components, and work on the security of AI/ML systems themselves
+> is out of scope. There was no peer review and there were no reviewer reports.
+>
+> This checklist is retained because it records exactly what was submitted, and because
+> the field-by-field mapping is reusable for the next venue. Do not read it as a pending
+> action list for Computers & Security.
+>
+> Current status: `paper/FINAL_SUBMISSION_STATUS.md`.
 
 ---
 
@@ -54,7 +64,7 @@ for none of them.
 | CRediT authorship contribution statement | 23 | single author, 11 roles |
 | Declaration of competing interest | 24 | none declared |
 | Funding | 24 | no specific grant |
-| Declaration of generative AI and AI-assisted technologies | 24 | Elsevier template wording, tool named, responsibility accepted |
+| Generative AI declaration | n/a | Not present in the manuscript, by author decision. |
 | Data availability | 24 | GitHub + Zenodo DOI |
 
 If the portal asks these as separate form fields as well, the text to paste is in the
@@ -92,7 +102,7 @@ Take each person's current address from the cited paper or their institutional p
 | Supplementary material | none, unless the portal requires it. The artifact is the Zenodo deposit. |
 | Preprint declaration | not applicable — the v1.0.2 Zenodo record contains the artifact only, no manuscript PDF. |
 
-## 7. Before you press submit
+## 7. Pre-submission checklist (as used for the C&S submission; reusable for the next venue)
 
 - [ ] Author name entered as a mononym (last-name field only)
 - [ ] ORCID entered — and the ORCID record itself populated (see below)
@@ -102,7 +112,7 @@ Take each person's current address from the cited paper or their institutional p
 - [ ] Biography copied from the BIOGRAPHY block of `author_bio.txt` — **read it first**
 - [ ] Zenodo record's licence and creator name corrected (see below)
 
-## 8. Two things worth fixing first — neither blocks submission
+## 8. Two things still worth fixing — carry forward to the next venue
 
 **The ORCID record is near-empty.** `0009-0001-1642-6669` resolves to a page with a given
 name and nothing else — no affiliations, no works. An ORCID that resolves to a blank page
@@ -128,9 +138,9 @@ cites itself.
 ## Verified state of the package
 
 ```
-submission checker    36/36 PASS
+submission checker    35/35 PASS
 abstract              248 words        (limit 250)
-article               10,061 words     (limit 12,000)
+article               10,000 words     (limit 12,000)
 keywords              9                (range 5-10)
 figures               6/6 cited
 tables                6/6 cited

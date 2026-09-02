@@ -6,6 +6,10 @@
 > not 30; the total word count is 10,064, not 10,010; and the submission artwork is
 > `Figure_1.pdf`/`Figure_1.png` through `Figure_6.png`, not `Figure_1..Figure_5`. Read the
 > superseding file for current status.
+>
+> **Every "not submitted" statement below is historical.** The manuscript was subsequently
+> submitted to Computers & Security on August 25, 2026 (COSE-D-26-05174) and desk-rejected
+> the same day on journal scope. See `paper/FINAL_SUBMISSION_STATUS.md`.
 
 Final pre-submission cleanup pass: correct the hidden B0 inconsistency in the IEEE
 source, verify the Elsevier manuscript did not regress, and record what remains blocked.

@@ -1,5 +1,10 @@
 # Submission metadata — Computers & Security
 
+> **Submission closed.** Submitted August 25, 2026 as **COSE-D-26-05174**; desk-rejected
+> the same day by the Editor-in-Chief on journal scope (AI/ML moratorium). Not peer
+> reviewed. This file records the metadata as submitted and remains the reference for a
+> future venue. See `paper/FINAL_SUBMISSION_STATUS.md`.
+
 ## Title
 Token-Accounting Integrity in LLM Metering: A Systematic Study of Client-Side
 Under-Payment
@@ -15,7 +20,7 @@ field and leave the first-name field empty; the same convention applies in Zenod
 
 *Verified as the author's — it is the link published on `github.com/meowlawat`, the
 account that owns this repository. The record is near-empty as of writing; populate the
-affiliations and accepted works before submitting.*
+affiliations and accepted works before any future submission.*
 
 ## Affiliations
 a. Department of Computer Science and Data Analytics, Indian Institute of Technology
@@ -57,7 +62,7 @@ economic security; streaming inference; accounting reconciliation; model checkin
 Figure and table counts are of floats that are both present *and* referred to in the
 text; `scripts/check_cose_submission.py` fails if any float is never cited.
 
-## Required declarations (all present in the manuscript)
+## Required declarations
 
 | declaration | page |
 |---|---|
@@ -65,8 +70,9 @@ text; `scripts/check_cose_submission.py` fails if any float is never cited.
 | CRediT authorship contribution statement | 23 |
 | Declaration of competing interest | 24 |
 | Funding | 24 |
-| Declaration of generative AI and AI-assisted technologies | 24 |
 | Data availability | 24 |
+
+No generative AI declaration is present in the manuscript, by author decision.
 
 ## Repository and release
 GitHub: https://github.com/meowlawat/TOKEN-ACCOUNTING-INTEGRITY-IN-LLM-METERING

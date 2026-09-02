@@ -1,7 +1,14 @@
 # Final submission manifest — Computers & Security
 
-Everything that exists, what it is for, and whether it is ready. This is the packing
-list; `paper/FINAL_SUBMISSION_STATUS.md` is the verdict.
+> **Historical.** This is the packing list for the Computers & Security submission of
+> 25 August 2026 (COSE-D-26-05174), which was desk-rejected the same day on journal
+> scope. It records what was submitted. Current status:
+> `paper/FINAL_SUBMISSION_STATUS.md`.
+>
+> One item has since changed: the generative-AI declaration was removed from the
+> manuscript after submission, at the author's instruction.
+
+Everything that exists, what it is for, and whether it is ready.
 
 Verified state at the time of writing: `scripts/check_cose_submission.py` 34/34,
 `scripts/count_cose_metrics.py` abstract 248 / total 10,052, PDF 25 pages 0 blank, 0
@@ -43,7 +50,7 @@ by `scripts/render_tikz_figure1.py`, which is why the raster series starts at Fi
 | CRediT | 23 | single author, 11 roles enumerated |
 | Competing interest | 24 | none declared |
 | Funding | 24 | no specific grant |
-| Declaration of generative AI and AI-assisted technologies in the writing process | 24 | Elsevier's own heading and template wording; tool named, responsibility accepted |
+| Generative AI declaration | n/a | Not present in the manuscript, by author decision. |
 | Data availability | 24 | GitHub tag `v1.0.1`, explicit Zenodo DOI placeholder |
 
 ## 3. Archival deposition — prepared, not published

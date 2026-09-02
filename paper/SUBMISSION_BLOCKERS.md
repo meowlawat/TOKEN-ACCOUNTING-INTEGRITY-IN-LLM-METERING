@@ -1,8 +1,16 @@
 # Submission blockers
 
-Concrete, unresolved items that must be closed before `paper/main_cose.tex` is actually
-submitted to Computers & Security. Nothing below was fabricated to make this list look
-shorter than it is.
+> **The Computers & Security submission is closed.** The manuscript was submitted on
+> August 25, 2026, assigned COSE-D-26-05174, and desk-rejected the same day on journal
+> scope (AI/ML moratorium) by the Editor-in-Chief. No peer review, no reviewer reports.
+> See `paper/FINAL_SUBMISSION_STATUS.md`.
+>
+> Items below are therefore no longer blockers *for C&S*. They are retained because most
+> of them carry forward to any future venue, and because they record what the state
+> actually was. Item 10 is new and specific to the published Zenodo archive.
+
+Concrete, unresolved items. Nothing below was fabricated to make this list look shorter
+than it is.
 
 ## 1. Zenodo record is incomplete and mis-typed
 
@@ -161,8 +169,35 @@ The record itself, however, contains only the given name "hardik" — no family 
 employment, no education, no works. An ORCID that resolves to a blank page is a weaker
 signal to an editor than no ORCID at all.
 
-Before submitting, add: the IIT Patna and VIPS affiliations, and the two accepted papers
-(ETTIS 2026 / Springer, and ICDSCNC 2026 / IEEE Xplore). This takes about ten minutes at
+Add: the IIT Patna and VIPS affiliations, and the two accepted papers (ETTIS 2026 /
+Springer, and ICDSCNC 2026 / IEEE Xplore). This takes about ten minutes at
 https://orcid.org and is the highest-value-per-minute item on this list.
 
-**Status: non-blocking, strongly recommended.**
+**Status: non-blocking, strongly recommended before any future submission.**
+
+## 10. Published Zenodo archive contains the withdrawn AI disclosure
+
+The archive published at **DOI 10.5281/zenodo.22086254** (record version 1.0.2) was
+deposited before the generative-AI declaration was removed from the manuscript. It
+therefore still contains that declaration, in six files inside
+`token-accounting-integrity-v1.0.1.zip`:
+
+```
+paper/main_cose.tex                      source
+paper/main_cose.pdf                      compiled, 25 pp
+paper/COSE_SUBMISSION_READINESS.md
+paper/FINAL_SUBMISSION_MANIFEST.md
+paper/submission_metadata.md
+scripts/check_cose_submission.py
+```
+
+**The published record is not to be deleted, altered, or hidden.** It is an accurate
+snapshot of what existed on the day it was deposited, and rewriting it to remove a record
+of tool use would be a provenance problem, not a tidiness fix.
+
+The correct mechanism, if a corrected archive is wanted, is a **new Zenodo version** that
+supersedes it while leaving 10.5281/zenodo.22086254 permanently resolvable. The concept
+DOI `10.5281/zenodo.22085827` already resolves to whatever the latest version is, so the
+manuscript's own citation would not need to change.
+
+**Status: author's decision. Not actioned.**

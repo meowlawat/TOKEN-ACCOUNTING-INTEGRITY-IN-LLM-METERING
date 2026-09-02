@@ -289,9 +289,13 @@ The archival record is Zenodo [10.5281/zenodo.22086254](https://doi.org/10.5281/
 complete artifact. The concept DOI
 [10.5281/zenodo.22085827](https://doi.org/10.5281/zenodo.22085827) always resolves to the latest version.
 
-**The manuscript is under submission to Elsevier *Computers & Security*. It is not
-peer-reviewed and has not been accepted.** The Zenodo DOI is a dataset/artifact identifier
-and is not evidence of publication.
+**The manuscript is not published and not peer-reviewed.** It was submitted to Elsevier
+*Computers & Security* on 25 August 2026 (COSE-D-26-05174) and desk-rejected the same day
+on journal scope: C&S operates a moratorium on submissions featuring AI/ML as significant
+components, and work on the security of AI/ML systems themselves is out of scope there.
+No reviewers were assigned and no reviewer reports were produced, so no aspect of the
+methodology or results was assessed. The Zenodo DOI is a dataset/artifact identifier and
+is not evidence of publication.
 
 ## License
 
