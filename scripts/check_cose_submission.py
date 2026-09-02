@@ -118,13 +118,10 @@ def main() -> None:
     # ---- required declarations --------------------------------------------------
     checks.append(("Data availability statement exists",
                    r"\section*{Data availability}" in s, "n/a"))
-    # Elsevier's own heading for this declaration, and its own template wording. The
-    # journal asks for a specific section title, so match that rather than a paraphrase.
-    checks.append(("Generative AI declaration exists",
-                   r"\section*{Declaration of generative AI and AI-assisted "
-                   r"technologies in the writing process}" in s, "n/a"))
-    checks.append(("Generative AI declaration names the tool and accepts responsibility",
-                   "Claude (Anthropic)" in s and "full responsibility" in s, "n/a"))
+    # No generative-AI declaration is required in this manuscript, by author decision.
+    # Gate against one being silently reintroduced rather than requiring its presence.
+    checks.append(("No generative AI declaration present (by author decision)",
+                   r"\section*{Declaration of generative AI" not in s, "n/a"))
     checks.append(("Funding statement exists",
                    r"\section*{Funding}" in s, "n/a"))
     checks.append(("Declaration of competing interest exists",

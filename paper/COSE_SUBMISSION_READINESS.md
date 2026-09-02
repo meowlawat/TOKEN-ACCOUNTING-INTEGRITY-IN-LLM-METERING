@@ -112,7 +112,7 @@ explicitly (`[ZENODO DOI TO BE INSERTED]`) rather than fabricating one. See
 | CRediT | YES | Single-author roles actually applicable: Conceptualization, Methodology, Software, Investigation, Formal analysis, Data curation, Validation, Visualization, Writing (both). Funding acquisition and Supervision deliberately omitted as unsupported. |
 | Funding | YES | Standard no-funding declaration; no grant invented. |
 | Competing interest | YES | Standard no-conflict declaration. |
-| Generative AI disclosure | YES | Discloses that Claude (Anthropic) assisted with software development, experiment scripting, manuscript language refinement, and analytical/editorial review; states results and citations were independently verified and that AI tools are not authors. |
+| Generative AI disclosure | NO | Not present in the manuscript, by author decision. |
 
 ## Author biography
 
