@@ -1,0 +1,132 @@
+Dear Editors,
+
+Please consider the enclosed manuscript, "Token-Accounting Integrity in LLM Metering: A
+Systematic Study of Client-Side Under-Payment," for publication in the Journal of Systems
+and Software.
+
+WHAT THE PAPER IS ABOUT
+
+The paper studies the metering and accounting subsystem of LLM-serving software as a
+security-critical software architecture. Under usage-based pricing, value reaches the
+client while the accounting record is still open, and the amount charged depends on a
+usage record produced at runtime by the serving system itself. The engineering question is
+how such a subsystem should be architected, verified, and empirically validated so that
+the value delivered to a client cannot exceed the net committed debit, V(r) <= N(r),
+under a stated accounting model. The LLM-serving system is the application domain. The
+paper does not address the behaviour, robustness, or output safety of the language model
+itself.
+
+FIT WITH THE JOURNAL
+
+The contribution sits in software architecture and in software verification and
+validation, and it is empirical throughout.
+
+- Software architecture. A metered inference request is modelled as a lifecycle of states
+  and transitions with an authorization path, a settlement path, and an accounting event
+  lifecycle. Three failure mechanisms are localized to three kinds of architectural
+  boundary: state synchronization on the authorization path (B0), commitment timing on the
+  settlement path (M1), and usage authority at the point where the billing input is chosen
+  (M2). Solvency and accounting integrity are shown to be separate properties owned by
+  different steps of the lifecycle.
+- Verification. The lifecycle is specified in TLA+ and checked exhaustively with TLC
+  across ten architecture configurations and four invariants, with every expected outcome
+  declared in the checking script before the runs; all forty matched, over 27,526 distinct
+  states. The model is finite, safety-only, and does not include the database or network.
+  There is no mechanized refinement proof from the specification to the implementation,
+  and the manuscript says so.
+- Empirical validation. The same architectures are measured across three execution
+  topologies (a single worker, four workers behind an nginx reverse proxy, and an nginx
+  load balancer over two gateway containers), three accounting families (a mutable balance
+  row, an append-only ledger, and an asynchronous event pipeline), and two inference data
+  planes (a deterministic generator built for this work, and llama.cpp serving
+  SmolLM2-135M-Instruct over real server-sent-event streaming). Integrity gates fail closed
+  and are validated by fault injection, and a separate audit re-derives every reported
+  quantity from raw data using code that imports nothing from the project.
+- Engineering conditions. Model-level sufficiency conditions are stated separately from
+  the implementation patterns that satisfy them in the testbed, because satisfying a
+  pattern in another system does not by itself establish the condition there.
+
+CONTRIBUTION, STATED CONSERVATIVELY
+
+We claim no novelty at the primitive level, and say so in the abstract, the introduction,
+and the discussion. Every enabling mechanism is individually known: relying on a
+client-supplied value in a security decision is CWE-807; disconnect-related accounting
+gaps appear in a deployed gateway issue and in a shipped mitigation; racing a shared
+counter is a classical web race. The contribution is the unified accounting model, the
+architectural taxonomy, the machine-checked and empirical evidence, and the engineering
+conditions, not a new attack or a new defense primitive.
+
+PRINCIPAL RESULTS
+
+1. Computing usage correctly is not the same as billing from it. An architecture that
+   performs an accurate server-side recount, stores the result, and still charges the
+   client-declared number leaks 58.3% of delivered value in the controlled setting and
+   69.0% against a real serving stack. Server-authoritative billing removes the observed
+   leakage.
+
+2. Reservation and abort-safe finalization are orthogonal. Each alone secures exactly one
+   of solvency and accounting integrity; only both secure both. This is established
+   exhaustively by model checking over all four combinations, not only by the two
+   architectures implemented.
+
+3. The synchronization condition is not fundamentally about concurrency. Deferring
+   settlement produces over-serving under strictly sequential arrivals, with no two
+   requests ever in flight together. The correct condition is that authorization be
+   atomically coupled to economic commitment on the path that authorizes service.
+
+ON LIMITATIONS
+
+We have tried to be explicit about what this work does not establish. The formal model is
+finite and checks safety only; there is no mechanized refinement proof; the asynchronous
+family is measured but not formally modelled; reconciliation delays are injected rather
+than observed in production; no commercial provider was tested, by deliberate ethical
+constraint; and real-stack validation uses one external serving stack. All execution
+topologies were run on a single host under Docker Compose, no production deployment or
+field evaluation was performed, and no claim is made about behaviour across a physically
+distributed or wide-area network. We also withdraw a detectability claim made in an
+earlier version of this work, after our own audit showed the instrumentation restated
+experimenter-assigned labels rather than measuring evidence. That withdrawal is
+documented in the paper.
+
+PRIOR SUBMISSION
+
+This manuscript was submitted to Computers & Security (COSE-D-26-05174) and returned
+without review by the Editor-in-Chief, on the stated ground that the journal operates a
+moratorium on submissions where AI/ML is a significant component and that work on the
+security of AI/ML systems themselves is outside its scope. No reviewers were assigned and
+no reviewer reports were produced; no aspect of the methodology, results, or conclusions
+was assessed. It was subsequently submitted to the Journal of Information Security and
+Applications and is no longer under consideration there. We mention this only for
+transparency about the manuscript's history.
+
+ARTIFACT AND ETHICS
+
+The testbed, attack harness, defense implementations, TLA+ specification, and complete raw
+data are publicly released and archived with a DOI. Every table and figure regenerates
+from raw data; none is hand-edited. Every attack in the artifact is paired with a defense.
+All experiments ran against a local testbed whose harness defaults to localhost and
+contains no third-party endpoints. No credentials, real user data, or production billing
+APIs were used, and this work produced no vulnerability findings against any third-party
+or production system.
+
+The manuscript is original, is not under consideration elsewhere, and has not been
+published previously. We declare no competing interests.
+
+Thank you for your consideration.
+
+Sincerely,
+
+Hardik (corresponding author)
+Department of Computer Science and Data Analytics
+Indian Institute of Technology Patna, India
+Vivekananda School of Engineering and Technology
+Vivekananda Institute of Professional Studies - Technical Campus
+New Delhi, India
+hardik24a12res263@iitp.ac.in
+hardikahlawat13@gmail.com
+ORCID: 0009-0001-1642-6669
+
+Natasha Kaila
+Vivekananda Institute of Professional Studies - Technical Campus
+New Delhi, India
+09617711924_aids@vipstc.edu.in
