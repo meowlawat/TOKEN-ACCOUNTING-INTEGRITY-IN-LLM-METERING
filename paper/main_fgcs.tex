@@ -136,8 +136,8 @@ Attestation work asks whether an intermediary can misroute requests or forge pro
 \citep{aex,gwprov}. The remaining quadrant is a legitimate, authenticated client that
 under-pays, and that is what we study (Table~\ref{tab:quadrant}).
 
-We are deliberately conservative about what is new here. Each enabling mechanism already
-exists in isolation. Trusting a client-supplied value in a security decision is CWE-807
+The individual mechanisms have precedents in isolation. Trusting a client-supplied value
+in a security decision is CWE-807
 \citep{cwe807}. A deployed LLM gateway refunds pre-consumed quota when the final usage
 record never arrives after a disconnect \citep{newapi5235}, and a metered-token proxy
 already guards against an encoding-induced silent zero-debit \citep{aperture247}. Racing a
@@ -145,9 +145,11 @@ shared counter is a classical web race \citep{kettle}, and logic flaws in paymen
 documented for web stores \citep{cashier} and for database-backed applications
 \citep{acidrain}. Section~\ref{sec:deployed} collects five such public reports from
 independently developed metering gateways; none of them was tested by us, and none is
-claimed here to be exploitable. Accordingly, B0 is presented as a
-known baseline and M1 and M2 as systematization and measurement contributions; we make no
-priority claim at the primitive level.
+claimed here to be exploitable. What has not been available is a single model that places
+them on one accounting lifecycle, checks it exhaustively, and states precisely when each
+defense is sufficient; that unification, verification, and empirical validation is the
+contribution of this paper. Accordingly, B0 is presented as a
+known baseline and M1 and M2 as systematization and measurement contributions.
 
 What is missing is not a primitive but a frame. These failures are usually discussed as
 unrelated bugs in unrelated systems. Placed on a single request lifecycle they are the
