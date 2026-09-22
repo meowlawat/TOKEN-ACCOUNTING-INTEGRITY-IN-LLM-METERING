@@ -74,27 +74,27 @@ New Delhi, India}
 \cortext[cor1]{Corresponding author.}
 
 \begin{abstract}
-A metered computational service can deliver economically valuable computation before the
-corresponding economic commitment is durable, and usage-based LLM inference makes that
-gap concrete: value reaches the client while accounting is open, and the charge depends
-on a usage record produced at runtime. We study the under-explored direction of that gap,
-an honest provider facing a dishonest client, and model a metered request as a lifecycle
-with one integrity property, $V(r) \le N(r)$, decomposed into state synchronization (B0),
-commitment timing (M1), and usage authority (M2). No new attack primitive is claimed; the
-contribution is the unification, verification, validation, and defense analysis of
-individually known mechanisms. We check the lifecycle in TLA+ with TLC across ten
-configurations and four invariants, expectations fixed before the runs.
-Reservation and abort-safe finalization are orthogonal: each alone secures one of
-solvency and accounting integrity, and only both secure both. Computing usage correctly
-is not the same as billing from it: an architecture that recounts accurately, stores the
-result, and still charges the client-declared number leaks 58.3\% of delivered value in a
-controlled setting and 69.0\% against a real serving stack, while server-authoritative
-billing removes the leakage, and substituting third-party serving code for our generator
-leaves the architectural conclusions intact across sixty cells. Deferring settlement
-produces over-serving under strictly sequential arrivals: the B0 condition is not
-fundamentally about concurrency, but about authorization being atomically coupled to
-economic commitment on the authorizing path. We report defense overhead, sufficiency
-conditions, and the model's limits.
+Large language models are increasingly delivered as metered, network-accessible services
+in which value is streamed to the client before the charge is settled, usage is produced
+at runtime, and settlement is often asynchronous. We study the accounting integrity of
+such serving infrastructure against an authenticated client that seeks to pay less than
+it owes. Modeling a metered request as a lifecycle with a single integrity property,
+$V(r) \le N(r)$, we localize failures to three points: state synchronization (B0),
+commitment timing (M1), and usage authority (M2). We verify the lifecycle exhaustively in
+TLA+/TLC across ten configurations and four invariants, and validate it on a testbed
+spanning three execution topologies, three accounting families including an asynchronous
+event pipeline, and a third-party serving stack. Three results follow. Reservation and
+abort-safe finalization are orthogonal: each secures only one of solvency and accounting
+integrity, and only their conjunction secures both. Computing usage correctly is not
+billing from it: an architecture that recounts accurately but charges the
+client-declared value leaks 58.3\% of delivered value in a controlled setting and 69.0\%
+against a real serving stack, while server-authoritative billing eliminates the leak.
+Asynchronous settlement reproduces over-serving under strictly sequential arrivals, so
+the synchronization condition concerns not concurrency but whether authorization is
+atomically coupled to economic commitment on the authorizing path. We state model-level
+conditions separately from implementation patterns, report the cost of the strongest
+defense, under 0.1\% of end-to-end time with real inference, and delimit the formal
+model.
 \end{abstract}
 
 \begin{keyword}
