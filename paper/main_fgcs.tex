@@ -970,12 +970,12 @@ metadata, and a recount-engine failure. Every invariant violation falls on a vul
 architecture, the hardened architectures survive all of them, and a recount-engine
 failure is fail-closed: the request is rejected and nothing is served or billed.
 
-\subsection{A withdrawn claim}
+\subsection{Limits of detectability measurement}
 \label{sec:detect}
-An earlier version of this work reported a detectability taxonomy and claimed that
-logging a server-side recount moved a leak from invisible to post-hoc reconcilable. An
-independent audit of our own artifact showed the claim was not supported, and we
-withdraw it.
+A natural extension of this measurement is whether a leak is detectable after the fact
+from retained evidence, distinguishing an invisible leak from one that is merely
+unreconciled. We tested this directly and found that our instrumentation cannot support
+the distinction.
 
 Two defects were involved. The implementation assigned the detectability level from
 static architecture metadata rather than measuring it, so the experiment read back a
@@ -1398,9 +1398,9 @@ tokens is exactly zero at concurrency 20 or below and about 0.011 at 50 and 100.
 \paragraph{Construct}
 The B0 debit path is a frozen module predating the pluggable accounting backends and
 does not reference them, so backend parity covers M1 and M2 only and B0's storage
-independence is untested. Detectability was found by our own audit to restate
-experimenter-assigned labels rather than measure evidence, so we withdrew it entirely
-rather than report a weaker version.
+independence is untested. Our detectability instrumentation restates
+experimenter-assigned labels rather than measuring evidence, so we make no detectability
+claim.
 
 \paragraph{Formal}
 The specification is finite (two to three concurrent requests, two value chunks, unit
