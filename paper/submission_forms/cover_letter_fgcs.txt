@@ -1,0 +1,140 @@
+Dear Editors,
+
+Please consider the enclosed manuscript, "Token-Accounting Integrity in LLM Metering: A
+Systematic Study of Client-Side Under-Payment," for publication in Future Generation
+Computer Systems.
+
+WHAT THE PAPER IS ABOUT
+
+A metered computational service decides whether to admit work before it knows how much
+work will be done, delivers the work incrementally, and commits the charge afterwards.
+Between admission and commitment the service holds economic state that is authoritative
+for billing but not yet durable, and that state is read and written by several
+components: an authorization path, an execution path, and a settlement path that may run
+asynchronously behind both. The question the paper asks is whether such a service can
+deliver economically valuable computation without an equivalent durable economic
+commitment, and what architectural conditions prevent that.
+
+LLM inference serving is the workload we use to answer it, because it exhibits every
+ingredient at once: progressive value delivery, quantity unknown at authorization time, a
+runtime-produced multi-category usage vector, and asynchronous settlement. The paper does
+not study the behaviour, robustness, or output safety of the language model itself.
+
+WHY FGCS
+
+The contribution is a distributed state-management result demonstrated on a modern cloud
+workload, not an attack paper.
+
+- Distributed accounting state. A metered request is modelled as a lifecycle with one
+  integrity property, V(r) <= N(r), where V is value delivered and N is the net committed
+  debit. Three failure mechanisms are localized to three distinct elements of that
+  lifecycle: a shared-state transition (B0), a terminal path (M1), and a data-authority
+  boundary (M2). B0 is a lost update in the sense of the classical isolation-level
+  literature; the paper connects it to that literature rather than presenting it as new.
+
+- The central systems result concerns settlement, not concurrency. We issue requests
+  strictly sequentially, 20 ms apart, so that no two are ever in flight together, and
+  over-serving still appears once the settlement delay exceeds the inter-arrival time.
+  This forces a strictly more general condition than the one we began with: authorization
+  must be atomically coupled to economic commitment on the path that authorizes service.
+  Concurrency is one way to break that coupling; deferred settlement is another.
+
+- Verification. The lifecycle is specified in TLA+ and checked exhaustively with TLC
+  across ten configurations and four invariants, with every expected outcome declared in
+  the checking script before the runs; all forty matched, over 27,526 distinct states.
+  The model is finite, checks safety only, and abstracts away the database and the
+  network. There is no mechanized refinement proof from specification to implementation,
+  and the manuscript says so in those words.
+
+- Empirical validation across deployment variation. The same architectures are measured
+  across three execution topologies, three accounting families including an asynchronous
+  event pipeline, and two independent inference data planes, one of which is third-party
+  serving code (llama.cpp serving SmolLM2-135M-Instruct over real server-sent-event
+  streaming). Integrity gates fail closed and are validated by fault injection, and a
+  separate audit re-derives every reported quantity from raw data using code that imports
+  nothing from the project.
+
+CONTRIBUTION, STATED CONSERVATIVELY
+
+We claim no novelty at the primitive level, and say so in the abstract, the introduction,
+and the discussion. Relying on a client-supplied value in a security decision is CWE-807;
+racing a shared counter is a classical web race; disconnect-related accounting gaps are
+documented in deployed gateways. The contribution is the unified accounting model, the
+architectural taxonomy, the machine-checked and empirical evidence, and the sufficiency
+conditions, not a new attack or a new defense primitive.
+
+PUBLIC EVIDENCE, AND WHAT WE DID NOT DO
+
+Section 3.10 tabulates five public reports from independently developed metering gateways
+in which the same architectural ingredient appears, including one in which the project's
+own maintainers measured 254,347 completion tokens delivered and never billed in a single
+interrupted stream. We reviewed only the published issue and pull-request pages. We
+attempted nothing against any third-party system, we make no claim that any listed system
+is exploitable, and two of the five reports are already fixed by their own maintainers.
+Every measurement in the paper comes from our own local testbed.
+
+ON LIMITATIONS
+
+The formal model is finite and checks safety only; there is no mechanized refinement
+proof; the asynchronous family is measured but not formally modelled; no commercial
+provider was tested, by deliberate ethical constraint; and real-stack validation uses one
+external serving stack and one small model on CPU.
+
+One limitation deserves the editor's attention directly, because it bears on the paper's
+central systems claim. Separation between authorization and settlement is temporal in our
+experiments, not physical: all topologies ran on a single host under Docker Compose over
+loopback, and the reconciliation delay is an injected parameter under our control rather
+than a measured network path. We therefore establish that breaking the coupling is
+sufficient to produce over-serving, and that the effect appears once the delay exceeds the
+inter-arrival time; we do not establish what that delay is in a physically distributed
+deployment. A two-machine replication is the obvious next experiment. It was not
+performed, and the manuscript carries a dedicated limitation paragraph saying so rather
+than leaving a reader to infer it.
+
+We also withdraw a detectability claim made in an earlier version of this work, after our
+own audit showed the instrumentation restated experimenter-assigned labels rather than
+measuring evidence. That withdrawal is documented in the paper.
+
+PRIOR SUBMISSION
+
+This manuscript was submitted to Computers & Security (COSE-D-26-05174) and returned
+without review by the Editor-in-Chief, on the stated ground that the journal operates a
+moratorium on submissions where AI/ML is a significant component and that work on the
+security of AI/ML systems themselves is outside its scope. No reviewers were assigned and
+no reviewer reports were produced. It was subsequently submitted to the Journal of
+Information Security and Applications, and to the Journal of Systems and Software, and is
+under consideration at neither. We mention this for transparency about the manuscript's
+history; the scientific content is unchanged across versions, and only the framing and
+the venue-specific material differ.
+
+ARTIFACT AND ETHICS
+
+The testbed, attack harness, defense implementations, TLA+ specification, and complete raw
+data are publicly released and archived with a DOI. Every table and figure regenerates
+from raw data; none is hand-edited. Every attack in the artifact is paired with a defense.
+All experiments ran against a local testbed whose harness defaults to localhost and
+contains no third-party endpoints. No credentials, real user data, or production billing
+APIs were used, and this work produced no vulnerability findings against any third-party
+or production system.
+
+The manuscript is original, is not under consideration elsewhere, and has not been
+published previously. We declare no competing interests.
+
+Thank you for your consideration.
+
+Sincerely,
+
+Hardik (corresponding author)
+Department of Computer Science and Data Analytics
+Indian Institute of Technology Patna, India
+Vivekananda School of Engineering and Technology
+Vivekananda Institute of Professional Studies - Technical Campus
+New Delhi, India
+hardik24a12res263@iitp.ac.in
+hardikahlawat13@gmail.com
+ORCID: 0009-0001-1642-6669
+
+Natasha Kaila
+Vivekananda Institute of Professional Studies - Technical Campus
+New Delhi, India
+09617711924_aids@vipstc.edu.in
