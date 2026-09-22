@@ -807,7 +807,7 @@ do not provide a mechanized refinement proof from the abstract specification to 
 implementation.} The correspondence between the two is an argument supported by
 case-by-case agreement between formal and empirical outcomes, and we do not claim more.
 
-\subsection{The specification was wrong first}
+\subsection{Validating the specification}
 Declaring expectations before running earned its keep immediately. Our first
 specification treated a reservation as a hold and set the committed debit equal to the
 charge at settlement, so $N = D - F$ fell below the delivered value and TLC rejected the
@@ -1362,7 +1362,7 @@ apart. These are implications for engineering metered services under the stated
 accounting model, demonstrated on LLM inference, not claims about deployed systems we did
 not test.
 
-\paragraph{Is this not CWE-807 plus a race plus known streaming bugs?}
+\paragraph{Relation to known weakness classes}
 This is the objection we consider most likely, which is why we state it ourselves. It is
 partly correct. B0 is a known generic race and is presented as a baseline, not a
 contribution. The mechanisms behind M1 and M2 are individually known: trusting
@@ -1383,8 +1383,8 @@ architectures it was not.
 
 \section{Threats to Validity}
 \label{sec:limits}
-We organize threats by the customary categories of internal, construct, and external
-validity \citep{runeson,wohlin}, and add a category for the formal model and one for the
+We organize threats as internal, construct, external, and formal
+validity \citep{runeson,wohlin}, and add one for the
 degree of physical distribution actually exercised.
 
 \paragraph{Internal}
