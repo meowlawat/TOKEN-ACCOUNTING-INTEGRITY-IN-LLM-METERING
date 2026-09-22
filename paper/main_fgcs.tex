@@ -302,14 +302,10 @@ service designs, all discussed below.
 Pay-as-you-go pricing is a defining feature of cloud services \citep{armbrust}, and
 metering is the mechanism that makes it enforceable: a service must decide whether to
 admit work, observe how much work was done, and commit a charge for it. Where those
-three responsibilities sit relative to one another is an architectural choice, in the
-sense of a set of elements together with their form and the rationale for their
-arrangement \citep{perrywolf}, documented through complementary views \citep{kruchten},
-and security is among the quality attributes such choices determine \citep{bass}. The
+three responsibilities sit relative to one another is an architectural choice, and
+security is among the quality attributes such choices determine \citep{bass}. The
 failures studied here follow from where authorization, settlement, and the billing input
-sit in the request path, not from a defect in any single component. Usage-based billing
-of LLM inference inherits the cloud metering problem and adds runtime-produced,
-multi-category usage that is unknown when admission is decided.
+sit in the request path, not from a defect in any single component.
 
 \subsection{Provider-side accounting}
 CoIn \citep{coin} shows that reasoning tokens invisible to the client can be counted and
@@ -1503,7 +1499,7 @@ resolves to the most recent archived version of the artifact. The archive conten
 \texttt{release/zenodo/} in the repository.
 
 \bibliographystyle{elsarticle-harv}
-\begin{thebibliography}{83}
+\begin{thebibliography}{81}
 
 \bibitem[Adya et~al.(2000)]{adya}
 Adya, A., Liskov, B., O'Neil, P., 2000. Generalized isolation level definitions, in: Proceedings of 16th International Conference on Data Engineering (Cat. No.00CB37073), pp.~67--78. \url{https://doi.org/10.1109/ICDE.2000.839388}.
@@ -1642,9 +1638,6 @@ Klein, G., Elphinstone, K., Heiser, G., Andronick, J., et~al., 2009. seL4: forma
 \bibitem[Kleppmann(2017)]{kleppmann}
 Kleppmann, M., 2017. Designing Data-Intensive Applications. O'Reilly Media, Sebastopol.
 
-\bibitem[Kruchten(1995)]{kruchten}
-Kruchten, P., 1995. The 4+1 view model of architecture. IEEE Software 12, 42--50. \url{https://doi.org/10.1109/52.469759}.
-
 \bibitem[Kudo and Richardson(2018)]{sentencepiece}
 Kudo, T., Richardson, J., 2018. SentencePiece: A simple and language independent
 subword tokenizer and detokenizer for neural text processing. arXiv:1808.06226.
@@ -1698,9 +1691,6 @@ OpenAI, n.d. tiktoken: A fast BPE tokeniser for use with OpenAI's models [Softwa
 OWASP GenAI Security Project, 2025. LLM10:2025 unbounded consumption. OWASP Top 10 for
 LLM Applications.
 \url{https://genai.owasp.org/llmrisk/llm102025-unbounded-consumption/}.
-
-\bibitem[Perry and Wolf(1992)]{perrywolf}
-Perry, D.E., Wolf, A.L., 1992. Foundations for the study of software architecture. ACM SIGSOFT Software Engineering Notes 17, 40--52. \url{https://doi.org/10.1145/141874.141884}.
 
 \bibitem[Petrov et~al.(2023)]{petrov}
 Petrov, A., La Malfa, E., Torr, P.H.S., Bibi, A., 2023. Language model tokenizers introduce unfairness between languages. arXiv:2305.15425.
