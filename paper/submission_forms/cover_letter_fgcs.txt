@@ -1,8 +1,8 @@
 Dear Editors,
 
-Please consider the enclosed manuscript, "Token-Accounting Integrity in LLM Metering: A
-Systematic Study of Client-Side Under-Payment," for publication in Future Generation
-Computer Systems.
+Please consider the enclosed manuscript, "Accounting Integrity in Metered LLM-Serving
+Infrastructure: Verified Conditions Against Client-Side Under-Payment," for publication in
+Future Generation Computer Systems.
 
 WHAT THE PAPER IS ABOUT
 
