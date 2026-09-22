@@ -164,9 +164,10 @@ metered API: a remote client issues a request, the service streams a response ac
 the network while accounting is still open, and a security-relevant decision, what
 to charge, is made from state produced on that path.
 
-The question this paper asks is whether a metered computational service can deliver
-economically valuable computation without an equivalent durable economic commitment, and
-what architectural conditions prevent that. LLM inference is the workload we use to
+The question this paper asks is which conditions on the authorization path, the
+settlement path, and the billing input guarantee that delivered value never exceeds net
+committed debit, and how those conditions behave when settlement is distributed and
+asynchronous. LLM inference is the workload we use to
 answer it, because it exhibits every ingredient at once: progressive value delivery,
 quantity unknown at authorization time, a runtime-produced multi-category usage vector,
 and asynchronous settlement. The conditions we arrive at are stated over the accounting
