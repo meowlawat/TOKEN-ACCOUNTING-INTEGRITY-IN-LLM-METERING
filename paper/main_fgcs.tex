@@ -191,15 +191,15 @@ and defensive boundaries stated explicitly.
 checked exhaustively with TLC over ten configurations and four invariants, producing
 counterexamples that match the measured failures and an exhaustive orthogonality result
 for the M1 defenses.
-\item Empirical validation (Sections~\ref{sec:results} and \ref{sec:generality}) across
-three execution topologies, three accounting families including an asynchronous event
-pipeline, and two independent inference data planes, with fail-closed integrity gates and
-independent recomputation.
 \item A distributed-settlement result (Section~\ref{sec:b0revised}): deferring settlement
 reproduces the synchronization failure with strictly sequential arrivals and no
 concurrency at all, which forces a strictly more general condition than the one we
 started with, namely that authorization be atomically coupled to economic commitment on
 the authorizing path.
+\item Empirical validation (Sections~\ref{sec:results} and \ref{sec:generality}) across
+three execution topologies, three accounting families including an asynchronous event
+pipeline, and two independent inference data planes, with fail-closed integrity gates and
+independent recomputation.
 \item Sufficiency conditions and the implementation patterns that satisfy them, with
 their integrity and performance cost (Sections~\ref{sec:sufficiency}
 and~\ref{sec:economics}), kept explicitly separate from one another, together with
