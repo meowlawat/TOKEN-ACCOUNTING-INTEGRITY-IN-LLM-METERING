@@ -1,13 +1,5 @@
-Highlights (Computers & Security submission)
-Each bullet is <= 85 characters including spaces; counts below are measured, not
-estimated. Elsevier allows 3-5 highlights of at most 85 characters each; this file has
-5, the longest being 68.
-
-DO NOT UPLOAD THIS FILE. It carries these annotations. Upload
-`paper/highlights_upload.txt`, which contains the five bullets and nothing else.
-
-- A lifecycle model unifies three LLM metering failure dimensions. [64]
-- TLA+ model checking: 40 runs, 27,526 states, zero disagreements. [64]
-- M1 shows solvency and accounting finality are orthogonal defenses. [66]
-- Recounted usage still leaks if billing authority stays client-set. [66]
-- Deferred settlement over-serves sequential requests, no concurrency. [68]
+Client under-payment in metered LLM services is framed as one integrity property
+TLA+ model checking shows reservation and abort-safe settlement are orthogonal
+Billing from a correct but non-authoritative recount still leaks 58-69% of value
+Asynchronous settlement causes over-serving even with strictly sequential arrivals
+Server-authoritative recount costs under 0.1% of end-to-end inference time
