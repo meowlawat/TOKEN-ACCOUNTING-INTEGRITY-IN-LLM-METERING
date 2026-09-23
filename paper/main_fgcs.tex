@@ -1418,6 +1418,15 @@ conditional and stated as such: if settlement lags authorization by more than th
 inter-arrival time, atomicity on the settlement path does not prevent over-serving.
 Pricing tiers are synthetic.
 
+\emph{Scope of empirical claims.} Our experiments establish that the modeled accounting
+failures are realizable under the specified service architectures and workloads; they do
+not establish that any particular commercial provider implements these architectures,
+that the mechanisms are prevalent across deployed LLM services, or that a specific
+provider is vulnerable. Public issue and pull-request evidence cited in this paper is
+used only to show that related accounting and settlement behaviors are reported in
+deployed and open-source infrastructure, not as a claim about any named system's current
+state.
+
 \paragraph{Distribution}
 This limitation deserves its own heading because the paper's central systems claim
 concerns settlement that is separated from authorization, and separation in our
