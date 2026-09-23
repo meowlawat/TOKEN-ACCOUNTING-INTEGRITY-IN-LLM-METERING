@@ -95,18 +95,6 @@ We also withdraw a detectability claim made in an earlier version of this work, 
 own audit showed the instrumentation restated experimenter-assigned labels rather than
 measuring evidence. That withdrawal is documented in the paper.
 
-PRIOR SUBMISSION
-
-This manuscript was submitted to Computers & Security (COSE-D-26-05174) and returned
-without review by the Editor-in-Chief, on the stated ground that the journal operates a
-moratorium on submissions where AI/ML is a significant component and that work on the
-security of AI/ML systems themselves is outside its scope. No reviewers were assigned and
-no reviewer reports were produced. It was subsequently submitted to the Journal of
-Information Security and Applications, and to the Journal of Systems and Software, and is
-under consideration at neither. We mention this for transparency about the manuscript's
-history; the scientific content is unchanged across versions, and only the framing and
-the venue-specific material differ.
-
 ARTIFACT AND ETHICS
 
 The testbed, attack harness, defense implementations, TLA+ specification, and complete raw
