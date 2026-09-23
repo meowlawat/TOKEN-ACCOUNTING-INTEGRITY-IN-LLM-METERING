@@ -35,7 +35,7 @@
 %%   - new cover letter arguing FGCS fit specifically.
 %% No measured value, table, figure or equation differs from main_jss.tex. See
 %% FGCS_AUDIT.md and FGCS_FINAL_AUDIT.md for the full audit trail.
-\documentclass[preprint,3p,authoryear,12pt]{elsarticle}
+\documentclass[final,5p,times,twocolumn,authoryear]{elsarticle}
 
 \usepackage[T1]{fontenc}
 \usepackage{booktabs}
@@ -206,7 +206,7 @@ public evidence (Section~\ref{sec:deployed}) that the same architectural ingredi
 appears in independently developed, deployed metering gateways.
 \end{enumerate}
 
-\begin{table}[t]
+\begin{table*}[t]
 \caption{Adversary directions in LLM inference accounting. Prior work covers the first
 three rows; this paper studies the fourth.}
 \label{tab:quadrant}
@@ -222,7 +222,7 @@ Intermediary & Misroute or forge provenance & AEX \citep{aex}; gateway-path prov
 \textbf{Client} & \textbf{Under-pay for received inference} & --- & \textbf{yes} \\
 \bottomrule
 \end{tabular}}
-\end{table}
+\end{table*}
 
 \section{Threat Model and Security Property}
 \label{sec:threat}
@@ -434,7 +434,7 @@ weaker claim we need: the accounting-lifecycle gaps this paper models occur in
 independently written gateway code, and are not artifacts of how we built our own
 gateway.
 
-\begin{table}[htbp]
+\begin{table*}[t]
 \caption{Public reports from independently developed metering gateways exhibiting the
 architectural ingredients modeled in this paper. No claim is made that any of these
 systems is exploitable; none was tested. Pages reviewed 23 September 2026.}
@@ -452,7 +452,7 @@ new-api & Issue \#5235 \citep{newapi5235} & Refund of pre-consumed quota when th
 Aperture & Merged pull request \#247 \citep{aperture247} & Guard against an encoding-induced silent zero-debit (M2 direction) & That server-side authority over the billed quantity is treated as a defect class worth shipping a mitigation for & That the mitigation is complete or that the prior behaviour was exploited \\
 \bottomrule
 \end{tabular}}
-\end{table}
+\end{table*}
 
 \subsection{The gap}
 Within our targeted corpus we found no study evaluating client-side under-payment under
@@ -467,7 +467,7 @@ so that each mechanism can be localized to a specific transition, establishing t
 taxonomy is architectural rather than a list of unrelated implementation bugs.
 Table~\ref{tab:structural} summarizes where each mechanism sits and what closes it.
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
 \resizebox{0.95\linewidth}{!}{%
 \begin{tikzpicture}[
@@ -512,7 +512,7 @@ Table~\ref{tab:structural} summarizes where each mechanism sits and what closes 
 is the exposure window that M1 exploits. B0 corrupts the AUTHORIZED $\rightarrow$
 RESERVED transition (non-atomic); M2 corrupts the data used at ACCOUNTED.}
 \label{fig:statemachine}
-\end{figure}
+\end{figure*}
 
 \subsection{Formal model}
 For a request $r$ let $U_{\text{true}}(r)$ be the usage actually produced,
@@ -557,7 +557,7 @@ P(T(U_{\text{true}})) > 0$ whenever $P \circ T < P$. Authority is a per-request
 data-provenance property; Section~\ref{sec:m2} shows this is analytically independent of
 concurrency because the billed amount never reads shared mutable state.
 
-\begin{table}[t]
+\begin{table*}[t]
 \centering
 \caption{Structural distinction between the three mechanisms: what is defective, what
 triggers the baseline manifestation we implemented, and what closes it. ``Trigger'' is
@@ -575,7 +575,7 @@ M2 & data authority at ACCOUNTED & any single request with a client-controlled b
 \bottomrule
 \end{tabular}%
 }
-\end{table}
+\end{table*}
 
 Read architecturally, the three mechanisms sit at three different kinds of boundary. B0
 concerns state ownership on the authorization path: which component reads the balance,
@@ -889,7 +889,7 @@ Yes & integrity only & both \\
 \end{tabular}
 \end{table}
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
 \includegraphics[width=\linewidth]{Figure_4.png}
 \caption{M1 negative result. Request volume is held constant at 20 requests per cell
@@ -899,7 +899,7 @@ range, which is the empirical basis for treating commitment timing as a per-requ
 rather than a contention-driven defect. Holding volume constant is what prevents traffic
 level from masquerading as vulnerability.}
 \label{fig:m1conc}
-\end{figure}
+\end{figure*}
 
 \subsubsection{Concurrency is not the mechanism}
 With request volume held constant, per-request leakage was unchanged across concurrency
@@ -946,7 +946,7 @@ depend on what else is in flight. The concurrency sweep confirms the derivation 
 serves as a check that the implementation contains no unintended shared-state dependency.
 It passes, and we present it as a much weaker claim than B0's measured slope.
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
 \includegraphics[width=\linewidth]{Figure_5.png}
 \caption{M2 leakage efficiency (the fraction of delivered value evaded) by
@@ -956,7 +956,7 @@ are uniformly zero. The exploitable set differs between category-additive and fl
 pricing, which is the empirical form of Equation~(\ref{eq:m2}): a manipulation pays off
 only when the pricing basis reads the field it changes.}
 \label{fig:m2}
-\end{figure}
+\end{figure*}
 
 \subsection{Lifecycle failure modes}
 Beyond the scripted attacks we inject nine lifecycle failures: disconnect at $t=0$ and
@@ -1307,6 +1307,7 @@ for context only; this paper makes no claim about any provider's metering or acc
 implementation, and no commercial service was tested.}
 \label{tab:pricing}
 \centering
+\resizebox{\linewidth}{!}{%
 \begin{tabular}{lrrrr}
 \toprule
 Model & Input & Cached input & Output & Cached : input \\
@@ -1316,7 +1317,7 @@ Sonnet 5   & 2 & 0.20 & 10 & 0.10 \\
 Haiku 4.5  & 1 & 0.10 & 5  & 0.10 \\
 Opus 5.5   & 4 & 0.20 & 20 & 0.05 \\
 \bottomrule
-\end{tabular}
+\end{tabular}}
 \end{table}
 
 We deliberately stop short of a revenue-impact model. Estimating aggregate exposure

@@ -91,9 +91,9 @@ deployment. A two-machine replication is the obvious next experiment. It was not
 performed, and the manuscript carries a dedicated limitation paragraph saying so rather
 than leaving a reader to infer it.
 
-We also withdraw a detectability claim made in an earlier version of this work, after our
-own audit showed the instrumentation restated experimenter-assigned labels rather than
-measuring evidence. That withdrawal is documented in the paper.
+Our detectability analysis is explicitly limited by the instrumentation used:
+experimenter-assigned labels were restated rather than independently measured from
+retained evidence, so we make no detectability claim.
 
 ARTIFACT AND ETHICS
 
