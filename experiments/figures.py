@@ -26,6 +26,35 @@ plt.rcParams.update({
 # colour-blind-safe categorical palette
 PAL = ["#4C72B0", "#DD8452", "#55A868", "#C44E52", "#8172B3", "#937860", "#DA8BC3", "#8C8C8C"]
 
+# FIX 11: presentation-only display names. Keys are the identifiers stored in the result
+# files; values are the labels printed on the figures. No data is renamed.
+DISPLAY = {
+    "reserve_refund_on_abort": "reserve, refund on abort",
+    "post_completion": "debit post-completion",
+    "pre_debit": "debit pre-execution",
+    "reserve_reconcile": "reserve and reconcile",
+    "no_reserve_settle": "no reserve, settle on exit",
+    "under_report_output_50": "under-report output 50%",
+    "under_report_output_90": "under-report output 90%",
+    "under_report_input_50": "under-report input 50%",
+    "drop_reasoning": "drop reasoning tokens",
+    "inflate_cached": "inflate cached tokens",
+    "total_mismatch": "inconsistent total",
+    "rounding_shave": "rounding shave",
+    "client_logged": "client-logged",
+    "client_total": "client-total",
+    "server_recount": "server recount",
+    "hybrid_reconcile": "hybrid reconcile",
+    "client": "client",
+    "upstream": "upstream",
+}
+
+
+def disp(name: str) -> str:
+    """Readable label for a stored identifier; unknown names pass through unchanged."""
+    return DISPLAY.get(name, name)
+
+
 
 def _latest(pattern: str, folder: Path) -> Path | None:
     c = sorted(folder.glob(pattern))
@@ -54,11 +83,10 @@ def fig_m1_abort_curve(m1: dict) -> None:
         ys = [c["leak"]["mean"] for c in cs]
         errs = [c["leak"]["std"] for c in cs]
         ls = "--" if arch in ("pre_debit", "reserve_reconcile") else "-"
-        ax.errorbar(xs, ys, yerr=errs, marker="o", ms=4, lw=1.8, ls=ls, color=PAL[i % len(PAL)], label=arch)
+        ax.errorbar(xs, ys, yerr=errs, marker="o", ms=4, lw=1.8, ls=ls, color=PAL[i % len(PAL)], label=disp(arch))
     ax.set_xlabel("abort point (% of stream delivered before disconnect)")
     ax.set_ylabel("mean leak per request ($, medium tier)")
     n = cells[0]["n_records"] if cells else 0
-    ax.set_title(f"M1: leakage vs. abort timing (concurrency={base_c}, n={n} requests/cell)")
     ax.legend(fontsize=8, frameon=False)
     fig.savefig(FIG / "fig_m1_abort_curve.png")
     plt.close(fig)
@@ -84,16 +112,17 @@ def fig_m1_concurrency(m1: dict) -> None:
             ys.append(sum(g["leak_per_request"] * g["n_records"] for g in grp) / n if n else 0.0)
             zs.append(sum(g["request_asr"]["p"] * g["n_records"] for g in grp) / n if n else 0.0)
         if xs:
-            ax1.plot(xs, ys, marker="o", ms=5, lw=1.8, color=PAL[i % len(PAL)], label=arch)
-            ax2.plot(xs, zs, marker="o", ms=5, lw=1.8, color=PAL[i % len(PAL)], label=arch)
+            ax1.plot(xs, ys, marker="o", ms=5, lw=1.8, color=PAL[i % len(PAL)], label=disp(arch))
+            ax2.plot(xs, zs, marker="o", ms=5, lw=1.8, color=PAL[i % len(PAL)], label=disp(arch))
     for ax, lab, ttl in ((ax1, "leak per request ($)", "Normalized leakage vs concurrency"),
                          (ax2, "request ASR", "Per-request attack success vs concurrency")):
-        ax.set_xscale("log"); ax.set_xlabel("concurrency"); ax.set_ylabel(lab); ax.set_title(ttl)
+        ax.set_xscale("log"); ax.set_xlabel("concurrency"); ax.set_ylabel(lab)
     ax2.set_ylim(-0.05, 1.05)
-    ax1.legend(fontsize=7, frameon=False)
-    fig.suptitle("M1: does concurrency change PER-REQUEST vulnerability? (volume held constant)",
-                 fontsize=10)
-    fig.savefig(FIG / "fig_m1_concurrency.png")
+    # FIX 11c: legend outside the axes so it cannot overlap the plotted series.
+    handles, labels = ax1.get_legend_handles_labels()
+    fig.legend(handles, labels, fontsize=8, frameon=False,
+               loc="upper center", ncol=min(len(labels), 4), bbox_to_anchor=(0.5, 0.06))
+    fig.savefig(FIG / "fig_m1_concurrency.png", bbox_inches="tight")
     plt.close(fig)
 
 
@@ -118,8 +147,8 @@ def fig_m2_concurrency(m2: dict) -> None:
             lat = [g["latency_p95_ms"] for g in grp if g.get("latency_p95_ms")]
             ls_.append(sum(lat) / len(lat) if lat else 0.0)
         if xs:
-            ax1.plot(xs, ys, marker="o", ms=5, lw=1.8, color=PAL[i % len(PAL)], label=arch)
-            ax2.plot(xs, ls_, marker="o", ms=5, lw=1.8, color=PAL[i % len(PAL)], label=arch)
+            ax1.plot(xs, ys, marker="o", ms=5, lw=1.8, color=PAL[i % len(PAL)], label=disp(arch))
+            ax2.plot(xs, ls_, marker="o", ms=5, lw=1.8, color=PAL[i % len(PAL)], label=disp(arch))
     ax1.set_ylabel("leakage efficiency"); ax1.set_title("Accounting failure vs concurrency")
     ax2.set_ylabel("p95 latency (ms)"); ax2.set_title("Defense cost vs concurrency (secondary)")
     for ax in (ax1, ax2):
@@ -145,17 +174,14 @@ def fig_m2_efficiency_heatmap(m2: dict) -> None:
     fig, ax = plt.subplots(figsize=(8.2, 4.4))
     im = ax.imshow(M, cmap="magma_r", vmin=0, vmax=1, aspect="auto")
     ax.set_xticks(range(len(manips)))
-    ax.set_xticklabels(manips, rotation=40, ha="right", fontsize=7)
+    ax.set_xticklabels([disp(m) for m in manips], rotation=40, ha="right", fontsize=7)
     ax.set_yticks(range(len(archs)))
-    ax.set_yticklabels(archs, fontsize=8)
+    ax.set_yticklabels([disp(a) for a in archs], fontsize=8)
     for i in range(len(archs)):
         for j in range(len(manips)):
             ax.text(j, i, f"{M[i, j]:.2f}", ha="center", va="center",
                     color="white" if M[i, j] > 0.5 else "black", fontsize=6.5)
     n = cells[0]["n_records"] if cells else 0
-    ax.set_title("M2: leakage efficiency (fraction of delivered value evaded)\n"
-                 f"medium tier, concurrency={base_c}, n={n} requests/cell "
-                 "— under-payment only; overcharge plotted as 0", fontsize=9)
     fig.colorbar(im, ax=ax, shrink=0.8, label="leakage efficiency (under-payment only)")
     fig.savefig(FIG / "fig_m2_efficiency_heatmap.png")
     plt.close(fig)
@@ -172,7 +198,6 @@ def fig_b0_concurrency(b0: dict) -> None:
     ax.set_xlabel("concurrency (simultaneous requests)")
     ax.set_ylabel("mean $-leak per trial (medium-equiv.)")
     reps = cells[0]["reps"] if cells and "reps" in cells[0] else 30
-    ax.set_title(f"B0 baseline: credit-decrement race leakage vs. concurrency (n={reps} trials/cell)")
     ax.legend(frameon=False)
     fig.savefig(FIG / "fig_b0_concurrency.png")
     plt.close(fig)
