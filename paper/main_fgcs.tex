@@ -1,41 +1,7 @@
-%% Token-Accounting Integrity -- Elsevier Future Generation Computer Systems (FGCS)
-%% (ISSN 0167-739X) submission.
+%% Accounting Integrity in Metered LLM-Serving Infrastructure -- Elsevier Future
+%% Generation Computer Systems (FGCS) (ISSN 0167-739X) submission.
 %% Compiled with tectonic (XeTeX), elsarticle class (official Elsevier LaTeX template).
-%%
-%% History: submitted to Computers & Security on 25 Aug 2026 (COSE-D-26-05174),
-%% desk-rejected the same day on journal scope (C&S AI/ML moratorium). Submitted to
-%% JISA next; no longer under consideration there. A Computer Networks version
-%% (main_cn.tex, not submitted) and a Journal of Systems and Software version
-%% (main_jss.tex, submitted as JSSOFTWARE-S-26-03217) were also prepared. This is the
-%% FGCS version, derived from main_jss.tex. main_cose.tex, main_jisa.tex, main_cn.tex
-%% and main_jss.tex are all preserved unmodified.
-%%
-%% Differences from main_jss.tex, all non-scientific venue adaptation:
-%%   - journal name;
-%%   - abstract, introduction and contributions reframed around accounting integrity
-%%     in metered computational services generally (distributed/cloud-systems
-%%     framing), with LLM inference as the concrete workload, replacing JSS's
-%%     software-architecture-centric framing;
-%%   - the JSS-specific "Software engineering for AI systems" subsection removed and
-%%     the "Testing and validation" subsection narrowed, as neither serves FGCS scope;
-%%     all distributed-systems/consistency/cloud-computing citations retained;
-%%   - a new subsection, "Evidence from deployed systems", added to Related Work,
-%%     with three additional real, independently verified GitHub issues (LiteLLM
-%%     #14457, OpenGateLLM #1148, CLIProxyAPI #2179) documenting the same
-%%     architectural ingredient as M1 in independently developed LLM gateways;
-%%     verified by reading the issue pages directly, not by trusting search
-%%     summaries. No claim of vulnerability or exploitation is made against any of
-%%     them, and no third party was attacked or probed;
-%%   - a small, single-provider price-ratio context table added to the Economic
-%%     Analysis section, sourced from a direct fetch of Anthropic's own pricing page
-%%     (accessed 2026-09-23), used only to contextualize the pricing model;
-%%   - the single-host/non-distributed limitation strengthened so the
-%%     asynchronous-settlement result cannot be misread as a cross-host measurement;
-%%     an explicit note that no two-machine network experiment was run in this study;
-%%   - new cover letter arguing FGCS fit specifically.
-%% No measured value, table, figure or equation differs from main_jss.tex. See
-%% FGCS_AUDIT.md and FGCS_FINAL_AUDIT.md for the full audit trail.
-\documentclass[final,5p,times,twocolumn,authoryear]{elsarticle}
+\documentclass[final,5p,times,twocolumn,number]{elsarticle}
 
 \usepackage[T1]{fontenc}
 \usepackage{booktabs}
@@ -1507,145 +1473,123 @@ is archived in Zenodo under the concept DOI
 resolves to the most recent archived version of the artifact. The archive contents and their SHA-256 checksum are listed in
 \texttt{release/zenodo/} in the repository.
 
-\bibliographystyle{elsarticle-harv}
+\bibliographystyle{elsarticle-num}
 \begin{thebibliography}{81}
 
-\bibitem[Adya et~al.(2000)]{adya}
-Adya, A., Liskov, B., O'Neil, P., 2000. Generalized isolation level definitions, in: Proceedings of 16th International Conference on Data Engineering (Cat. No.00CB37073), pp.~67--78. \url{https://doi.org/10.1109/ICDE.2000.839388}.
+\bibitem[Sun et~al.(2025a)]{coin}
+Sun, G., Wang, Z., Tian, B., Liu, M., et~al., 2025a. CoIn: Counting the invisible
+reasoning tokens in commercial opaque LLM APIs. arXiv:2505.13778.
 
-\bibitem[Agrawal et~al.(2024)]{sarathi}
-Agrawal, A., Kedia, N., Panwar, A., Mohan, J., et~al., 2024. Taming throughput-latency tradeoff in LLM inference with Sarathi-Serve. arXiv:2403.02310.
-
-\bibitem[Alvaro et~al.(2015)]{lineage}
-Alvaro, P., Rosen, J., Hellerstein, J.M., 2015. Lineage-driven fault injection, in: Proceedings of the 2015 ACM SIGMOD International Conference on Management of Data, pp.~331--346. \url{https://doi.org/10.1145/2723372.2723711}.
-
-\bibitem[Anthropic(2026)]{anthropicpricing}
-Anthropic, 2026. Pricing. \url{https://claude.com/pricing}. Accessed 23 September
-2026.
-
-\bibitem[Arcuri and Briand(2014)]{arcuri}
-Arcuri, A., Briand, L., 2014. A hitchhiker's guide to statistical tests for assessing randomized algorithms in software engineering. Software Testing, Verification and Reliability 24, 219--250. \url{https://doi.org/10.1002/stvr.1486}.
-
-\bibitem[Armbrust et~al.(2010)]{armbrust}
-Armbrust, M., Fox, A., Griffith, R., Joseph, A.D., et~al., 2010. A view of cloud computing. Communications of the ACM 53, 50--58. \url{https://doi.org/10.1145/1721654.1721672}.
-
-\bibitem[Bailis et~al.(2014)]{bailis}
-Bailis, P., Fekete, A., Franklin, M.J., Ghodsi, A., et~al., 2014. Coordination avoidance in database systems. Proceedings of the VLDB Endowment 8, 185--196. \url{https://doi.org/10.14778/2735508.2735509}.
-
-\bibitem[Barr et~al.(2015)]{oracle}
-Barr, E.T., Harman, M., McMinn, P., Shahbaz, M., et~al., 2015. The oracle problem in software testing: a survey. IEEE Transactions on Software Engineering 41, 507--525. \url{https://doi.org/10.1109/TSE.2014.2372785}.
-
-\bibitem[Basiri et~al.(2016)]{chaos}
-Basiri, A., Behnam, N., de Rooij, R., Hochstein, L., et~al., 2016. Chaos engineering. IEEE Software 33, 35--41. \url{https://doi.org/10.1109/MS.2016.60}.
-
-\bibitem[Bass et~al.(2021)]{bass}
-Bass, L., Clements, P., Kazman, R., 2021. Software Architecture in Practice. Fourth edition, Addison-Wesley, Boston.
-
-\bibitem[Ben Allal et~al.(2025)]{smollm2}
-Ben Allal, L., Lozhkov, A., Bakouch, E., Mart\'{i}n~Bl\'{a}zquez, G., et~al., 2025.
-SmolLM2: When smol goes big --- Data-centric training of a small language model.
-arXiv:2502.02737.
-
-\bibitem[Berenson et~al.(1995)]{berenson}
-Berenson, H., Bernstein, P., Gray, J., Melton, J., et~al., 1995. A critique of ANSI SQL isolation levels, in: Proceedings of the 1995 ACM SIGMOD international conference on Management of data  - SIGMOD '95, pp.~1--10. \url{https://doi.org/10.1145/223784.223785}.
-
-\bibitem[BerriAI(2025)]{litellm14457}
-BerriAI, 2025. Usage data lost when streaming responses are terminated early by client
-disconnect. LiteLLM issue \#14457 (open).
-\url{https://github.com/BerriAI/litellm/issues/14457}.
-
-\bibitem[Bornholt et~al.(2021)]{s3lightweight}
-Bornholt, J., Joshi, R., Astrauskas, V., Cully, B., et~al., 2021. Using lightweight formal methods to validate a key-value storage node in Amazon S3, in: Proceedings of the ACM SIGOPS 28th Symposium on Operating Systems Principles, pp.~836--850. \url{https://doi.org/10.1145/3477132.3483540}.
-
-\bibitem[Chen et~al.(2018)]{metamorphic18}
-Chen, T.Y., Kuo, F.-C., Liu, H., Poon, P.-L., et~al., 2018. Metamorphic testing: a review of challenges and opportunities. ACM Computing Surveys 51, 1--27. \url{https://doi.org/10.1145/3143561}.
-
-\bibitem[Claessen and Hughes(2000)]{quickcheck}
-Claessen, K., Hughes, J., 2000. QuickCheck: a lightweight tool for random testing of Haskell programs, in: Proceedings of the fifth ACM SIGPLAN international conference on Functional programming, pp.~268--279. \url{https://doi.org/10.1145/351240.351266}.
-
-\bibitem[Clarke et~al.(1986)]{clarke}
-Clarke, E.M., Emerson, E.A., Sistla, A.P., 1986. Automatic verification of finite-state concurrent systems using temporal logic specifications. ACM Transactions on Programming Languages and Systems 8, 244--263. \url{https://doi.org/10.1145/5397.5399}.
-
-\bibitem[Collberg and Proebsting(2016)]{collberg}
-Collberg, C., Proebsting, T.A., 2016. Repeatability in computer systems research. Communications of the ACM 59, 62--69. \url{https://doi.org/10.1145/2812803}.
-
-\bibitem[Dorsett et~al.(2025)]{dowreview}
-Dorsett, M., Mann, S., Chowdhury, J., Mahmood, A., 2025. A comprehensive review of
-denial of wallet attacks in serverless architectures. arXiv:2508.19284.
-
-\bibitem[Efron(1979)]{efron}
-Efron, B., 1979. Bootstrap methods: another look at the jackknife. The Annals of Statistics 7, 1--26. \url{https://doi.org/10.1214/aos/1176344552}.
-
-\bibitem[Etalab(2026)]{opengate1148}
-Etalab, 2026. An interrupted streamed chat completion is neither billed nor released.
-OpenGateLLM issue \#1148 (fixed).
-\url{https://github.com/etalab-ia/OpenGateLLM/issues/1148}.
-
-\bibitem[Feitelson(2015)]{feitelson}
-Feitelson, D.G., 2015. From repeatability to reproducibility and corroboration. ACM SIGOPS Operating Systems Review 49, 3--11. \url{https://doi.org/10.1145/2723872.2723875}.
-
-\bibitem[Fielding et~al.(2022)]{rfc9110}
-Fielding, R., Nottingham, M., Reschke, J., 2022. HTTP semantics. RFC~9110, IETF.
-
-\bibitem[Fonseca et~al.(2017)]{fonseca}
-Fonseca, P., Zhang, K., Wang, X., Krishnamurthy, A., 2017. An empirical study on the correctness of formally verified distributed systems, in: Proceedings of the Twelfth European Conference on Computer Systems, pp.~328--343. \url{https://doi.org/10.1145/3064176.3064183}.
-
-\bibitem[Garcia-Molina and Salem(1987)]{sagas}
-Garcia-Molina, H., Salem, K., 1987. Sagas, in: Proceedings of the 1987 ACM SIGMOD international conference on Management of data  - SIGMOD '87, pp.~249--259. \url{https://doi.org/10.1145/38713.38742}.
-
-\bibitem[Gerganov et~al.(n.d.)]{llamacpp}
-Gerganov, G., et~al., n.d. llama.cpp: LLM inference in C/C++ [Software].
-\url{https://github.com/ggml-org/llama.cpp}.
-
-\bibitem[Gleirscher and Marmsoler(2020)]{gleirscher}
-Gleirscher, M., Marmsoler, D., 2020. Formal methods in dependable systems engineering: a survey of professionals from Europe and North America. Empirical Software Engineering 25, 4473--4546. \url{https://doi.org/10.1007/s10664-020-09836-5}.
-
-\bibitem[Guan(2026)]{aex}
-Guan, Y., 2026. AEX: Non-intrusive multi-hop attestation and provenance for LLM APIs.
-arXiv:2603.14283.
-
-\bibitem[Gunawi et~al.(2016)]{gunawi}
-Gunawi, H.S., Hao, M., Suminto, R.O., Laksono, A., et~al., 2016. Why does the cloud stop computing? Lessons from hundreds of service outages, in: Proceedings of the Seventh ACM Symposium on Cloud Computing, pp.~1--16. \url{https://doi.org/10.1145/2987550.2987583}.
-
-\bibitem[Hawblitzel et~al.(2015)]{ironfleet}
-Hawblitzel, C., Howell, J., Kapritsos, M., Lorch, J.R., et~al., 2015. IronFleet: proving practical distributed systems correct, in: Proceedings of the 25th Symposium on Operating Systems Principles, pp.~1--17. \url{https://doi.org/10.1145/2815400.2815428}.
-
-\bibitem[Helland(2012)]{helland12}
-Helland, P., 2012. Idempotence is not a medical condition: an essential property for reliable systems. Queue 10, 30--46. \url{https://doi.org/10.1145/2181796.2187821}.
-
-\bibitem[Herlihy and Wing(1990)]{linearizability}
-Herlihy, M.P., Wing, J.M., 1990. Linearizability: a correctness condition for concurrent objects. ACM Transactions on Programming Languages and Systems 12, 463--492. \url{https://doi.org/10.1145/78969.78972}.
-
-\bibitem[Holzmann(1997)]{spin}
-Holzmann, G., 1997. The model checker SPIN. IEEE Transactions on Software Engineering 23, 279--295. \url{https://doi.org/10.1109/32.588521}.
+\bibitem[Sun et~al.(2025b)]{invisible}
+Sun, G., Wang, Z., Zhao, X., Tian, B., et~al., 2025b. Invisible tokens, visible bills:
+The urgent need to audit hidden operations in opaque LLM services. arXiv:2505.18471.
 
 \bibitem[Hoque et~al.(2026)]{tokeninflation}
 Hoque, S., Zhang, J., Sun, J., Suya, F., 2026. Token inflation: How dishonest providers
 can overcharge for large language model usage. arXiv:2605.30040.
 
-\bibitem[Jackson(2002)]{alloy}
-Jackson, D., 2002. Alloy: a lightweight object modelling notation. ACM Transactions on Software Engineering and Methodology 11, 256--290. \url{https://doi.org/10.1145/505145.505149}.
-
-\bibitem[Kalibera and Jones(2013)]{kalibera}
-Kalibera, T., Jones, R., 2013. Rigorous benchmarking in reasonable time, in: Proceedings of the 2013 international symposium on memory management, pp.~63--74. \url{https://doi.org/10.1145/2464157.2464160}.
-
 \bibitem[Kelly et~al.(2021)]{dow}
 Kelly, D., Glavin, F.G., Barrett, E., 2021. Denial of wallet --- Defining a looming
 threat to serverless computing. arXiv:2104.08031.
+
+\bibitem[Dorsett et~al.(2025)]{dowreview}
+Dorsett, M., Mann, S., Chowdhury, J., Mahmood, A., 2025. A comprehensive review of
+denial of wallet attacks in serverless architectures. arXiv:2508.19284.
+
+\bibitem[OWASP GenAI Security Project(2025)]{owasp}
+OWASP GenAI Security Project, 2025. LLM10:2025 unbounded consumption. OWASP Top 10 for
+LLM Applications.
+\url{https://genai.owasp.org/llmrisk/llm102025-unbounded-consumption/}.
+
+\bibitem[Sysdig Threat Research Team(2024)]{llmjacking}
+Sysdig Threat Research Team, 2024. LLMjacking: Stolen cloud credentials used in new AI
+attack. Sysdig.
+\url{https://www.sysdig.com/blog/llmjacking-stolen-cloud-credentials-used-in-new-ai-attack}.
+
+\bibitem[Guan(2026)]{aex}
+Guan, Y., 2026. AEX: Non-intrusive multi-hop attestation and provenance for LLM APIs.
+arXiv:2603.14283.
+
+\bibitem[Wang and Tian(2026)]{gwprov}
+Wang, F., Tian, Z., 2026. Evidence-bound gateway-path provenance for third-party LLM
+inference. arXiv:2606.22560.
+
+\bibitem[MITRE(n.d.)]{cwe807}
+MITRE, n.d. CWE-807: Reliance on untrusted inputs in a security decision. Common
+Weakness Enumeration, version 4.20. \url{https://cwe.mitre.org/data/definitions/807.html}.
+
+\bibitem[QuantumNous(2026)]{newapi5235}
+QuantumNous, 2026. Streaming responses requests may refund all pre-consumed quota when
+final usage is missing after client disconnect. new-api issue \#5235.
+\url{https://github.com/QuantumNous/new-api/issues/5235}.
+
+\bibitem[Lightning Labs(2026)]{aperture247}
+Lightning Labs, 2026. pricesrpc+proxy: Metered draw-down of prepaid L402 tokens, with a
+reference pricer daemon. Aperture pull request \#247 (merged).
+\url{https://github.com/lightninglabs/aperture/pull/247}.
 
 \bibitem[Kettle(2023)]{kettle}
 Kettle, J., 2023. Smashing the state machine: The true potential of web race
 conditions. PortSwigger Research.
 \url{https://portswigger.net/research/smashing-the-state-machine}.
 
-\bibitem[Kingsbury and Alvaro(2020)]{elle}
-Kingsbury, K., Alvaro, P., 2020. Elle: inferring isolation anomalies from experimental observations. Proceedings of the VLDB Endowment 14, 268--280. \url{https://doi.org/10.14778/3430915.3430918}.
+\bibitem[Wang et~al.(2011)]{cashier}
+Wang, R., Chen, S., Wang, X., Qadeer, S., 2011. How to shop for free online -- security analysis of cashier-as-a-service based web stores, in: 2011 IEEE Symposium on Security and Privacy, pp.~465--480. \url{https://doi.org/10.1109/SP.2011.26}.
 
-\bibitem[Klein et~al.(2009)]{sel4}
-Klein, G., Elphinstone, K., Heiser, G., Andronick, J., et~al., 2009. seL4: formal verification of an OS kernel, in: Proceedings of the ACM SIGOPS 22nd symposium on Operating systems principles, pp.~207--220. \url{https://doi.org/10.1145/1629575.1629596}.
+\bibitem[Warszawski and Bailis(2017)]{acidrain}
+Warszawski, T., Bailis, P., 2017. ACIDRain: concurrency-related attacks on database-backed web applications, in: Proceedings of the 2017 ACM International Conference on Management of Data, pp.~5--20. \url{https://doi.org/10.1145/3035918.3064037}.
+
+\bibitem[Armbrust et~al.(2010)]{armbrust}
+Armbrust, M., Fox, A., Griffith, R., Joseph, A.D., et~al., 2010. A view of cloud computing. Communications of the ACM 53, 50--58. \url{https://doi.org/10.1145/1721654.1721672}.
+
+\bibitem[Bass et~al.(2021)]{bass}
+Bass, L., Clements, P., Kazman, R., 2021. Software Architecture in Practice. Fourth edition, Addison-Wesley, Boston.
+
+\bibitem[Shumailov et~al.(2020)]{sponge}
+Shumailov, I., Zhao, Y., Bates, D., Papernot, N., Mullins, R., Anderson, R., 2020.
+Sponge examples: Energy-latency attacks on neural networks. arXiv:2006.03463.
+
+\bibitem[Saltzer and Schroeder(1975)]{saltzer}
+Saltzer, J., Schroeder, M., 1975. The protection of information in computer systems. Proceedings of the IEEE 63, 1278--1308. \url{https://doi.org/10.1109/PROC.1975.9939}.
+
+\bibitem[O'Neil(1986)]{escrow}
+O'Neil, P.E., 1986. The escrow transactional method. ACM Transactions on Database
+Systems 11, 405--430.
+
+\bibitem[WHATWG(n.d.)]{sse}
+WHATWG, n.d. Server-sent events. HTML Living Standard.
+\url{https://html.spec.whatwg.org/multipage/server-sent-events.html}.
+
+\bibitem[Fielding et~al.(2022)]{rfc9110}
+Fielding, R., Nottingham, M., Reschke, J., 2022. HTTP semantics. RFC~9110, IETF.
+
+\bibitem[Berenson et~al.(1995)]{berenson}
+Berenson, H., Bernstein, P., Gray, J., Melton, J., et~al., 1995. A critique of ANSI SQL isolation levels, in: Proceedings of the 1995 ACM SIGMOD international conference on Management of data  - SIGMOD '95, pp.~1--10. \url{https://doi.org/10.1145/223784.223785}.
+
+\bibitem[Adya et~al.(2000)]{adya}
+Adya, A., Liskov, B., O'Neil, P., 2000. Generalized isolation level definitions, in: Proceedings of 16th International Conference on Data Engineering (Cat. No.00CB37073), pp.~67--78. \url{https://doi.org/10.1109/ICDE.2000.839388}.
+
+\bibitem[Garcia-Molina and Salem(1987)]{sagas}
+Garcia-Molina, H., Salem, K., 1987. Sagas, in: Proceedings of the 1987 ACM SIGMOD international conference on Management of data  - SIGMOD '87, pp.~249--259. \url{https://doi.org/10.1145/38713.38742}.
+
+\bibitem[Helland(2012)]{helland12}
+Helland, P., 2012. Idempotence is not a medical condition: an essential property for reliable systems. Queue 10, 30--46. \url{https://doi.org/10.1145/2181796.2187821}.
+
+\bibitem[Bailis et~al.(2014)]{bailis}
+Bailis, P., Fekete, A., Franklin, M.J., Ghodsi, A., et~al., 2014. Coordination avoidance in database systems. Proceedings of the VLDB Endowment 8, 185--196. \url{https://doi.org/10.14778/2735508.2735509}.
+
+\bibitem[Herlihy and Wing(1990)]{linearizability}
+Herlihy, M.P., Wing, J.M., 1990. Linearizability: a correctness condition for concurrent objects. ACM Transactions on Programming Languages and Systems 12, 463--492. \url{https://doi.org/10.1145/78969.78972}.
+
+\bibitem[Vogels(2009)]{vogels}
+Vogels, W., 2009. Eventually consistent. Communications of the ACM 52, 40--44. \url{https://doi.org/10.1145/1435417.1435432}.
 
 \bibitem[Kleppmann(2017)]{kleppmann}
 Kleppmann, M., 2017. Designing Data-Intensive Applications. O'Reilly Media, Sebastopol.
+
+\bibitem[Sennrich et~al.(2015)]{bpe}
+Sennrich, R., Haddow, B., Birch, A., 2015. Neural machine translation of rare words
+with subword units. arXiv:1508.07909.
 
 \bibitem[Kudo and Richardson(2018)]{sentencepiece}
 Kudo, T., Richardson, J., 2018. SentencePiece: A simple and language independent
@@ -1656,6 +1600,34 @@ Kwon, W., Li, Z., Zhuang, S., Sheng, Y., et~al., 2023. Efficient memory manageme
 large language model serving with PagedAttention, in: Proceedings of the 29th Symposium
 on Operating Systems Principles (SOSP), pp.~611--626.
 
+\bibitem[Gerganov et~al.(n.d.)]{llamacpp}
+Gerganov, G., et~al., n.d. llama.cpp: LLM inference in C/C++ [Software].
+\url{https://github.com/ggml-org/llama.cpp}.
+
+\bibitem[Ben Allal et~al.(2025)]{smollm2}
+Ben Allal, L., Lozhkov, A., Bakouch, E., Mart\'{i}n~Bl\'{a}zquez, G., et~al., 2025.
+SmolLM2: When smol goes big --- Data-centric training of a small language model.
+arXiv:2502.02737.
+
+\bibitem[OpenAI(n.d.)]{tiktoken}
+OpenAI, n.d. tiktoken: A fast BPE tokeniser for use with OpenAI's models [Software].
+\url{https://github.com/openai/tiktoken}.
+
+\bibitem[Agrawal et~al.(2024)]{sarathi}
+Agrawal, A., Kedia, N., Panwar, A., Mohan, J., et~al., 2024. Taming throughput-latency tradeoff in LLM inference with Sarathi-Serve. arXiv:2403.02310.
+
+\bibitem[Zhong et~al.(2024)]{distserve}
+Zhong, Y., Liu, S., Chen, J., Hu, J., et~al., 2024. DistServe: disaggregating prefill and decoding for goodput-optimized large language model serving. arXiv:2401.09670.
+
+\bibitem[Zheng et~al.(2023)]{sglang}
+Zheng, L., Yin, L., Xie, Z., Sun, C., et~al., 2023. SGLang: efficient execution of structured language model programs. arXiv:2312.07104.
+
+\bibitem[Leviathan et~al.(2022)]{leviathan}
+Leviathan, Y., Kalman, M., Matias, Y., 2022. Fast inference from transformers via speculative decoding. arXiv:2211.17192.
+
+\bibitem[Petrov et~al.(2023)]{petrov}
+Petrov, A., La Malfa, E., Torr, P.H.S., Bibi, A., 2023. Language model tokenizers introduce unfairness between languages. arXiv:2305.15425.
+
 \bibitem[Lamport(1994)]{tla}
 Lamport, L., 1994. The temporal logic of actions. ACM Transactions on Programming
 Languages and Systems 16, 872--923.
@@ -1663,134 +1635,128 @@ Languages and Systems 16, 872--923.
 \bibitem[Lamport(2002)]{lamportspec}
 Lamport, L., 2002. Specifying Systems: The TLA+ Language and Tools for Hardware and Software Engineers. Addison-Wesley, Boston.
 
-\bibitem[Lamport(2015)]{blueprints}
-Lamport, L., 2015. Who builds a house without drawing blueprints?. Communications of the ACM 58, 38--41. \url{https://doi.org/10.1145/2736348}.
+\bibitem[Yu et~al.(1999)]{tlc}
+Yu, Y., Manolios, P., Lamport, L., 1999. Model checking TLA+ specifications, in:
+Correct Hardware Design and Verification Methods (CHARME), LNCS~1703, pp.~54--66.
 
-\bibitem[Leroy(2009)]{compcert}
-Leroy, X., 2009. Formal verification of a realistic compiler. Communications of the ACM 52, 107--115. \url{https://doi.org/10.1145/1538788.1538814}.
+\bibitem[Clarke et~al.(1986)]{clarke}
+Clarke, E.M., Emerson, E.A., Sistla, A.P., 1986. Automatic verification of finite-state concurrent systems using temporal logic specifications. ACM Transactions on Programming Languages and Systems 8, 244--263. \url{https://doi.org/10.1145/5397.5399}.
 
-\bibitem[Leviathan et~al.(2022)]{leviathan}
-Leviathan, Y., Kalman, M., Matias, Y., 2022. Fast inference from transformers via speculative decoding. arXiv:2211.17192.
+\bibitem[Holzmann(1997)]{spin}
+Holzmann, G., 1997. The model checker SPIN. IEEE Transactions on Software Engineering 23, 279--295. \url{https://doi.org/10.1109/32.588521}.
 
-\bibitem[Lightning Labs(2026)]{aperture247}
-Lightning Labs, 2026. pricesrpc+proxy: Metered draw-down of prepaid L402 tokens, with a
-reference pricer daemon. Aperture pull request \#247 (merged).
-\url{https://github.com/lightninglabs/aperture/pull/247}.
-
-\bibitem[MITRE(n.d.)]{cwe807}
-MITRE, n.d. CWE-807: Reliance on untrusted inputs in a security decision. Common
-Weakness Enumeration, version 4.20. \url{https://cwe.mitre.org/data/definitions/807.html}.
-
-\bibitem[Mytkowicz et~al.(2009)]{mytkowicz}
-Mytkowicz, T., Diwan, A., Hauswirth, M., Sweeney, P.F., 2009. Producing wrong data without doing anything obviously wrong!, in: Proceedings of the 14th international conference on Architectural support for programming languages and operating systems, pp.~265--276. \url{https://doi.org/10.1145/1508244.1508275}.
+\bibitem[Jackson(2002)]{alloy}
+Jackson, D., 2002. Alloy: a lightweight object modelling notation. ACM Transactions on Software Engineering and Methodology 11, 256--290. \url{https://doi.org/10.1145/505145.505149}.
 
 \bibitem[Newcombe et~al.(2015)]{awsformal}
 Newcombe, C., Rath, T., Zhang, F., Munteanu, B., Brooker, M., Deardeuff, M., 2015. How
 Amazon Web Services uses formal methods. Communications of the ACM 58, 66--73.
 
-\bibitem[O'Neil(1986)]{escrow}
-O'Neil, P.E., 1986. The escrow transactional method. ACM Transactions on Database
-Systems 11, 405--430.
+\bibitem[Woodcock et~al.(2009)]{woodcock}
+Woodcock, J., Larsen, P.G., Bicarregui, J., Fitzgerald, J., 2009. Formal methods: practice and experience. ACM Computing Surveys 41, 1--36. \url{https://doi.org/10.1145/1592434.1592436}.
 
-\bibitem[OpenAI(n.d.)]{tiktoken}
-OpenAI, n.d. tiktoken: A fast BPE tokeniser for use with OpenAI's models [Software].
-\url{https://github.com/openai/tiktoken}.
+\bibitem[Gleirscher and Marmsoler(2020)]{gleirscher}
+Gleirscher, M., Marmsoler, D., 2020. Formal methods in dependable systems engineering: a survey of professionals from Europe and North America. Empirical Software Engineering 25, 4473--4546. \url{https://doi.org/10.1007/s10664-020-09836-5}.
 
-\bibitem[OWASP GenAI Security Project(2025)]{owasp}
-OWASP GenAI Security Project, 2025. LLM10:2025 unbounded consumption. OWASP Top 10 for
-LLM Applications.
-\url{https://genai.owasp.org/llmrisk/llm102025-unbounded-consumption/}.
+\bibitem[Lamport(2015)]{blueprints}
+Lamport, L., 2015. Who builds a house without drawing blueprints?. Communications of the ACM 58, 38--41. \url{https://doi.org/10.1145/2736348}.
 
-\bibitem[Petrov et~al.(2023)]{petrov}
-Petrov, A., La Malfa, E., Torr, P.H.S., Bibi, A., 2023. Language model tokenizers introduce unfairness between languages. arXiv:2305.15425.
+\bibitem[Klein et~al.(2009)]{sel4}
+Klein, G., Elphinstone, K., Heiser, G., Andronick, J., et~al., 2009. seL4: formal verification of an OS kernel, in: Proceedings of the ACM SIGOPS 22nd symposium on Operating systems principles, pp.~207--220. \url{https://doi.org/10.1145/1629575.1629596}.
 
-\bibitem[QuantumNous(2026)]{newapi5235}
-QuantumNous, 2026. Streaming responses requests may refund all pre-consumed quota when
-final usage is missing after client disconnect. new-api issue \#5235.
-\url{https://github.com/QuantumNous/new-api/issues/5235}.
+\bibitem[Leroy(2009)]{compcert}
+Leroy, X., 2009. Formal verification of a realistic compiler. Communications of the ACM 52, 107--115. \url{https://doi.org/10.1145/1538788.1538814}.
 
-\bibitem[Router-for-me(2026)]{cliproxy2179}
-Router-for-me, 2026. /v1/responses streaming occasionally finishes with HTTP 200 but no
-usage returned, causing downstream billing to be 0. CLIProxyAPI issue \#2179 (closed).
-\url{https://github.com/router-for-me/CLIProxyAPI/issues/2179}.
+\bibitem[Hawblitzel et~al.(2015)]{ironfleet}
+Hawblitzel, C., Howell, J., Kapritsos, M., Lorch, J.R., et~al., 2015. IronFleet: proving practical distributed systems correct, in: Proceedings of the 25th Symposium on Operating Systems Principles, pp.~1--17. \url{https://doi.org/10.1145/2815400.2815428}.
 
-\bibitem[Runeson and H\"{o}st(2009)]{runeson}
-Runeson, P., H\"{o}st, M., 2009. Guidelines for conducting and reporting case study research in software engineering. Empirical Software Engineering 14, 131--164. \url{https://doi.org/10.1007/s10664-008-9102-8}.
+\bibitem[Bornholt et~al.(2021)]{s3lightweight}
+Bornholt, J., Joshi, R., Astrauskas, V., Cully, B., et~al., 2021. Using lightweight formal methods to validate a key-value storage node in Amazon S3, in: Proceedings of the ACM SIGOPS 28th Symposium on Operating Systems Principles, pp.~836--850. \url{https://doi.org/10.1145/3477132.3483540}.
 
-\bibitem[Saltzer and Schroeder(1975)]{saltzer}
-Saltzer, J., Schroeder, M., 1975. The protection of information in computer systems. Proceedings of the IEEE 63, 1278--1308. \url{https://doi.org/10.1109/PROC.1975.9939}.
+\bibitem[Fonseca et~al.(2017)]{fonseca}
+Fonseca, P., Zhang, K., Wang, X., Krishnamurthy, A., 2017. An empirical study on the correctness of formally verified distributed systems, in: Proceedings of the Twelfth European Conference on Computer Systems, pp.~328--343. \url{https://doi.org/10.1145/3064176.3064183}.
 
-\bibitem[Seabold and Perktold(2010)]{statsmodels}
-Seabold, S., Perktold, J., 2010. Statsmodels: econometric and statistical modeling with Python, in: Proceedings of the Python in Science Conference, pp.~92--96. \url{https://doi.org/10.25080/Majora-92bf1922-011}.
+\bibitem[Claessen and Hughes(2000)]{quickcheck}
+Claessen, K., Hughes, J., 2000. QuickCheck: a lightweight tool for random testing of Haskell programs, in: Proceedings of the fifth ACM SIGPLAN international conference on Functional programming, pp.~268--279. \url{https://doi.org/10.1145/351240.351266}.
+
+\bibitem[Chen et~al.(2018)]{metamorphic18}
+Chen, T.Y., Kuo, F.-C., Liu, H., Poon, P.-L., et~al., 2018. Metamorphic testing: a review of challenges and opportunities. ACM Computing Surveys 51, 1--27. \url{https://doi.org/10.1145/3143561}.
 
 \bibitem[Segura et~al.(2016)]{segura}
 Segura, S., Fraser, G., Sanchez, A.B., Ruiz-Cortes, A., 2016. A survey on metamorphic testing. IEEE Transactions on Software Engineering 42, 805--824. \url{https://doi.org/10.1109/TSE.2016.2532875}.
 
-\bibitem[Sennrich et~al.(2015)]{bpe}
-Sennrich, R., Haddow, B., Birch, A., 2015. Neural machine translation of rare words
-with subword units. arXiv:1508.07909.
+\bibitem[Barr et~al.(2015)]{oracle}
+Barr, E.T., Harman, M., McMinn, P., Shahbaz, M., et~al., 2015. The oracle problem in software testing: a survey. IEEE Transactions on Software Engineering 41, 507--525. \url{https://doi.org/10.1109/TSE.2014.2372785}.
 
-\bibitem[Shumailov et~al.(2020)]{sponge}
-Shumailov, I., Zhao, Y., Bates, D., Papernot, N., Mullins, R., Anderson, R., 2020.
-Sponge examples: Energy-latency attacks on neural networks. arXiv:2006.03463.
+\bibitem[Basiri et~al.(2016)]{chaos}
+Basiri, A., Behnam, N., de Rooij, R., Hochstein, L., et~al., 2016. Chaos engineering. IEEE Software 33, 35--41. \url{https://doi.org/10.1109/MS.2016.60}.
 
-\bibitem[Spearman(1904)]{spearman}
-Spearman, C., 1904. The proof and measurement of association between two things. The American Journal of Psychology 15, 72--101. \url{https://doi.org/10.2307/1412159}.
+\bibitem[Alvaro et~al.(2015)]{lineage}
+Alvaro, P., Rosen, J., Hellerstein, J.M., 2015. Lineage-driven fault injection, in: Proceedings of the 2015 ACM SIGMOD International Conference on Management of Data, pp.~331--346. \url{https://doi.org/10.1145/2723372.2723711}.
+
+\bibitem[Kingsbury and Alvaro(2020)]{elle}
+Kingsbury, K., Alvaro, P., 2020. Elle: inferring isolation anomalies from experimental observations. Proceedings of the VLDB Endowment 14, 268--280. \url{https://doi.org/10.14778/3430915.3430918}.
+
+\bibitem[Gunawi et~al.(2016)]{gunawi}
+Gunawi, H.S., Hao, M., Suminto, R.O., Laksono, A., et~al., 2016. Why does the cloud stop computing? Lessons from hundreds of service outages, in: Proceedings of the Seventh ACM Symposium on Cloud Computing, pp.~1--16. \url{https://doi.org/10.1145/2987550.2987583}.
+
+\bibitem[BerriAI(2025)]{litellm14457}
+BerriAI, 2025. Usage data lost when streaming responses are terminated early by client
+disconnect. LiteLLM issue \#14457 (open).
+\url{https://github.com/BerriAI/litellm/issues/14457}. Accessed 23 September 2026.
+
+\bibitem[Etalab(2026)]{opengate1148}
+Etalab, 2026. An interrupted streamed chat completion is neither billed nor released.
+OpenGateLLM issue \#1148 (fixed).
+\url{https://github.com/etalab-ia/OpenGateLLM/issues/1148}. Accessed 23 September 2026.
+
+\bibitem[Router-for-me(2026)]{cliproxy2179}
+Router-for-me, 2026. /v1/responses streaming occasionally finishes with HTTP 200 but no
+usage returned, causing downstream billing to be 0. CLIProxyAPI issue \#2179 (closed).
+\url{https://github.com/router-for-me/CLIProxyAPI/issues/2179}. Accessed 23 September 2026.
 
 \bibitem[Stol and Fitzgerald(2018)]{abc}
 Stol, K.-J., Fitzgerald, B., 2018. The ABC of software engineering research. ACM Transactions on Software Engineering and Methodology 27, 1--51. \url{https://doi.org/10.1145/3241743}.
 
-\bibitem[Sun et~al.(2025a)]{coin}
-Sun, G., Wang, Z., Tian, B., Liu, M., et~al., 2025a. CoIn: Counting the invisible
-reasoning tokens in commercial opaque LLM APIs. arXiv:2505.13778.
-
-\bibitem[Sun et~al.(2025b)]{invisible}
-Sun, G., Wang, Z., Zhao, X., Tian, B., et~al., 2025b. Invisible tokens, visible bills:
-The urgent need to audit hidden operations in opaque LLM services. arXiv:2505.18471.
-
-\bibitem[Sysdig Threat Research Team(2024)]{llmjacking}
-Sysdig Threat Research Team, 2024. LLMjacking: Stolen cloud credentials used in new AI
-attack. Sysdig.
-\url{https://www.sysdig.com/blog/llmjacking-stolen-cloud-credentials-used-in-new-ai-attack}.
-
 \bibitem[Virtanen et~al.(2020)]{scipy}
 Virtanen, P., Gommers, R., Oliphant, T.E., Haberland, M., et~al., 2020. SciPy 1.0: fundamental algorithms for scientific computing in Python. Nature Methods 17, 261--272. \url{https://doi.org/10.1038/s41592-019-0686-2}.
 
-\bibitem[Vogels(2009)]{vogels}
-Vogels, W., 2009. Eventually consistent. Communications of the ACM 52, 40--44. \url{https://doi.org/10.1145/1435417.1435432}.
+\bibitem[Seabold and Perktold(2010)]{statsmodels}
+Seabold, S., Perktold, J., 2010. Statsmodels: econometric and statistical modeling with Python, in: Proceedings of the Python in Science Conference, pp.~92--96. \url{https://doi.org/10.25080/Majora-92bf1922-011}.
 
-\bibitem[Wang et~al.(2011)]{cashier}
-Wang, R., Chen, S., Wang, X., Qadeer, S., 2011. How to shop for free online -- security analysis of cashier-as-a-service based web stores, in: 2011 IEEE Symposium on Security and Privacy, pp.~465--480. \url{https://doi.org/10.1109/SP.2011.26}.
+\bibitem[Efron(1979)]{efron}
+Efron, B., 1979. Bootstrap methods: another look at the jackknife. The Annals of Statistics 7, 1--26. \url{https://doi.org/10.1214/aos/1176344552}.
 
-\bibitem[Wang and Tian(2026)]{gwprov}
-Wang, F., Tian, Z., 2026. Evidence-bound gateway-path provenance for third-party LLM
-inference. arXiv:2606.22560.
+\bibitem[Arcuri and Briand(2014)]{arcuri}
+Arcuri, A., Briand, L., 2014. A hitchhiker's guide to statistical tests for assessing randomized algorithms in software engineering. Software Testing, Verification and Reliability 24, 219--250. \url{https://doi.org/10.1002/stvr.1486}.
 
-\bibitem[Warszawski and Bailis(2017)]{acidrain}
-Warszawski, T., Bailis, P., 2017. ACIDRain: concurrency-related attacks on database-backed web applications, in: Proceedings of the 2017 ACM International Conference on Management of Data, pp.~5--20. \url{https://doi.org/10.1145/3035918.3064037}.
+\bibitem[Collberg and Proebsting(2016)]{collberg}
+Collberg, C., Proebsting, T.A., 2016. Repeatability in computer systems research. Communications of the ACM 59, 62--69. \url{https://doi.org/10.1145/2812803}.
 
-\bibitem[WHATWG(n.d.)]{sse}
-WHATWG, n.d. Server-sent events. HTML Living Standard.
-\url{https://html.spec.whatwg.org/multipage/server-sent-events.html}.
+\bibitem[Feitelson(2015)]{feitelson}
+Feitelson, D.G., 2015. From repeatability to reproducibility and corroboration. ACM SIGOPS Operating Systems Review 49, 3--11. \url{https://doi.org/10.1145/2723872.2723875}.
 
 \bibitem[Wilkinson et~al.(2016)]{fair}
 Wilkinson, M.D., Dumontier, M., Aalbersberg, I.J., Appleton, G., et~al., 2016. The FAIR guiding principles for scientific data management and stewardship. Scientific Data 3, article 160018. \url{https://doi.org/10.1038/sdata.2016.18}.
 
+\bibitem[Kalibera and Jones(2013)]{kalibera}
+Kalibera, T., Jones, R., 2013. Rigorous benchmarking in reasonable time, in: Proceedings of the 2013 international symposium on memory management, pp.~63--74. \url{https://doi.org/10.1145/2464157.2464160}.
+
+\bibitem[Mytkowicz et~al.(2009)]{mytkowicz}
+Mytkowicz, T., Diwan, A., Hauswirth, M., Sweeney, P.F., 2009. Producing wrong data without doing anything obviously wrong!, in: Proceedings of the 14th international conference on Architectural support for programming languages and operating systems, pp.~265--276. \url{https://doi.org/10.1145/1508244.1508275}.
+
+\bibitem[Spearman(1904)]{spearman}
+Spearman, C., 1904. The proof and measurement of association between two things. The American Journal of Psychology 15, 72--101. \url{https://doi.org/10.2307/1412159}.
+
+\bibitem[Anthropic(2026)]{anthropicpricing}
+Anthropic, 2026. Pricing. \url{https://claude.com/pricing}. Accessed 23 September
+2026.
+
+\bibitem[Runeson and H\"{o}st(2009)]{runeson}
+Runeson, P., H\"{o}st, M., 2009. Guidelines for conducting and reporting case study research in software engineering. Empirical Software Engineering 14, 131--164. \url{https://doi.org/10.1007/s10664-008-9102-8}.
+
 \bibitem[Wohlin et~al.(2012)]{wohlin}
 Wohlin, C., Runeson, P., H\"{o}st, M., Ohlsson, M.C., et~al., 2012. Experimentation in Software Engineering. Springer, Berlin, Heidelberg.
-
-\bibitem[Woodcock et~al.(2009)]{woodcock}
-Woodcock, J., Larsen, P.G., Bicarregui, J., Fitzgerald, J., 2009. Formal methods: practice and experience. ACM Computing Surveys 41, 1--36. \url{https://doi.org/10.1145/1592434.1592436}.
-
-\bibitem[Yu et~al.(1999)]{tlc}
-Yu, Y., Manolios, P., Lamport, L., 1999. Model checking TLA+ specifications, in:
-Correct Hardware Design and Verification Methods (CHARME), LNCS~1703, pp.~54--66.
-
-\bibitem[Zheng et~al.(2023)]{sglang}
-Zheng, L., Yin, L., Xie, Z., Sun, C., et~al., 2023. SGLang: efficient execution of structured language model programs. arXiv:2312.07104.
-
-\bibitem[Zhong et~al.(2024)]{distserve}
-Zhong, Y., Liu, S., Chen, J., Hu, J., et~al., 2024. DistServe: disaggregating prefill and decoding for goodput-optimized large language model serving. arXiv:2401.09670.
 \end{thebibliography}
 
 \end{document}
