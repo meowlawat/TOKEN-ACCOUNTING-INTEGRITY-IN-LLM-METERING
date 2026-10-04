@@ -22,6 +22,25 @@ architecture, and it exists even when every component behaves correctly.
 
 Failure modes are injectable because they are the interesting part: an event may be lost,
 duplicated, delayed, or created only after the client has already disconnected.
+
+CLOCK SOURCE. `created_ns`/`deliver_after_ns` are `time.time_ns()` (wall-clock, UTC epoch),
+not `time.perf_counter_ns()`. This module originally used `perf_counter_ns()`, which is a
+monotonic clock with an arbitrary, process-and-boot-local origin: on Linux it is
+`CLOCK_MONOTONIC` relative to that kernel's boot time, and two different Linux kernels
+(e.g. two containers, or two VMs, or two physical hosts) do not share an origin at all.
+This was safe only by accident, as long as the worker ran as an asyncio task inside the
+same process that created the event (`app/async_routes.py::_worker_loop`). The moment the
+worker becomes a separate OS process -- even still on the "same machine," if that machine
+runs the gateway inside a container or VM with its own boot time, which is exactly what
+Docker Desktop on Windows does -- the comparison `perf_counter_ns() < deliver_after_ns`
+compares two unrelated numbers and the result depends on which process happened to boot
+more recently, not on elapsed wall time since the event was created. Confirmed empirically
+during the two-machine experiment (see experiments/two_machine/RESEARCH_LOG.md, Phase 3
+attempt 4): a host-side worker's `perf_counter_ns()` measured ~104x larger than the
+gateway container's, so every event looked instantly due regardless of the configured
+delay. `time.time_ns()` is the UTC epoch in nanoseconds, which every process and host
+agrees on up to their system clocks' actual synchronization (NTP et al.) -- the quantity
+that is genuinely shared, rather than an artifact of process/VM/machine boot order.
 """
 
 from __future__ import annotations
@@ -92,7 +111,7 @@ async def drain(redis, apply_debit, *, max_events: int = 10_000,
             raw = raw.decode()
         ev = UsageEvent.from_json(raw)
 
-        if time.perf_counter_ns() < ev.deliver_after_ns:
+        if time.time_ns() < ev.deliver_after_ns:
             remaining.append(raw)       # not due yet; put back after the pass
             skipped += 1
             continue
@@ -105,7 +124,7 @@ async def drain(redis, apply_debit, *, max_events: int = 10_000,
         if idempotent:
             await redis.sadd(APPLIED_KEY, ev.event_id)
         applied += 1
-        windows_ms.append((time.perf_counter_ns() - ev.created_ns) / 1e6)
+        windows_ms.append((time.time_ns() - ev.created_ns) / 1e6)
 
     for raw in remaining:
         await redis.rpush(QUEUE_KEY, raw)
@@ -121,7 +140,7 @@ async def reset(redis) -> None:
 def new_event(*, account_id: int, request_id: str, trial_id: str, architecture: str,
               delivered_tokens: int, amount: Decimal, authoritative: Decimal,
               delay_ms: float, meta: dict | None = None) -> UsageEvent:
-    now = time.perf_counter_ns()
+    now = time.time_ns()
     return UsageEvent(
         event_id=uuid.uuid4().hex,
         account_id=account_id, request_id=request_id, trial_id=trial_id,

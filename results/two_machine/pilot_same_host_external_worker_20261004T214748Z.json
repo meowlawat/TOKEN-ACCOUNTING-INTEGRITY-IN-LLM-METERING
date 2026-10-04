@@ -1,0 +1,108 @@
+{
+  "experiment": "phase3_pilot_same_host_external_worker",
+  "generated_at": "20261004T214748Z",
+  "parameters": {
+    "delays_ms": [
+      0.0,
+      10.0,
+      50.0,
+      100.0,
+      500.0
+    ],
+    "b0_interarrival_ms": 20.0,
+    "b0_requests": 6,
+    "worker_poll_ms": 2.0
+  },
+  "expected_over_served": [
+    0,
+    0,
+    0,
+    1,
+    4
+  ],
+  "actual_over_served": [
+    3,
+    3,
+    4,
+    2,
+    2
+  ],
+  "match_over_served": false,
+  "expected_final_balance": [
+    "0.000000",
+    "0.000000",
+    "0.000000",
+    "-0.081000",
+    "-0.324000"
+  ],
+  "actual_final_balance": [
+    "-0.243000",
+    "-0.243000",
+    "-0.324000",
+    "-0.162000",
+    "-0.162000"
+  ],
+  "match_final_balance": false,
+  "rows": [
+    {
+      "mechanism": "b0_pilot_external_worker",
+      "delay_ms": 0.0,
+      "interarrival_ms": 20.0,
+      "issued": 6,
+      "served": 5,
+      "affordable": 2,
+      "over_served": 3,
+      "unit_cost": "0.081000",
+      "final_balance": "-0.243000",
+      "worker_log": "2026-10-05 03:17:41,567 INFO worker starting: redis=redis://localhost:16379/0 db=postgresql+asyncpg://postgres:postgres@localhost:15432/metering poll_ms=2.0\n2026-10-05 03:17:41,661 INFO passes=1 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:41,679 INFO passes=2 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:41,695 INFO passes=3 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:41,710 INFO passes=4 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:41,726 INFO passes=5 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:41,742 INFO passes=6 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:41,757 INFO passes=7 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:41,772 INFO passes=8 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:41,789 INFO passes=9 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:41,805 INFO passes=10 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:41,819 INFO passes=11 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:41,837 INFO passes=12 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:41,852 INFO passes=13 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:41,867 INFO passes=14 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:41,883 INFO passes=15 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:41,899 INFO passes=16 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:41,915 INFO passes=17 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:41,930 INFO passes=18 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:41,947 INFO passes=19 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:41,962 INFO passes=20 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:41,978 INFO passes=21 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:41,994 INFO passes=22 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:42,009 INFO passes=23 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:42,025 INFO passes=24 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:42,041 INFO passes=25 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:42,057 INFO passes=26 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:42,073 INFO passes=27 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:42,089 INFO passes=28 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:42,104 INFO passes=29 applied=5 duplicates_suppressed=0 errors=0\n"
+    },
+    {
+      "mechanism": "b0_pilot_external_worker",
+      "delay_ms": 10.0,
+      "interarrival_ms": 20.0,
+      "issued": 6,
+      "served": 5,
+      "affordable": 2,
+      "over_served": 3,
+      "unit_cost": "0.081000",
+      "final_balance": "-0.243000",
+      "worker_log": "2026-10-05 03:17:42,875 INFO worker starting: redis=redis://localhost:16379/0 db=postgresql+asyncpg://postgres:postgres@localhost:15432/metering poll_ms=2.0\n2026-10-05 03:17:42,949 INFO passes=1 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:42,958 INFO passes=2 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:42,974 INFO passes=3 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:42,989 INFO passes=4 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,005 INFO passes=5 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,020 INFO passes=6 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,036 INFO passes=7 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,052 INFO passes=8 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,069 INFO passes=9 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,084 INFO passes=10 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,100 INFO passes=11 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,115 INFO passes=12 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,131 INFO passes=13 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,145 INFO passes=14 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,161 INFO passes=15 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,178 INFO passes=16 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,192 INFO passes=17 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,208 INFO passes=18 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,222 INFO passes=19 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,237 INFO passes=20 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,254 INFO passes=21 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,270 INFO passes=22 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,285 INFO passes=23 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,300 INFO passes=24 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,316 INFO passes=25 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,331 INFO passes=26 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,347 INFO passes=27 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,362 INFO passes=28 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,378 INFO passes=29 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,393 INFO passes=30 applied=5 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:43,409 INFO passes=31 applied=5 duplicates_suppressed=0 errors=0\n"
+    },
+    {
+      "mechanism": "b0_pilot_external_worker",
+      "delay_ms": 50.0,
+      "interarrival_ms": 20.0,
+      "issued": 6,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "unit_cost": "0.081000",
+      "final_balance": "-0.324000",
+      "worker_log": "2026-10-05 03:17:44,243 INFO worker starting: redis=redis://localhost:16379/0 db=postgresql+asyncpg://postgres:postgres@localhost:15432/metering poll_ms=2.0\n2026-10-05 03:17:44,342 INFO passes=1 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,354 INFO passes=2 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,370 INFO passes=3 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,385 INFO passes=4 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,401 INFO passes=5 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,416 INFO passes=6 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,432 INFO passes=7 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,448 INFO passes=8 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,463 INFO passes=9 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,479 INFO passes=10 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,494 INFO passes=11 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,510 INFO passes=12 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,526 INFO passes=13 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,540 INFO passes=14 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,556 INFO passes=15 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,572 INFO passes=16 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,587 INFO passes=17 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,604 INFO passes=18 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,619 INFO passes=19 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,635 INFO passes=20 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,651 INFO passes=21 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,667 INFO passes=22 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,682 INFO passes=23 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,698 INFO passes=24 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,713 INFO passes=25 applied=6 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:44,729 INFO passes=26 applied=6 duplicates_suppressed=0 errors=0\n"
+    },
+    {
+      "mechanism": "b0_pilot_external_worker",
+      "delay_ms": 100.0,
+      "interarrival_ms": 20.0,
+      "issued": 6,
+      "served": 4,
+      "affordable": 2,
+      "over_served": 2,
+      "unit_cost": "0.081000",
+      "final_balance": "-0.162000",
+      "worker_log": "2026-10-05 03:17:45,424 INFO worker starting: redis=redis://localhost:16379/0 db=postgresql+asyncpg://postgres:postgres@localhost:15432/metering poll_ms=2.0\n2026-10-05 03:17:45,491 INFO passes=1 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,510 INFO passes=2 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,526 INFO passes=3 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,541 INFO passes=4 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,557 INFO passes=5 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,573 INFO passes=6 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,590 INFO passes=7 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,605 INFO passes=8 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,621 INFO passes=9 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,636 INFO passes=10 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,652 INFO passes=11 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,668 INFO passes=12 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,684 INFO passes=13 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,699 INFO passes=14 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,714 INFO passes=15 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,730 INFO passes=16 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,746 INFO passes=17 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,761 INFO passes=18 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,777 INFO passes=19 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,793 INFO passes=20 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,808 INFO passes=21 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,824 INFO passes=22 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,840 INFO passes=23 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,856 INFO passes=24 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,871 INFO passes=25 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,887 INFO passes=26 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,903 INFO passes=27 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,919 INFO passes=28 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,934 INFO passes=29 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,950 INFO passes=30 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,966 INFO passes=31 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,981 INFO passes=32 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:45,996 INFO passes=33 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:46,012 INFO passes=34 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:46,027 INFO passes=35 applied=4 duplicates_suppressed=0 errors=0\n"
+    },
+    {
+      "mechanism": "b0_pilot_external_worker",
+      "delay_ms": 500.0,
+      "interarrival_ms": 20.0,
+      "issued": 6,
+      "served": 4,
+      "affordable": 2,
+      "over_served": 2,
+      "unit_cost": "0.081000",
+      "final_balance": "-0.162000",
+      "worker_log": "2026-10-05 03:17:46,722 INFO worker starting: redis=redis://localhost:16379/0 db=postgresql+asyncpg://postgres:postgres@localhost:15432/metering poll_ms=2.0\n2026-10-05 03:17:46,772 INFO passes=1 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:46,776 INFO passes=2 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:46,792 INFO passes=3 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:46,808 INFO passes=4 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:46,823 INFO passes=5 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:46,839 INFO passes=6 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:46,855 INFO passes=7 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:46,871 INFO passes=8 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:46,885 INFO passes=9 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:46,901 INFO passes=10 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:46,917 INFO passes=11 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:46,933 INFO passes=12 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:46,950 INFO passes=13 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:46,965 INFO passes=14 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:46,981 INFO passes=15 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:46,997 INFO passes=16 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,013 INFO passes=17 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,029 INFO passes=18 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,044 INFO passes=19 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,060 INFO passes=20 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,076 INFO passes=21 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,092 INFO passes=22 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,107 INFO passes=23 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,124 INFO passes=24 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,139 INFO passes=25 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,155 INFO passes=26 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,171 INFO passes=27 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,187 INFO passes=28 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,202 INFO passes=29 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,218 INFO passes=30 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,234 INFO passes=31 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,250 INFO passes=32 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,266 INFO passes=33 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,281 INFO passes=34 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,296 INFO passes=35 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,312 INFO passes=36 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,327 INFO passes=37 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,343 INFO passes=38 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,359 INFO passes=39 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,375 INFO passes=40 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,389 INFO passes=41 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,405 INFO passes=42 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,420 INFO passes=43 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,437 INFO passes=44 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,452 INFO passes=45 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,469 INFO passes=46 applied=4 duplicates_suppressed=0 errors=0\n2026-10-05 03:17:47,485 INFO passes=47 applied=4 duplicates_suppressed=0 errors=0\n"
+    }
+  ]
+}
