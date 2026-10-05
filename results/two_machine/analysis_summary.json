@@ -1,0 +1,199 @@
+[
+  {
+    "condition": "C0",
+    "arrival": "sequential",
+    "delay_ms": 0.0,
+    "n_total": 3,
+    "n_valid": 3,
+    "n_invalid": 0,
+    "over_served_mean": 0,
+    "over_served_median": 0,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 0.0,
+    "over_served_raw": [
+      0,
+      0,
+      0
+    ],
+    "source_files": [
+      "results/two_machine/C0_sequential_20261005T222950Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C0",
+    "arrival": "sequential",
+    "delay_ms": 10.0,
+    "n_total": 3,
+    "n_valid": 3,
+    "n_invalid": 0,
+    "over_served_mean": 0,
+    "over_served_median": 0,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 0.0,
+    "over_served_raw": [
+      0,
+      0,
+      0
+    ],
+    "source_files": [
+      "results/two_machine/C0_sequential_20261005T222950Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C0",
+    "arrival": "sequential",
+    "delay_ms": 50.0,
+    "n_total": 3,
+    "n_valid": 3,
+    "n_invalid": 0,
+    "over_served_mean": 0,
+    "over_served_median": 0,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 0.0,
+    "over_served_raw": [
+      0,
+      0,
+      0
+    ],
+    "source_files": [
+      "results/two_machine/C0_sequential_20261005T222950Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C0",
+    "arrival": "sequential",
+    "delay_ms": 100.0,
+    "n_total": 3,
+    "n_valid": 3,
+    "n_invalid": 0,
+    "over_served_mean": 1,
+    "over_served_median": 1,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 1.0,
+    "over_served_raw": [
+      1,
+      1,
+      1
+    ],
+    "source_files": [
+      "results/two_machine/C0_sequential_20261005T222950Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C0",
+    "arrival": "sequential",
+    "delay_ms": 500.0,
+    "n_total": 3,
+    "n_valid": 3,
+    "n_invalid": 0,
+    "over_served_mean": 4,
+    "over_served_median": 4,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 4.0,
+    "over_served_raw": [
+      4,
+      4,
+      4
+    ],
+    "source_files": [
+      "results/two_machine/C0_sequential_20261005T222950Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C1",
+    "arrival": "sequential",
+    "delay_ms": 0.0,
+    "n_total": 2,
+    "n_valid": 2,
+    "n_invalid": 0,
+    "over_served_mean": 0,
+    "over_served_median": 0.0,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 0.0,
+    "over_served_raw": [
+      0,
+      0
+    ],
+    "source_files": [
+      "results/two_machine/C1_sequential_20261005T223102Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C1",
+    "arrival": "sequential",
+    "delay_ms": 100.0,
+    "n_total": 2,
+    "n_valid": 2,
+    "n_invalid": 0,
+    "over_served_mean": 1,
+    "over_served_median": 1.0,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 1.0,
+    "over_served_raw": [
+      1,
+      1
+    ],
+    "source_files": [
+      "results/two_machine/C1_sequential_20261005T223102Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C1",
+    "arrival": "sequential",
+    "delay_ms": 500.0,
+    "n_total": 2,
+    "n_valid": 2,
+    "n_invalid": 0,
+    "over_served_mean": 4,
+    "over_served_median": 4.0,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 4.0,
+    "over_served_raw": [
+      4,
+      4
+    ],
+    "source_files": [
+      "results/two_machine/C1_sequential_20261005T223102Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C3",
+    "arrival": "concurrent",
+    "delay_ms": 0.0,
+    "n_total": 3,
+    "n_valid": 3,
+    "n_invalid": 0,
+    "over_served_mean": 0,
+    "over_served_median": 0,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 0.0,
+    "over_served_raw": [
+      0,
+      0,
+      0
+    ],
+    "source_files": [
+      "results/two_machine/C3_concurrent_20261005T223032Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C3",
+    "arrival": "concurrent",
+    "delay_ms": 500.0,
+    "n_total": 3,
+    "n_valid": 3,
+    "n_invalid": 0,
+    "over_served_mean": 0,
+    "over_served_median": 0,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 0.0,
+    "over_served_raw": [
+      0,
+      0,
+      0
+    ],
+    "source_files": [
+      "results/two_machine/C3_concurrent_20261005T223032Z.summary.json"
+    ]
+  }
+]

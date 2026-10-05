@@ -240,6 +240,84 @@ async def async_b0_complete(
             "balance_seen": str(balance)}
 
 
+@router.post("/async/b0/complete-atomic")
+async def async_b0_complete_atomic(
+    req: AsyncRequest,
+    request: Request,
+    x_api_key: str = Header(..., alias="X-API-Key"),
+    session: AsyncSession = Depends(get_session),
+) -> dict:
+    """B0 with authorization atomically coupled to economic commitment (C3).
+
+    Added for the two-machine experiment (see experiments/two_machine/RESEARCH_LOG.md,
+    Phase 1 finding 3): the vulnerable `/async/b0/complete` above is, by construction, the
+    object of study -- it has no atomic-commit counterpart in the async pipeline, because
+    none was needed until this experiment asked whether atomic coupling closes the window
+    regardless of settlement delay or physical separation.
+
+    This does NOT reuse `metering/debit.py::reserve_hardened()`. That primitive is a raw
+    SQL statement scoped to the mutable backend only, whereas every other function this
+    async B0 family calls (`read_balance`, `debit_unchecked`) goes through
+    `ledger.py`'s backend-dispatched interface, which supports both the mutable and the
+    append-only ledger backends. Using `reserve_hardened()` here would silently restrict
+    this condition to one backend while the rest of the family supports both -- an
+    inconsistency, not a simplification. `ledger.reserve_atomic()` is the backend-agnostic
+    equivalent: for the mutable backend it is the identical single-statement
+    `UPDATE ... WHERE balance >= :c RETURNING balance` (verified in
+    app/accounting/backends.py::_mutable_reserve); for the ledger backend it is the
+    `SELECT ... FOR UPDATE` anchor-lock + conditional INSERT (verified in
+    app/accounting/backends.py::_ledger_reserve). Both are genuinely atomic with respect
+    to concurrent callers for the reasons documented there -- this is not "reuse because
+    it already exists," it is "use the one primitive in this codebase that is both atomic
+    AND consistent with how this family already talks to storage."
+
+    Because B0's cost is fully known at authorization time (unlike M1, where the final
+    cost depends on how much streamed before an abort), coupling authorization to
+    commitment for B0 means the debit is final the moment the request is authorized --
+    there is nothing left for the async worker to settle. No event is queued. The
+    "distributed" part of condition C3 is that this authorization still runs on Host A
+    while the ledger it debits lives on Host B, over the real network -- the measurable
+    cost H3 asks about is this synchronous round trip, not an async settlement delay.
+    """
+    account = await _account(session, x_api_key)
+    trial = await session.get(MTrial, req.trial_id)
+    if trial is None:
+        raise HTTPException(404, "trial not found")
+    prices = _prices(trial)
+    seed = req.seed if req.seed is not None else trial.model_seed
+    request_id = req.request_id or secrets.token_hex(8)
+
+    input_tokens = mock.count_prompt_tokens(req.prompt)
+    n_out = mock.plan_completion(req.prompt, seed, 40, 80)
+    cost = Usage(input_tokens=input_tokens, output_tokens=n_out).cost(prices)
+
+    ok, balance_after = await ledger.reserve_atomic(session, account.id, cost)
+    await session.commit()  # commit the reserve immediately, before any further work
+
+    if not ok:
+        return {"request_id": request_id, "served": False, "reason": "insufficient"}
+
+    balance_before = (balance_after + cost) if balance_after is not None else None
+
+    async with SessionLocal() as s:
+        s.add(MRecord(
+            trial_id=trial.id, account_id=account.id, request_id=request_id,
+            mechanism="async_b0", architecture="async_b0_atomic",
+            tokens_generated=n_out, tokens_delivered=n_out, tokens_billed=n_out,
+            authoritative_cost=cost, committed_debit=cost, refund=Decimal("0"),
+            net_debit=cost, leak=Decimal("0"),
+            balance_before=balance_before, balance_after=balance_after,
+            served=True, completed=True, invariant_ok=True,
+            detection_level="D0", abort_pct=None, manipulation=None,
+            extra={"fault": req.fault, "reconcile_delay_ms": req.reconcile_delay_ms,
+                   "atomic": True},
+        ))
+        await s.commit()
+
+    return {"request_id": request_id, "served": True, "cost": str(cost),
+            "balance_after": str(balance_after)}
+
+
 # --------------------------------------------------------------------------- #
 # Worker / admin
 # --------------------------------------------------------------------------- #
