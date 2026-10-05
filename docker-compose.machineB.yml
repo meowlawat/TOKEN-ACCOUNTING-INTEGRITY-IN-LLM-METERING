@@ -1,0 +1,58 @@
+# Host B (the settlement/ledger machine) for the two-machine experiment.
+#
+# Runs ONLY what Host B owns per TWO_MACHINE_PLAN.md's architecture: the authoritative
+# Postgres ledger, the Redis event queue, and the standalone settlement worker
+# (app/accounting/worker_main.py, from Phase 3). No gateway/FastAPI app runs here --
+# that stays on Host A, which is the point of the experiment.
+#
+# Postgres and Redis publish on all host interfaces (not 127.0.0.1-only) because Host A
+# must reach them over the real network; the actual access restriction is the Azure NSG
+# rule created by provision-two-machine.ps1, which allows 5432/6379 inbound ONLY from
+# Host A's (the administrator's) detected public IP /32 -- never 0.0.0.0/0. This file
+# does not, by itself, make these ports internet-reachable; the NSG is the enforcement
+# point, and this compose file assumes it is in place.
+#
+# Usage (on Host B, after scripts/azure/deploy-machine-b.sh has copied this + app/):
+#   docker compose -f docker-compose.machineB.yml up -d --build
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: metering
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata_hostb:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d metering"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  worker:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/metering
+      REDIS_URL: redis://redis:6379/0
+    command: python -m app.accounting.worker_main --poll-ms 2.0 --stats-every 50
+    restart: unless-stopped
+
+volumes:
+  pgdata_hostb:

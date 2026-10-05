@@ -1,0 +1,30 @@
+# Host A (gateway/client side) for the two-machine experiment.
+#
+# Runs ONLY the gateway -- no local db/redis/worker, per TWO_MACHINE_PLAN.md's
+# architecture. DATABASE_URL/REDIS_URL point at Host B's public IP over the real network;
+# that cross-host hop is the entire point of this file.
+#
+# HOSTB_PUBLIC_IP must be set in the environment (or in a .env.machineA file in this
+# directory, which docker compose reads automatically) before `docker compose up`.
+# scripts/azure/run-distributed-experiment.sh sets this from
+# experiments/two_machine/azure_vm_info.json automatically rather than requiring it to be
+# typed by hand each time.
+#
+# Usage:
+#   HOSTB_PUBLIC_IP=20.x.x.x docker compose -f docker-compose.machineA.yml up -d --build
+services:
+  app:
+    build: .
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@${HOSTB_PUBLIC_IP}:5432/metering
+      REDIS_URL: redis://${HOSTB_PUBLIC_IP}:6379/0
+      CLASS6_CREDIT_RACE: vulnerable
+      TIKTOKEN_CACHE_DIR: /tokcache/tiktoken
+      HF_HOME: /tokcache/hf
+      HF_HUB_OFFLINE: "1"
+      TRANSFORMERS_OFFLINE: "1"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./tokenizer_cache:/tokcache:ro
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
