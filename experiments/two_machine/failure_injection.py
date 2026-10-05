@@ -74,6 +74,24 @@ async def new_account(c: httpx.AsyncClient, credits: float):
     return acct["id"], acct["api_key"], t["trial_id"]
 
 
+async def fetch_audit(c: httpx.AsyncClient, trial_id: str) -> dict:
+    """The server's own raw per-request ledger (MRecord rows) for this trial -- used to
+    verify conservation from actual records, not merely by comparing a final balance
+    against a hand-computed expectation. NOTE: for the async B0 path, each MRecord row is
+    written at REQUEST time (authorization), before the worker applies its debit -- there
+    is no row updated after settlement. So `served_count`/`record_count` here verify "did
+    the server record exactly the requests we think we sent, with the status we think
+    they got" independent of our own client-side bookkeeping; the actual settled-debit
+    conservation check still has to come from the live `credits.balance`, because that is
+    the only thing the worker mutates after the fact. Both checks are reported, not
+    conflated.
+    """
+    r = await c.get(f"/admin/m-trials/{trial_id}/audit")
+    if r.status_code != 200:
+        return {"error": f"audit fetch failed: HTTP {r.status_code}"}
+    return r.json()
+
+
 async def scenario_worker_kill() -> dict:
     """Kill the sibling-container worker mid-flight, restart it, check reconciliation."""
     docker("compose", "--profile", "two-machine-pilot", "rm", "-f", "-s", "worker")
@@ -111,8 +129,12 @@ async def scenario_worker_kill() -> dict:
 
         queue_after = (await c.get("/admin/async/state")).json()
         balance_after = (await c.get(f"/admin/async/balance/{acct_id}")).json()
+        audit = await fetch_audit(c, tid)
 
     served_count = sum(1 for e in served_events if e.get("served"))
+    sent_request_ids = {e["request_id"] for e in served_events}
+    audit_request_ids = {row["request_id"] for row in audit.get("rows", [])}
+    audit_served_count = audit.get("served_count")
     # Budget was sized for exactly 4 requests, so all 4 should be served and all should
     # eventually settle -- expected final balance is zero if reconciliation is correct.
 
@@ -124,6 +146,10 @@ async def scenario_worker_kill() -> dict:
         "queue_depth_before_kill": queue_before_kill,
         "balance_during_outage": balance_during_outage,
         "queue_depth_after_restart_and_wait": queue_after,
+        "server_audit_record_count": audit.get("record_count"),
+        "server_audit_served_count": audit_served_count,
+        "all_sent_request_ids_present_in_server_audit": sent_request_ids.issubset(audit_request_ids),
+        "server_audit_matches_client_served_count": audit_served_count == served_count,
         "balance_after_restart_and_wait": balance_after,
         "queue_drained_to_zero": queue_after.get("queue_depth") == 0,
         "balance_reconciled": abs(float(balance_after["balance"]) - (
@@ -159,10 +185,12 @@ async def scenario_network_partition() -> dict:
         unit = D(probe["cost"])
         acct_id, key, tid = await new_account(c, credits=float(unit * 3))
 
+        sent = []
         for _ in range(3):
-            await c.post("/async/b0/complete", headers={"X-API-Key": key},
-                        json={"prompt": PROMPT, "trial_id": tid, "seed": SEED,
-                              "reconcile_delay_ms": 500.0})
+            r = (await c.post("/async/b0/complete", headers={"X-API-Key": key},
+                             json={"prompt": PROMPT, "trial_id": tid, "seed": SEED,
+                                   "reconcile_delay_ms": 500.0})).json()
+            sent.append(r)
             await asyncio.sleep(0.05)
 
         disconnect_result = None
@@ -179,17 +207,28 @@ async def scenario_network_partition() -> dict:
 
         queue_after = (await c.get("/admin/async/state")).json()
         balance_after = (await c.get(f"/admin/async/balance/{acct_id}")).json()
+        audit = await fetch_audit(c, tid)
+
+    served_count = sum(1 for e in sent if e.get("served"))
+    sent_request_ids = {e["request_id"] for e in sent}
+    audit_request_ids = {row["request_id"] for row in audit.get("rows", [])}
 
     return {
         "scenario": "network_partition",
         "docker_network_used": net_name,
         "disconnect_result": disconnect_result,
         "reconnect_result": reconnect_result,
+        "requests_issued": 3,
+        "requests_served": served_count,
         "queue_depth_during_partition": queue_during_partition,
         "queue_depth_after_reconnect_and_wait": queue_after,
         "balance_after_recovery": balance_after,
         "queue_drained_to_zero": queue_after.get("queue_depth") == 0,
         "balance_reconciled": abs(float(balance_after["balance"]) - 0.0) < 1e-6,
+        "server_audit_record_count": audit.get("record_count"),
+        "server_audit_served_count": audit.get("served_count"),
+        "all_sent_request_ids_present_in_server_audit": sent_request_ids.issubset(audit_request_ids),
+        "server_audit_matches_client_served_count": audit.get("served_count") == served_count,
         "interpretation": (
             "OBSERVED: worker could not reach Redis/Postgres while disconnected; events "
             "already queued remained in Redis (not lost) and were applied once "

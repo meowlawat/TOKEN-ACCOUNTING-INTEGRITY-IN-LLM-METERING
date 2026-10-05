@@ -1,0 +1,28 @@
+{
+  "run_batch_id": "C0_sequential_20261005T230553Z",
+  "git_commit": "ef9b9126bab2e1254d8efb935c5f4e52de1c8e79",
+  "git_dirty": true,
+  "started_at_utc": "2026-10-05T23:05:53.044619+00:00",
+  "host_a_identifier": "DESKTOP-8B2NBHS",
+  "host_a_platform": "Windows-11-10.0.26300-SP0",
+  "python_version": "3.13.5",
+  "condition": "C0",
+  "arrival": "sequential",
+  "endpoint": "/async/b0/complete",
+  "base_url": "http://localhost:8000",
+  "delays_ms": [
+    0.0,
+    500.0
+  ],
+  "repetitions_requested": 10,
+  "b0_interarrival_ms": 20.0,
+  "b0_requests": 6,
+  "b0_budget_units": 2,
+  "fault": "none",
+  "config_hash": "8d8b6bf2ea4b3396",
+  "notes": "repeatability check, run 2 of 2 (after full app/db/redis restart)",
+  "finished_at_utc": "2026-10-05T23:06:32.114596+00:00",
+  "cells_total": 20,
+  "cells_valid": 20,
+  "cells_invalid": 0
+}
