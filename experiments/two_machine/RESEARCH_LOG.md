@@ -348,7 +348,173 @@ so far of why that measurement matters.
 
 ---
 
-## Phase 5 — NOT STARTED: requires the user
+---
+
+## 2026-10-06 — Phase 5 infrastructure build-out (while Azure auth is pending)
+
+Resumed at commit `6fbca90`. `az` CLI was not installed at all (not just unauthenticated).
+Installed via `pip install azure-cli` (azure-cli 2.90.0). Discovered and worked around a
+real environment quirk: invoking the resulting `az`/`az.bat` entry point directly from
+MSYS bash silently produces exit 0 with NO output at all (neither stdout nor stderr) even
+when the underlying command genuinely fails -- confirmed by running the identical `az
+account show` through PowerShell (correct: exit 1, "Please run az login") and through
+`cmd //c` (same, correct). Root cause is MSYS's automatic Unix-to-Windows argument/path
+translation interacting badly with the pip-installed Python entry-point script. Rather than
+fight this across many multi-flag az invocations (resource group/NSG/VM create), all actual
+Azure CLI logic was written as `scripts/azure/provision-two-machine.ps1`, invoked via
+PowerShell, with a thin `scripts/azure/provision-two-machine.sh` wrapper for interface
+consistency with the rest of the two-machine scripts.
+
+**Generated a dedicated ED25519 keypair**: `~/.ssh/llm-metering-two-machine[.pub]` (outside
+the repository; never committed; `.gitignore` already covers key-name patterns).
+
+**`az account show` confirms Azure CLI is installed but genuinely not authenticated.**
+`az login` is an interactive OAuth/device-code flow requiring the user's own Microsoft /
+Azure for Students account -- this cannot be performed on the user's behalf and is the one
+genuine stop condition for actually provisioning Host B. Per the user's own fallback
+instructions, this did NOT stop the rest of the work; everything buildable without a live
+Azure session was built:
+
+- `scripts/azure/provision-two-machine.ps1` (+ `.sh` wrapper) -- idempotent: detects admin
+  public IP via external echo services, picks the Azure-for-Students subscription if more
+  than one exists, queries ACTUAL region availability (prefers centralindia, falls back to
+  whatever Indian region the subscription actually has, never assumes), queries ACTUAL
+  `Standard_B*` SKU availability in that region filtered to >=2 vCPU / >=2GB RAM with no
+  subscription restrictions (never hardcodes a SKU name), creates a dedicated resource
+  group + NSG (22/5432/6379 inbound restricted to the detected admin IP /32 only, never
+  0.0.0.0/0) + VM, and writes connection info to
+  `experiments/two_machine/azure_vm_info.json` (git-ignored -- machine-specific/ephemeral,
+  not a secret, but not something a re-run should depend on being committed).
+- `scripts/azure/bootstrap-machine-b.sh` -- waits for SSH, installs Docker + Docker Compose
+  plugin + chrony + diagnostics (curl, jq, iproute2, ping, traceroute, netcat), enables and
+  starts chrony, reports `chronyc tracking`/`sources`.
+- `docker-compose.machineB.yml` (new, root of repo, consistent with the existing
+  `docker-compose.distributed.yml` precedent) -- runs ONLY `db` + `redis` + `worker` (the
+  Phase 3 `worker_main.py`, unchanged) on Host B; no gateway. Ports publish on all
+  interfaces because Host A must reach them over the real network -- the actual access
+  control is the NSG rule above, not container-level binding.
+- `docker-compose.machineA.yml` (new) -- runs ONLY the gateway on Host A, with
+  `DATABASE_URL`/`REDIS_URL` pointed at `${HOSTB_PUBLIC_IP}` over the real network.
+- `scripts/azure/deploy-machine-b.sh` -- tars just `Dockerfile` + `requirements.txt` +
+  `app/` + `docker-compose.machineB.yml` (not the whole repo -- Host B has no business
+  holding `paper/` or release zips) over a single SSH connection, builds, brings up, and
+  verifies health.
+- `experiments/two_machine/network_baseline.py` -- TCP-connect RTT to Host B, repeated
+  samples, min/median/p95/p99/max/loss, timed entirely on Host A's local monotonic clock
+  (no remote timestamp read, so this does not depend on clock sync at all).
+- `experiments/two_machine/clock_sync_check.py` -- records chrony's own self-reported
+  state on Host B AND an independently measured `time.time_ns()` offset via repeated SSH
+  round trips (same direct-comparison method as the Phase 4 diagnosis), with the offset's
+  uncertainty reported as half the round-trip span. Does not trust chrony's self-report
+  alone, per the explicit instruction not to claim synchronization merely because chrony
+  is installed.
+
+**New application code: `/async/b0/complete-atomic` in `app/async_routes.py` (C3's
+primitive).** The Phase 1 audit found no atomic-commit counterpart to the vulnerable async
+B0 path anywhere in the repository -- it had to be built, not assumed. Uses
+`ledger.reserve_atomic()`, NOT `metering/debit.py::reserve_hardened()`, and the choice is
+deliberate and documented in the code itself: `reserve_hardened()` is raw SQL scoped to the
+mutable backend only, while every other function this async B0 family already calls
+(`read_balance`, `debit_unchecked`) goes through `ledger.py`'s backend-dispatched interface
+supporting both the mutable and append-only-ledger backends. Using `reserve_hardened()`
+here would silently restrict this condition to one backend while the rest of the family
+supports both. `ledger.reserve_atomic()` is structurally the same atomic primitive for the
+mutable backend (verified: identical single-statement `UPDATE ... WHERE balance >= :c
+RETURNING balance`) and the `SELECT ... FOR UPDATE`-anchored equivalent for the ledger
+backend -- both already verified atomic in the Phase 1 audit. No event is queued for this
+path: B0's cost is fully known at authorization time (unlike M1), so coupling authorization
+to commitment means the debit is final the instant the request is authorized; there is
+nothing left for an async worker to settle.
+
+**Validated immediately, locally, before building anything on top of it:**
+- Three sequential calls against a 0.2-credit budget (unit cost 0.0605): all three served,
+  balance decremented exactly each time (0.2 -> 0.1395 -> 0.079 -> 0.0185). OBSERVED.
+- **The real correctness test**: 20 genuinely concurrent requests (`asyncio.gather`, not
+  sequential) against a budget sized for exactly 2 (0.121 credits / 0.0605 unit cost).
+  Result: exactly 2/20 served, final balance exactly `0.000000`. OBSERVED. This is direct
+  evidence the new primitive actually closes the race under concurrency, not just under
+  the sequential protocol the rest of this experiment uses -- the atomic UPDATE genuinely
+  serializes concurrent callers rather than merely looking safe.
+
+Still blocked on `az login` before Host B can actually be created. Everything above is
+built and locally validated so that the moment authentication is available, provisioning
+can proceed with a single command and nothing above needs to be redesigned.
+
+### Harness validation (local, before trusting it for real runs)
+
+Built `experiments/two_machine/run_distributed_experiment.py` -- the unified harness
+Phase 7 requires (per-request JSONL, run manifest with git commit/host/config hash,
+explicit condition + arrival-pattern labeling, repetitions never silently retried).
+Found and fixed one bug in the harness itself before trusting any output from it: the
+unit-cost probe used a zero-balance account, which can never be served, so `cost` was
+never returned (`/async/b0/complete`'s insufficient-balance response carries no `cost`
+field at all) -- every cell came back `[INVALID]`. Fixed by funding the probe account
+generously (1000 credits, matching `experiments/run_async_accounting.py`'s own pattern)
+before reading back the unit cost, then opening a separate, exactly-budgeted account for
+the timed sequence. Documented in the code so a future reader does not reintroduce it.
+
+Three conditions validated through the corrected harness, end-to-end, including the new
+`analyze_results.py` aggregation step:
+
+- **C0** (in-process worker, sequential, 3 reps, D=0/10/50/100/500): over-served
+  0,0,0,1,4 at every rep, stdev=0 across reps -- exact match to the historical row, now
+  flowing through the NEW harness rather than the original one-off script. 90 per-request
+  JSONL lines (15 cells x 6 requests) confirmed present.
+- **C1** (sibling-container worker, sequential, 2 reps, D=0/100/500): same exact pattern.
+- **C3** (atomic endpoint, CONCURRENT arrival -- the harder case -- 3 reps, D=0/500):
+  over_served=0 at every rep, both delays. Confirms the atomic primitive's correctness
+  generalizes from the harness's own earlier direct test (20 truly concurrent requests,
+  2/20 served) to the full harness pipeline, and confirms the harness correctly reports
+  that the delay parameter is a no-op for this endpoint (there is no queued event for an
+  atomic commit to delay).
+
+`analyze_results.py` validated against these three runs' summary files: correct n/valid
+counts, correct means/medians/stdevs, zero variance exactly where determinism is
+expected, output traceable line-by-line to the raw per-cell JSON.
+
+### Failure injection
+
+Built and validated `experiments/two_machine/failure_injection.py` against the LOCAL
+sibling-container topology (the real Azure-network partition variant is documented as
+`partition_remote_NOTE()` -- explicitly `NOT MEASURED`, not estimated or assumed, pending
+Host B):
+
+- **worker_kill**: 4 requests issued (budget sized for exactly 4, D=2000ms so events are
+  still pending when killed), worker killed mid-flight, queue_depth=3 confirmed
+  non-zero during the outage, worker restarted, queue drained to 0, final balance
+  reconciled to exactly 0 (4 served x unit cost, no loss, no double-charge). OBSERVED,
+  not assumed.
+- **network_partition** (Docker-network disconnect/reconnect on the worker container,
+  standing in for the real Azure partition until Host B exists): same checks, same
+  clean result -- queue held the in-flight events during the outage, drained to 0 after
+  reconnect, balance reconciled exactly.
+- **extreme_delay** (D=10s): confirms the exposure window directly and explicitly --
+  immediately after a "served: true" response, the balance still shows the full
+  pre-debit amount and the queue still holds the event, for up to 10 seconds. This is
+  the mechanism under study made deliberately visible, not inferred from the regular
+  delay sweep's largest value.
+
+No invariant violation was found or needed to be invented in any of these three local
+scenarios -- all three show correct eventual-consistency recovery.
+
+### New files this phase (all additive except the two already-noted modifications)
+
+- `scripts/azure/provision-two-machine.ps1` + `.sh`
+- `scripts/azure/bootstrap-machine-b.sh`
+- `scripts/azure/deploy-machine-b.sh`
+- `scripts/azure/cleanup-two-machine.ps1`
+- `docker-compose.machineA.yml`, `docker-compose.machineB.yml`
+- `experiments/two_machine/network_baseline.py`
+- `experiments/two_machine/clock_sync_check.py`
+- `experiments/two_machine/run_distributed_experiment.py`
+- `experiments/two_machine/failure_injection.py`
+- `experiments/two_machine/analyze_results.py`
+- `.gitignore`: added `experiments/two_machine/azure_vm_info.json`
+
+Modified (one file, one new endpoint, both documented above): `app/async_routes.py` --
+added `/async/b0/complete-atomic`, the C3 primitive that did not previously exist.
+
+## Phase 5 — Azure VM: BLOCKED on `az login` (user action required)
 
 Phases 1-4 are complete, gated, and logged above. Phase 5 (provisioning a real cloud VM in
 Mumbai/Hyderabad for Host B) requires an actual cloud account, a payment method, and a
