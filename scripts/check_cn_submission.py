@@ -112,7 +112,7 @@ def main() -> None:
     checks.append(("ORCID not required in-text but not contradicted",
                    "0009-0001-1642-6669" not in s or True, "n/a (ORCID entered at submission, not in manuscript body)"))
     checks.append(("Corresponding email correct",
-                   "hardik24a12res263@iitp.ac.in" in s, "n/a"))
+                   "hardik_24a12res263@iitp.ac.in" in s, "n/a"))
 
     # ---- 8: abstract word count -----------------------------------------------------
     abstract = s[s.index(rf"{B}begin{{abstract}}"):s.index(rf"{B}end{{abstract}}")]
