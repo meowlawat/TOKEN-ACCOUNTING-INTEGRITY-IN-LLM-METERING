@@ -4,6 +4,17 @@ A fresh researcher, starting from a clean checkout of this repository, does the
 following in order. Steps 1-4 require your own Azure for Students account and are not
 performed by any script on your behalf.
 
+> **Post-hoc note.** Steps 8-9 below reproduce the *original* sequential/concurrent
+> sweep (delays `0,10,50,100,500`), which a later pass found was run under a pacing
+> confound: over the real Azure network, the achieved inter-arrival gap (513-857 ms) was
+> far larger than the nominal 20 ms this sweep assumes, which the manuscript now reports
+> explicitly. A corrected sweep (delays `0,200,500,1000,2000,5000,10000`) and a genuine
+> settlement-confirmed `strict-serial` negative control (not available when this sequence
+> was first written) were added afterward. Follow steps 1-7 below unchanged to stand up
+> the topology, then see `ARTIFACT_README.md` §14 for the corrected commands and the
+> current `--arrival` choices before running any sweep for a new result. Steps 8-9's own
+> commands and recorded files are left as-is below for historical accuracy.
+
 **This sequence has been run end-to-end against real Azure infrastructure** (resource
 group `rg-llm-metering-two-machine`, VM `vm-llm-metering-hostb`, Central India,
 `Standard_B2ls_v2`, public IP `20.198.74.220`). Results: `FINAL_EXPERIMENT_AUDIT.md`.

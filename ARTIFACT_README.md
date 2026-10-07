@@ -242,3 +242,148 @@ makes the tokenizer benchmark timings meaningful.
 tracked artifact plus the compiled PDF, and `results/environment.json` records the
 environment the reported numbers came from. Compare against those rather than against
 wall-clock timings, which vary by host.
+
+## 14. Post-v1.0.0 reproducibility extensions
+
+**Everything in Sections 1-13 above describes the v1.0.0 frozen artifact** (release tag
+`v1.0.0`, freeze commit `8775e26`; `v1.0.1` is a documentation-only correction of v1.0.0
+for submission use, same scientific content). The manuscript this repository now builds
+is `paper/main_fgcs.tex` — a later, FGCS-targeted retitling of the same project — and it
+cites five pieces of evidence that were added **after** both tags, on top of 72
+commits of post-v1.0.1 history. This section is their index. Nothing below was part of
+the v1.0.0 or v1.0.1 release; none of the file paths, scripts, or results in this section
+existed at either tag, and `RELEASE_MANIFEST.md`'s file inventory (312 files, "formal/
+(13)") predates all of it. Every path below was checked to exist in the current working
+tree before this section was written.
+
+### 14.1 What was added, and in which commits
+
+| area | first commit | last commit (so far) |
+|---|---|---|
+| Two-machine harness and Azure infrastructure | `6fbca90` | `785bf80` (pre-dates the result commits below; infrastructure only) |
+| Real two-machine B0/C3 reproduction, Tier 1-3 instrumentation | `8545e59` … `31bdaf2` | `1aeb97e` |
+| Second TLA+ model (`AsyncSettlementTOCTOU.tla`) | `0a0753d` | `0a0753d` |
+| Sequential-arrival pacing-confound fix + strict-serial control | `f0a41ba` | `f0a41ba` |
+| Corrected two-machine sweep + strict-serial data, baseline audit | `0e9d384` | `5deca0b` |
+| Final hardening audit (durability gap identified, not yet fixed) | `a6039c2` | `a6039c2` |
+| Transactional-outbox durability fix | `15def0a` | `15def0a` |
+| Manuscript integration (`main_fgcs.tex`) | `098e09b` | `098e09b` |
+
+`git log --oneline v1.0.1..HEAD` lists all 72 commits since the last tag; most of the
+others are submission-packaging and venue-retargeting history (C&S, JISA, Computer
+Networks, JSS, FGCS reformatting, Zenodo archive builds) unrelated to the experiments
+indexed here.
+
+### 14.2 Reproducibility map
+
+| claim/result | script | raw data | commit |
+|---|---|---|---|
+| 1. Existing single-host B0 baseline (unchanged; `tab:asyncb0`) | `experiments/run_async_accounting.py` (v1.0.0-era, untouched) | `results/raw/async_accounting_*.json` | pre-dates `v1.0.0` |
+| 2. Corrected two-machine sequential sweep (deferred settlement, real Azure network) | `experiments/two_machine/run_distributed_experiment.py` | `results/two_machine/C2_sequential_20261007T123546Z.summary.json` (derived); `experiments/two_machine/raw/C2_sequential_20261007T123546Z.{jsonl,manifest.json}` (raw, per-request) | `f0a41ba` (fix), `0e9d384` (this run) |
+| 3. Strict-serial negative control (same topology) | `experiments/two_machine/run_distributed_experiment.py` | `results/two_machine/C2_strict-serial_20261007T125009Z.summary.json` (derived); `experiments/two_machine/raw/C2_strict-serial_20261007T125009Z.{jsonl,manifest.json}` (raw); 1-rep pilot: `..._C1_strict-serial_20261007T123415Z.*` in both locations | `f0a41ba` |
+| 4. Redis SIGKILL durability failure (pre-fix) | `experiments/two_machine/redis_crash_durability_check.py` | recorded inline in `FINAL_HARDENING_AUDIT.md` §"Completed experiments" (direct queue/balance observation, not a JSON artifact — see §14.4) | `a6039c2` (documented), fixed in `15def0a` |
+| 5. Hardened recovery (outbox) — tests A and the atomic-defense cross-check | `experiments/two_machine/run_distributed_experiment.py`, `experiments/two_machine/failure_injection*.py` | `results/two_machine/C1_concurrent_20261007T211320Z.summary.json` (test A), `results/two_machine/C3_concurrent_20261007T211848Z.summary.json` (atomic defense, unaffected) | `15def0a` |
+| 5b. Hardened recovery — worker-kill/Redis-SIGKILL/duplicate-delivery tests B,D,E,G,H,I,J | manual procedure in `DURABILITY_HARDENING_AUDIT.md` §"Tests performed" | recorded inline there (worker log lines, balance checks — see §14.4) | `15def0a` |
+| 6. Async TLA+ model, both `(N,k)` points, vulnerable and atomic | `java -cp formal/tools/tla2tools.jar tlc2.TLC -config formal/cfg_async/<name>.cfg -workers 1 -cleanup -deadlock formal/AsyncSettlementTOCTOU.tla` (four configs: `vulnerable_n6_k2`, `atomic_n6_k2`, `vulnerable_n4_k2`, `atomic_n4_k2`) | `formal/async_settlement_vulnerable_n6_k2_counterexample.txt` (counterexample trace); TLC's own console output for the rest, transcribed in `FORMALIZATION_AUDIT.md` §"Step 6" | `0a0753d` |
+
+Full narrative and the complete audit trail for each row: `FINAL_HARDENING_BASELINE.md`,
+`FINAL_HARDENING_AUDIT.md`, `DURABILITY_HARDENING_AUDIT.md`, `FORMALIZATION_AUDIT.md`,
+`FINAL_EXPERIMENT_AUDIT.md` (contains two inline retractions of an earlier
+mischaracterization — not deleted, corrected in place), `experiments/two_machine/
+RESEARCH_LOG.md`, and the manuscript-side `MANUSCRIPT_INTEGRATION_PLAN.md` /
+`POST_INTEGRATION_AUDIT.md`. All are in the repository root except the last two, which
+sit alongside `MANUSCRIPT_INTEGRATION_PLAN.md`.
+
+### 14.3 Which experiments need two machines/Azure, which run locally
+
+- **Need a real second host (Azure or equivalent):** row 2 and row 3 above — the
+  network-separated topology is the entire point of those two results. Reproducing the
+  *exact* numbers requires `experiments/two_machine/REPRODUCIBILITY.md`'s full sequence
+  (your own Azure for Students account or equivalent cloud VM; the original VM used to
+  produce the shipped numbers is not shipped with this repository and
+  `experiments/two_machine/azure_vm_info.json` is git-ignored local state, not a
+  reusable credential or endpoint). A qualitatively similar result — the mechanism is a
+  property of settlement being separated from authorization, not of Azure specifically
+  — should reproduce on any two independently-clocked hosts reachable over a real
+  network; the specific achieved-gap numbers (513-857 ms) and the specific per-delay
+  over-served counts are tied to that one cloud-region pair and will differ on different
+  infrastructure.
+- **Local only, no cloud account needed:** row 1 (pre-existing), row 4 (Redis SIGKILL —
+  `redis_crash_durability_check.py`'s own docstring confirms it targets
+  `docker compose up -d app worker`, i.e. the local dev stack), row 5/5b's test A and the
+  worker-kill/duplicate-delivery tests (condition `C1` = "separate worker process, same
+  host, same clock domain," per `run_distributed_experiment.py`'s own docstring — not
+  Azure), and row 6 (TLC runs against a local `.tla` file, no network of any kind). Row
+  5's atomic-defense cross-check specifically (`C3_concurrent_20261007T211848Z`) *was*
+  run against Azure in this case, since it was convenient to re-check while that VM was
+  still provisioned; it is not Azure-dependent in principle — `C1`/`C0` conditions
+  exercise the same atomic-defense code path locally elsewhere in the existing results.
+- **Authentication/environment requirements beyond §3 of this document:** the two-machine
+  rows need `az` CLI login (`az login`, interactive, yours to run — see
+  `experiments/two_machine/REPRODUCIBILITY.md` §1) and your own Azure subscription; the
+  formal-model row needs only `jdk4py` and `tla2tools.jar`, both already documented in
+  §13 above and in `formal/README.md`. Nothing in this section requires any credential,
+  API key, or account beyond what §3 and §13 already list.
+
+### 14.4 Evidence that is prose/log-transcript, not a JSON artifact
+
+Rows 4 and 5b above are recorded as direct terminal output quoted inline in
+`FINAL_HARDENING_AUDIT.md` and `DURABILITY_HARDENING_AUDIT.md` respectively (queue-depth
+and balance checks via `curl`, and worker log lines), not as `results/` JSON files. This
+is not an omission: these are one-shot fault-injection observations (kill a process, read
+a balance, restart it), not swept experiments with per-cell JSON the way rows 1-3 and 6
+are. A reader who wants to regenerate this evidence rather than read the transcript can
+follow the exact manual steps in each script's own docstring
+(`redis_crash_durability_check.py`) or in the audit document's "Tests performed" section
+(`DURABILITY_HARDENING_AUDIT.md`).
+
+### 14.5 Superseded artifact: do not reproduce the queue-depth-based strict-serial harness
+
+An early implementation of the strict-serial control polled the settlement queue's
+reported depth (`queue_depth == 0`) as a proxy for "settlement confirmed," rather than
+polling the account's authoritative balance. This was found to have a real, confirmed
+race — `async_worker.py`'s drain loop pops a not-yet-due event into a local list and only
+re-queues it after the full scan completes, so `queue_depth` can read 0 while an event is
+still in flight — and the buggy run measured over-serving at a control that should show
+none. **This version is retained for auditability, not as a result to reproduce:**
+
+```
+experiments/two_machine/raw/C1_strict-serial_20261007T123240Z.SUPERSEDED_QUEUEDEPTH_BUG.jsonl
+experiments/two_machine/raw/C1_strict-serial_20261007T123240Z.SUPERSEDED_QUEUEDEPTH_BUG.manifest.json
+results/two_machine/C1_strict-serial_20261007T123240Z.SUPERSEDED_QUEUEDEPTH_BUG.summary.json
+```
+
+The filename tag `SUPERSEDED_QUEUEDEPTH_BUG` is deliberate and should not be stripped or
+renamed. The current `run_distributed_experiment.py`'s `--arrival strict-serial` mode
+(see its own `--help` text, quoted in §14.3) implements the corrected, balance-based
+mechanism; the queue-depth approach was never a separate script, so there is nothing to
+delete or disable — running `--arrival strict-serial` today always gets the corrected
+behavior. Do not use the three files above as a reference implementation.
+
+### 14.6 Exact reproduction commands (real commands, reconstructed from each run's own manifest — none invented)
+
+```bash
+# Row 2 (corrected two-machine sequential sweep): matches C2_sequential_20261007T123546Z's
+# own manifest exactly (delays_ms, repetitions_requested). Requires a provisioned Host B
+# per experiments/two_machine/REPRODUCIBILITY.md steps 1-7 first.
+MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL="*" python -m experiments.two_machine.run_distributed_experiment \
+    --condition C2 --arrival sequential --delays 0,200,500,1000,2000,5000,10000 --reps 5 \
+    --endpoint /async/b0/complete
+
+# Row 3 (strict-serial control, same topology): matches C2_strict-serial_20261007T125009Z.
+MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL="*" python -m experiments.two_machine.run_distributed_experiment \
+    --condition C2 --arrival strict-serial --delays 0,500,2000,10000 --reps 3 \
+    --endpoint /async/b0/complete
+
+# Row 4 (Redis SIGKILL): local, no Host B needed. Run against the local dev stack
+# (docker compose up -d app worker), then follow the printed instructions.
+python -m experiments.two_machine.redis_crash_durability_check
+
+# Row 6 (async TLA+ model): local, no network. Run once per config.
+java -XX:+UseParallelGC -cp formal/tools/tla2tools.jar tlc2.TLC \
+     -config formal/cfg_async/vulnerable_n6_k2.cfg -workers 1 -cleanup -deadlock \
+     formal/AsyncSettlementTOCTOU.tla
+```
+
+These are the literal commands recorded in each run's own manifest/audit file (cited in
+§14.2), copied here rather than paraphrased so a reader can run them verbatim.

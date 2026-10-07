@@ -2,6 +2,13 @@
 
 What is in the release, and why each part is there. 312 tracked files.
 
+> **This document describes the v1.0.0 (and documentation-only v1.0.1) tracked-file
+> inventory only.** Two-machine/network-separated validation, the transactional-outbox
+> durability fix, the second (asynchronous-settlement) TLA+ model, and the FGCS
+> manuscript they were integrated into were all added after both tags and are not part
+> of this count. See `ARTIFACT_README.md` §14, "Post-v1.0.0 reproducibility extensions,"
+> for their file paths, commits, and reproduction commands.
+
 ---
 
 ## Root (13 files)
