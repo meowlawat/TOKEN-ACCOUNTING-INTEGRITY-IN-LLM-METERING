@@ -1,0 +1,27 @@
+{
+  "run_batch_id": "C1_concurrent_20261007T002803Z",
+  "git_commit": "8545e595ea5f737b615100db03f8c651beeb33c0",
+  "git_dirty": true,
+  "started_at_utc": "2026-10-07T00:28:03.955499+00:00",
+  "host_a_identifier": "DESKTOP-8B2NBHS",
+  "host_a_platform": "Windows-11-10.0.26300-SP0",
+  "python_version": "3.13.5",
+  "condition": "C1",
+  "arrival": "concurrent",
+  "endpoint": "/async/b0/complete",
+  "base_url": "http://localhost:8000",
+  "delays_ms": [
+    50.0
+  ],
+  "repetitions_requested": 1,
+  "b0_interarrival_ms": 20.0,
+  "b0_requests": 6,
+  "b0_budget_units": 2,
+  "fault": "none",
+  "config_hash": "d6bdcfa3924f8d92",
+  "notes": "instrumentation validation, local C1",
+  "finished_at_utc": "2026-10-07T00:28:05.145499+00:00",
+  "cells_total": 1,
+  "cells_valid": 1,
+  "cells_invalid": 0
+}

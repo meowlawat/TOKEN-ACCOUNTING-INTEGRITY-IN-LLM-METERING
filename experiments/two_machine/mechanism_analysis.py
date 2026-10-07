@@ -56,31 +56,36 @@ def load_request_ids(jsonl_path: Path) -> list[dict]:
 
 
 def fetch_extra_via_ssh(request_ids: list[str], host: str, user: str, key: str,
-                        db_container: str = "llm-metering-db-1") -> dict[str, dict]:
+                        db_container: str = "llm-metering-db-1", batch_size: int = 40) -> dict[str, dict]:
     """Batch-fetch MRecord.request_id -> extra for the given ids, over SSH, from the
-    real Host B's own Postgres container. One round trip, not one per id."""
-    ids_sql = ",".join(f"'{rid}'" for rid in request_ids)
-    sql = (f"SELECT request_id, extra::text FROM m_records "
-           f"WHERE request_id IN ({ids_sql});")
-    remote_cmd = (f"sudo docker exec {db_container} psql -U postgres -d metering "
-                 f"-t -A -F'|' -c \"{sql}\"")
-    proc = subprocess.run(
-        ["ssh", "-i", key, "-o", "StrictHostKeyChecking=accept-new",
-         "-o", "ConnectTimeout=20", f"{user}@{host}", remote_cmd],
-        capture_output=True, text=True, timeout=60,
-    )
-    if proc.returncode != 0:
-        raise RuntimeError(f"ssh/psql failed: {proc.stderr}")
+    real Host B's own Postgres container. Chunked (not one single IN-clause) because a
+    long SQL string embedded in an SSH remote command can exceed what the remote shell's
+    command-line parsing handles cleanly -- confirmed directly: a 330-id single query
+    failed with a shell quoting error, a 40-id chunk did not."""
     out: dict[str, dict] = {}
-    for line in proc.stdout.splitlines():
-        line = line.strip()
-        if not line or "|" not in line:
-            continue
-        rid, extra_json = line.split("|", 1)
-        try:
-            out[rid.strip()] = json.loads(extra_json)
-        except json.JSONDecodeError:
-            continue
+    for i in range(0, len(request_ids), batch_size):
+        chunk = request_ids[i:i + batch_size]
+        ids_sql = ",".join(f"'{rid}'" for rid in chunk)
+        sql = (f"SELECT request_id, extra::text FROM m_records "
+               f"WHERE request_id IN ({ids_sql});")
+        remote_cmd = (f"sudo docker exec {db_container} psql -U postgres -d metering "
+                     f"-t -A -F'|' -c \"{sql}\"")
+        proc = subprocess.run(
+            ["ssh", "-i", key, "-o", "StrictHostKeyChecking=accept-new",
+             "-o", "ConnectTimeout=20", f"{user}@{host}", remote_cmd],
+            capture_output=True, text=True, timeout=60,
+        )
+        if proc.returncode != 0:
+            raise RuntimeError(f"ssh/psql failed: {proc.stderr}")
+        for line in proc.stdout.splitlines():
+            line = line.strip()
+            if not line or "|" not in line:
+                continue
+            rid, extra_json = line.split("|", 1)
+            try:
+                out[rid.strip()] = json.loads(extra_json)
+            except json.JSONDecodeError:
+                continue
     return out
 
 

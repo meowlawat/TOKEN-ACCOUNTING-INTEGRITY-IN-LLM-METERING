@@ -1,40 +1,343 @@
 [
   {
-    "condition": "C2",
+    "condition": "C1",
     "arrival": "concurrent",
     "delay_ms": 0.0,
-    "n_total": 10,
-    "n_valid": 10,
+    "n_total": 5,
+    "n_valid": 5,
     "n_invalid": 0,
-    "over_served_mean": 2.7,
-    "over_served_median": 3.0,
-    "over_served_stdev": 1.4944341180973262,
+    "over_served_mean": 3,
+    "over_served_median": 4,
+    "over_served_stdev": 1.7320508075688772,
     "over_served_p95": 4.0,
     "over_served_raw": [
+      3,
+      4,
       0,
-      1,
-      3,
       4,
-      1,
-      3,
-      4,
-      4,
-      3,
       4
     ],
     "source_files": [
-      "results/two_machine/C2_concurrent_20261006T234156Z.summary.json"
+      "results/two_machine/C1_concurrent_20261007T004629Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C1",
+    "arrival": "concurrent",
+    "delay_ms": 1.0,
+    "n_total": 5,
+    "n_valid": 5,
+    "n_invalid": 0,
+    "over_served_mean": 3.8,
+    "over_served_median": 4,
+    "over_served_stdev": 0.4472135954999579,
+    "over_served_p95": 4.0,
+    "over_served_raw": [
+      4,
+      3,
+      4,
+      4,
+      4
+    ],
+    "source_files": [
+      "results/two_machine/C1_concurrent_20261007T004629Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C1",
+    "arrival": "concurrent",
+    "delay_ms": 2.0,
+    "n_total": 5,
+    "n_valid": 5,
+    "n_invalid": 0,
+    "over_served_mean": 4,
+    "over_served_median": 4,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 4.0,
+    "over_served_raw": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "source_files": [
+      "results/two_machine/C1_concurrent_20261007T004629Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C1",
+    "arrival": "concurrent",
+    "delay_ms": 5.0,
+    "n_total": 5,
+    "n_valid": 5,
+    "n_invalid": 0,
+    "over_served_mean": 4,
+    "over_served_median": 4,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 4.0,
+    "over_served_raw": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "source_files": [
+      "results/two_machine/C1_concurrent_20261007T004629Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C1",
+    "arrival": "concurrent",
+    "delay_ms": 10.0,
+    "n_total": 5,
+    "n_valid": 5,
+    "n_invalid": 0,
+    "over_served_mean": 4,
+    "over_served_median": 4,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 4.0,
+    "over_served_raw": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "source_files": [
+      "results/two_machine/C1_concurrent_20261007T004629Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C1",
+    "arrival": "concurrent",
+    "delay_ms": 20.0,
+    "n_total": 5,
+    "n_valid": 5,
+    "n_invalid": 0,
+    "over_served_mean": 4,
+    "over_served_median": 4,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 4.0,
+    "over_served_raw": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "source_files": [
+      "results/two_machine/C1_concurrent_20261007T004629Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C1",
+    "arrival": "concurrent",
+    "delay_ms": 50.0,
+    "n_total": 5,
+    "n_valid": 5,
+    "n_invalid": 0,
+    "over_served_mean": 4,
+    "over_served_median": 4,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 4.0,
+    "over_served_raw": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "source_files": [
+      "results/two_machine/C1_concurrent_20261007T004629Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C1",
+    "arrival": "concurrent",
+    "delay_ms": 100.0,
+    "n_total": 5,
+    "n_valid": 5,
+    "n_invalid": 0,
+    "over_served_mean": 4,
+    "over_served_median": 4,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 4.0,
+    "over_served_raw": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "source_files": [
+      "results/two_machine/C1_concurrent_20261007T004629Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C1",
+    "arrival": "concurrent",
+    "delay_ms": 250.0,
+    "n_total": 5,
+    "n_valid": 5,
+    "n_invalid": 0,
+    "over_served_mean": 4,
+    "over_served_median": 4,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 4.0,
+    "over_served_raw": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "source_files": [
+      "results/two_machine/C1_concurrent_20261007T004629Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C1",
+    "arrival": "concurrent",
+    "delay_ms": 500.0,
+    "n_total": 5,
+    "n_valid": 5,
+    "n_invalid": 0,
+    "over_served_mean": 4,
+    "over_served_median": 4,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 4.0,
+    "over_served_raw": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "source_files": [
+      "results/two_machine/C1_concurrent_20261007T004629Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C1",
+    "arrival": "concurrent",
+    "delay_ms": 1000.0,
+    "n_total": 5,
+    "n_valid": 5,
+    "n_invalid": 0,
+    "over_served_mean": 4,
+    "over_served_median": 4,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 4.0,
+    "over_served_raw": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "source_files": [
+      "results/two_machine/C1_concurrent_20261007T004629Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C2",
+    "arrival": "concurrent",
+    "delay_ms": 0.0,
+    "n_total": 5,
+    "n_valid": 5,
+    "n_invalid": 0,
+    "over_served_mean": 4,
+    "over_served_median": 4,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 4.0,
+    "over_served_raw": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "source_files": [
+      "results/two_machine/C2_concurrent_20261007T005925Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C2",
+    "arrival": "concurrent",
+    "delay_ms": 1.0,
+    "n_total": 5,
+    "n_valid": 5,
+    "n_invalid": 0,
+    "over_served_mean": 4,
+    "over_served_median": 4,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 4.0,
+    "over_served_raw": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "source_files": [
+      "results/two_machine/C2_concurrent_20261007T005925Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C2",
+    "arrival": "concurrent",
+    "delay_ms": 2.0,
+    "n_total": 5,
+    "n_valid": 5,
+    "n_invalid": 0,
+    "over_served_mean": 4,
+    "over_served_median": 4,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 4.0,
+    "over_served_raw": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "source_files": [
+      "results/two_machine/C2_concurrent_20261007T005925Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C2",
+    "arrival": "concurrent",
+    "delay_ms": 5.0,
+    "n_total": 5,
+    "n_valid": 5,
+    "n_invalid": 0,
+    "over_served_mean": 4,
+    "over_served_median": 4,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 4.0,
+    "over_served_raw": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "source_files": [
+      "results/two_machine/C2_concurrent_20261007T005925Z.summary.json"
     ]
   },
   {
     "condition": "C2",
     "arrival": "concurrent",
     "delay_ms": 10.0,
-    "n_total": 10,
-    "n_valid": 10,
+    "n_total": 5,
+    "n_valid": 5,
     "n_invalid": 0,
     "over_served_mean": 4,
-    "over_served_median": 4.0,
+    "over_served_median": 4,
     "over_served_stdev": 0.0,
     "over_served_p95": 4.0,
     "over_served_raw": [
@@ -42,7 +345,24 @@
       4,
       4,
       4,
-      4,
+      4
+    ],
+    "source_files": [
+      "results/two_machine/C2_concurrent_20261007T005925Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C2",
+    "arrival": "concurrent",
+    "delay_ms": 20.0,
+    "n_total": 5,
+    "n_valid": 5,
+    "n_invalid": 0,
+    "over_served_mean": 4,
+    "over_served_median": 4,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 4.0,
+    "over_served_raw": [
       4,
       4,
       4,
@@ -50,18 +370,18 @@
       4
     ],
     "source_files": [
-      "results/two_machine/C2_concurrent_20261006T234156Z.summary.json"
+      "results/two_machine/C2_concurrent_20261007T005925Z.summary.json"
     ]
   },
   {
     "condition": "C2",
     "arrival": "concurrent",
     "delay_ms": 50.0,
-    "n_total": 10,
-    "n_valid": 10,
+    "n_total": 5,
+    "n_valid": 5,
     "n_invalid": 0,
     "over_served_mean": 4,
-    "over_served_median": 4.0,
+    "over_served_median": 4,
     "over_served_stdev": 0.0,
     "over_served_p95": 4.0,
     "over_served_raw": [
@@ -69,26 +389,21 @@
       4,
       4,
       4,
-      4,
-      4,
-      4,
-      4,
-      4,
       4
     ],
     "source_files": [
-      "results/two_machine/C2_concurrent_20261006T234156Z.summary.json"
+      "results/two_machine/C2_concurrent_20261007T005925Z.summary.json"
     ]
   },
   {
     "condition": "C2",
     "arrival": "concurrent",
     "delay_ms": 100.0,
-    "n_total": 10,
-    "n_valid": 10,
+    "n_total": 5,
+    "n_valid": 5,
     "n_invalid": 0,
     "over_served_mean": 4,
-    "over_served_median": 4.0,
+    "over_served_median": 4,
     "over_served_stdev": 0.0,
     "over_served_p95": 4.0,
     "over_served_raw": [
@@ -96,26 +411,21 @@
       4,
       4,
       4,
-      4,
-      4,
-      4,
-      4,
-      4,
       4
     ],
     "source_files": [
-      "results/two_machine/C2_concurrent_20261006T234156Z.summary.json"
+      "results/two_machine/C2_concurrent_20261007T005925Z.summary.json"
     ]
   },
   {
     "condition": "C2",
     "arrival": "concurrent",
-    "delay_ms": 500.0,
-    "n_total": 10,
-    "n_valid": 10,
+    "delay_ms": 250.0,
+    "n_total": 5,
+    "n_valid": 5,
     "n_invalid": 0,
     "over_served_mean": 4,
-    "over_served_median": 4.0,
+    "over_served_median": 4,
     "over_served_stdev": 0.0,
     "over_served_p95": 4.0,
     "over_served_raw": [
@@ -123,7 +433,24 @@
       4,
       4,
       4,
-      4,
+      4
+    ],
+    "source_files": [
+      "results/two_machine/C2_concurrent_20261007T005925Z.summary.json"
+    ]
+  },
+  {
+    "condition": "C2",
+    "arrival": "concurrent",
+    "delay_ms": 500.0,
+    "n_total": 5,
+    "n_valid": 5,
+    "n_invalid": 0,
+    "over_served_mean": 4,
+    "over_served_median": 4,
+    "over_served_stdev": 0.0,
+    "over_served_p95": 4.0,
+    "over_served_raw": [
       4,
       4,
       4,
@@ -131,277 +458,29 @@
       4
     ],
     "source_files": [
-      "results/two_machine/C2_concurrent_20261006T234156Z.summary.json"
+      "results/two_machine/C2_concurrent_20261007T005925Z.summary.json"
     ]
   },
   {
     "condition": "C2",
-    "arrival": "sequential",
-    "delay_ms": 0.0,
-    "n_total": 10,
-    "n_valid": 10,
-    "n_invalid": 0,
-    "over_served_mean": 0,
-    "over_served_median": 0.0,
-    "over_served_stdev": 0.0,
-    "over_served_p95": 0.0,
-    "over_served_raw": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "source_files": [
-      "results/two_machine/C2_sequential_20261006T233416Z.summary.json"
-    ]
-  },
-  {
-    "condition": "C2",
-    "arrival": "sequential",
-    "delay_ms": 10.0,
-    "n_total": 10,
-    "n_valid": 10,
-    "n_invalid": 0,
-    "over_served_mean": 0,
-    "over_served_median": 0.0,
-    "over_served_stdev": 0.0,
-    "over_served_p95": 0.0,
-    "over_served_raw": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "source_files": [
-      "results/two_machine/C2_sequential_20261006T233416Z.summary.json"
-    ]
-  },
-  {
-    "condition": "C2",
-    "arrival": "sequential",
-    "delay_ms": 50.0,
-    "n_total": 10,
-    "n_valid": 10,
-    "n_invalid": 0,
-    "over_served_mean": 0,
-    "over_served_median": 0.0,
-    "over_served_stdev": 0.0,
-    "over_served_p95": 0.0,
-    "over_served_raw": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "source_files": [
-      "results/two_machine/C2_sequential_20261006T233416Z.summary.json"
-    ]
-  },
-  {
-    "condition": "C2",
-    "arrival": "sequential",
-    "delay_ms": 100.0,
-    "n_total": 10,
-    "n_valid": 10,
-    "n_invalid": 0,
-    "over_served_mean": 0,
-    "over_served_median": 0.0,
-    "over_served_stdev": 0.0,
-    "over_served_p95": 0.0,
-    "over_served_raw": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "source_files": [
-      "results/two_machine/C2_sequential_20261006T233416Z.summary.json"
-    ]
-  },
-  {
-    "condition": "C2",
-    "arrival": "sequential",
-    "delay_ms": 500.0,
-    "n_total": 10,
-    "n_valid": 10,
-    "n_invalid": 0,
-    "over_served_mean": 0,
-    "over_served_median": 0.0,
-    "over_served_stdev": 0.0,
-    "over_served_p95": 0.0,
-    "over_served_raw": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "source_files": [
-      "results/two_machine/C2_sequential_20261006T233416Z.summary.json"
-    ]
-  },
-  {
-    "condition": "C3",
     "arrival": "concurrent",
-    "delay_ms": 0.0,
-    "n_total": 10,
-    "n_valid": 10,
+    "delay_ms": 1000.0,
+    "n_total": 5,
+    "n_valid": 5,
     "n_invalid": 0,
-    "over_served_mean": 0,
-    "over_served_median": 0.0,
+    "over_served_mean": 4,
+    "over_served_median": 4,
     "over_served_stdev": 0.0,
-    "over_served_p95": 0.0,
+    "over_served_p95": 4.0,
     "over_served_raw": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
+      4,
+      4,
+      4,
+      4,
+      4
     ],
     "source_files": [
-      "results/two_machine/C3_concurrent_20261006T234655Z.summary.json"
-    ]
-  },
-  {
-    "condition": "C3",
-    "arrival": "concurrent",
-    "delay_ms": 10.0,
-    "n_total": 10,
-    "n_valid": 10,
-    "n_invalid": 0,
-    "over_served_mean": 0,
-    "over_served_median": 0.0,
-    "over_served_stdev": 0.0,
-    "over_served_p95": 0.0,
-    "over_served_raw": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "source_files": [
-      "results/two_machine/C3_concurrent_20261006T234655Z.summary.json"
-    ]
-  },
-  {
-    "condition": "C3",
-    "arrival": "concurrent",
-    "delay_ms": 50.0,
-    "n_total": 10,
-    "n_valid": 10,
-    "n_invalid": 0,
-    "over_served_mean": 0,
-    "over_served_median": 0.0,
-    "over_served_stdev": 0.0,
-    "over_served_p95": 0.0,
-    "over_served_raw": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "source_files": [
-      "results/two_machine/C3_concurrent_20261006T234655Z.summary.json"
-    ]
-  },
-  {
-    "condition": "C3",
-    "arrival": "concurrent",
-    "delay_ms": 100.0,
-    "n_total": 10,
-    "n_valid": 10,
-    "n_invalid": 0,
-    "over_served_mean": 0,
-    "over_served_median": 0.0,
-    "over_served_stdev": 0.0,
-    "over_served_p95": 0.0,
-    "over_served_raw": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "source_files": [
-      "results/two_machine/C3_concurrent_20261006T234655Z.summary.json"
-    ]
-  },
-  {
-    "condition": "C3",
-    "arrival": "concurrent",
-    "delay_ms": 500.0,
-    "n_total": 10,
-    "n_valid": 10,
-    "n_invalid": 0,
-    "over_served_mean": 0,
-    "over_served_median": 0.0,
-    "over_served_stdev": 0.0,
-    "over_served_p95": 0.0,
-    "over_served_raw": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "source_files": [
-      "results/two_machine/C3_concurrent_20261006T234655Z.summary.json"
+      "results/two_machine/C2_concurrent_20261007T005925Z.summary.json"
     ]
   }
 ]

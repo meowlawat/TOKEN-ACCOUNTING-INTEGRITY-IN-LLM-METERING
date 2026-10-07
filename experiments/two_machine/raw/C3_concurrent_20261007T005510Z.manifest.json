@@ -1,0 +1,30 @@
+{
+  "run_batch_id": "C3_concurrent_20261007T005510Z",
+  "git_commit": "31bdaf29cb797352a4bd0a69aedce26e22281915",
+  "git_dirty": true,
+  "started_at_utc": "2026-10-07T00:55:10.924232+00:00",
+  "host_a_identifier": "DESKTOP-8B2NBHS",
+  "host_a_platform": "Windows-11-10.0.26300-SP0",
+  "python_version": "3.13.5",
+  "condition": "C3",
+  "arrival": "concurrent",
+  "endpoint": "/async/b0/complete-atomic",
+  "base_url": "http://localhost:8000",
+  "delays_ms": [
+    500.0
+  ],
+  "repetitions_requested": 3,
+  "b0_interarrival_ms": 20.0,
+  "b0_requests": 8,
+  "b0_budget_units": 4,
+  "requests_is_default": false,
+  "budget_is_default": false,
+  "price_tier": "medium",
+  "fault": "none",
+  "config_hash": "eb47e54a5db1c2ab",
+  "notes": "Tier 3.8: C3 budget-scaling spot check",
+  "finished_at_utc": "2026-10-07T00:55:18.237828+00:00",
+  "cells_total": 3,
+  "cells_valid": 3,
+  "cells_invalid": 0
+}

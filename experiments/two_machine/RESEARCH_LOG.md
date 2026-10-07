@@ -682,3 +682,79 @@ Full numbers are in `FINAL_EXPERIMENT_AUDIT.md`, sections 3 through 8. Summary:
   counterproductive refresh-admin-ip calls; added a comment explaining why.
 - `FINAL_EXPERIMENT_AUDIT.md`, `experiments/two_machine/REPRODUCIBILITY.md`: rewritten
   with real Azure infrastructure details and real results throughout.
+
+## Phase 7 — Experimental strengthening: mechanism, robustness, defense, formal cross-check
+
+Full detail in `EXPERIMENTAL_STRENGTHENING_AUDIT.md` (new, this phase). Summary:
+
+Added per-request T1-T7 timing instrumentation (gateway-side `perf_counter_ns` deltas,
+opt-in worker-side wall-clock hook) and a mechanism-analysis tool that tests causally,
+via the server-observed `balance_seen` at authorization time, whether over-serving
+requests actually saw an undrained balance rather than assuming it. Confirmed directly:
+in every racing cell, none of the concurrent requests' authorization reads saw a
+sibling's settlement land first; in a non-racing cell, the balance visibly drains
+step-by-step between reads.
+
+Ran a refined settlement-delay threshold sweep (0 to 1000ms, 11 points) on both the local
+sibling-worker topology and the real Azure topology. Finding: the real topology's race is
+*more* consistently total at every delay including D=0, not less -- the threshold where
+the race becomes fully reliable is governed by the relative dispatch spread between
+concurrently-fired requests (tiny on both topologies, since they are fired together),
+not by absolute network RTT. A deliberate `tc netem` latency-injection experiment was
+considered and not run; the local-vs-real comparison answers the same question with real
+hardware at no added cost and no added NSG/iptables fragility.
+
+Found, via the new instrumentation, that the real topology's cross-host "exposure window"
+metric plateaus at roughly 850-1000ms regardless of configured delay for D below that
+floor -- a far more precisely measured (n=300+) confirmation of the Phase 6 SSH-based
+clock-offset estimate (~800ms +/- 430ms). Does not affect any served/over-served/balance
+result, which remain purely server-side.
+
+Generalized the headline "4 of 6 over-served" result: ran concurrency scaling (1 to 16,
+later 1 to 32 combined with budget scaling) at fixed and varying budget, on both
+topologies, confirming `over_served = concurrency - budget` as a general scaling law, not
+a workload-specific artifact. Ran price-tier (value) scaling and confirmed the admission
+mechanism is price-independent while dollar leakage scales exactly linearly with price.
+
+Reran the atomic defense (C3) under the identical expanded matrix that broke the
+vulnerable path: zero over-serving in every cell, local and real, across a 32x
+concurrency range. Added matching timing instrumentation to the atomic endpoint and
+measured its overhead directly: about +15% locally (sub-millisecond, since both paths are
+fast) versus about +71% over the real network (the atomic path needs a committed write,
+the vulnerable path only a read, and a committed write costs one more real network round
+trip than a bare read -- the same ~60-110ms every other round trip in this project costs).
+
+Ran a dedicated duplicate-settlement-event fault test (the fault pipeline already
+supported this; it had not previously been exercised as its own experiment): confirmed
+the existing idempotency mechanism suppresses duplicates exactly once per genuine
+duplicate, with zero double-charging.
+
+Cross-checked the TLA+ model against the actual implementation rather than assuming the
+correspondence, and found a genuine, reportable discrepancy: the model's unsafe B0 branch
+is a blind absolute overwrite (a lost-update race that violates ledger conservation but
+keeps the balance non-negative), while the actual async-settlement mechanism studied in
+this entire two-machine experiment uses a genuine relative decrement (nothing is ever
+lost) with a TOCTOU admission race that drives the balance negative -- a Solvency
+violation, not a ledger-conservation violation. These are different races sharing the
+same "B0" label. The model was not rewritten to match the experiment; the gap is recorded
+as a limitation and a recommendation for future formal work. The atomic defense's formal
+correspondence is unaffected and precise: the model's `AtomicReserve` branch is the exact
+abstraction of `ledger.reserve_atomic()`, and its model-checked result matches the
+empirical zero-over-serving result exactly.
+
+One real-topology run failed from a transient infrastructure fault partway through (likely
+an Azure/Docker network blip under sustained connection churn; cleared on its own,
+confirmed by immediate retest) and is preserved, tagged `INFRASTRUCTURE_FAILURE`, not
+deleted or silently overwritten -- the retry succeeded cleanly across all 55 cells.
+
+### New files this phase
+
+- `EXPERIMENTAL_STRENGTHENING_AUDIT.md`
+- `experiments/two_machine/mechanism_analysis.py`
+
+### Modified this phase
+
+- `app/accounting/async_worker.py`, `app/accounting/worker_main.py`, `app/async_routes.py`:
+  Tier 1/3 instrumentation (additive, opt-in, no default-path behavior change).
+- `experiments/two_machine/run_distributed_experiment.py`: `--concurrency`, `--budget`,
+  `--price-tier` overrides (all default to the exact historical values).

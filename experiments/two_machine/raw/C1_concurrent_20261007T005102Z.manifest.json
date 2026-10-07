@@ -1,0 +1,32 @@
+{
+  "run_batch_id": "C1_concurrent_20261007T005102Z",
+  "git_commit": "31bdaf29cb797352a4bd0a69aedce26e22281915",
+  "git_dirty": true,
+  "started_at_utc": "2026-10-07T00:51:02.913311+00:00",
+  "host_a_identifier": "DESKTOP-8B2NBHS",
+  "host_a_platform": "Windows-11-10.0.26300-SP0",
+  "python_version": "3.13.5",
+  "condition": "C1",
+  "arrival": "concurrent",
+  "endpoint": "/async/b0/complete",
+  "base_url": "http://localhost:8000",
+  "delays_ms": [
+    10.0,
+    50.0,
+    500.0
+  ],
+  "repetitions_requested": 3,
+  "b0_interarrival_ms": 20.0,
+  "b0_requests": 8,
+  "b0_budget_units": 2,
+  "requests_is_default": false,
+  "budget_is_default": true,
+  "price_tier": "medium",
+  "fault": "none",
+  "config_hash": "655f7b6ffea95283",
+  "notes": "Tier 2.5: budget scaling, local C1, budget=2 concurrency=8",
+  "finished_at_utc": "2026-10-07T00:51:14.675844+00:00",
+  "cells_total": 9,
+  "cells_valid": 9,
+  "cells_invalid": 0
+}

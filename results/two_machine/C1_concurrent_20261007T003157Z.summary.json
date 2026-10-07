@@ -1,0 +1,158 @@
+{
+  "manifest": {
+    "run_batch_id": "C1_concurrent_20261007T003157Z",
+    "git_commit": "8545e595ea5f737b615100db03f8c651beeb33c0",
+    "git_dirty": true,
+    "started_at_utc": "2026-10-07T00:31:57.869675+00:00",
+    "host_a_identifier": "DESKTOP-8B2NBHS",
+    "host_a_platform": "Windows-11-10.0.26300-SP0",
+    "python_version": "3.13.5",
+    "condition": "C1",
+    "arrival": "concurrent",
+    "endpoint": "/async/b0/complete",
+    "base_url": "http://localhost:8000",
+    "delays_ms": [
+      0.0,
+      50.0
+    ],
+    "repetitions_requested": 3,
+    "b0_interarrival_ms": 20.0,
+    "b0_requests": 6,
+    "b0_budget_units": 2,
+    "fault": "none",
+    "config_hash": "bead649c2c04b488",
+    "notes": "instrumentation retry validation",
+    "finished_at_utc": "2026-10-07T00:32:02.637820+00:00",
+    "cells_total": 6,
+    "cells_valid": 6,
+    "cells_invalid": 0
+  },
+  "cells": [
+    {
+      "run_id": "C1_concurrent_20261007T003157Z_D0_rep0",
+      "delay_ms": 0.0,
+      "arrival": "concurrent",
+      "rep": 0,
+      "seed": 1337,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.081000",
+      "issued": 6,
+      "served": 5,
+      "affordable": 2,
+      "over_served": 3,
+      "final_balance": "-0.243000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_concurrent_20261007T003157Z_D0_rep1",
+      "delay_ms": 0.0,
+      "arrival": "concurrent",
+      "rep": 1,
+      "seed": 1338,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.094500",
+      "issued": 6,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "final_balance": "-0.378000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_concurrent_20261007T003157Z_D0_rep2",
+      "delay_ms": 0.0,
+      "arrival": "concurrent",
+      "rep": 2,
+      "seed": 1339,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.102000",
+      "issued": 6,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "final_balance": "-0.408000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_concurrent_20261007T003157Z_D50_rep0",
+      "delay_ms": 50.0,
+      "arrival": "concurrent",
+      "rep": 0,
+      "seed": 1337,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.081000",
+      "issued": 6,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "final_balance": "-0.324000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_concurrent_20261007T003157Z_D50_rep1",
+      "delay_ms": 50.0,
+      "arrival": "concurrent",
+      "rep": 1,
+      "seed": 1338,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.094500",
+      "issued": 6,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "final_balance": "-0.378000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_concurrent_20261007T003157Z_D50_rep2",
+      "delay_ms": 50.0,
+      "arrival": "concurrent",
+      "rep": 2,
+      "seed": 1339,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.102000",
+      "issued": 6,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "final_balance": "-0.408000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    }
+  ]
+}
