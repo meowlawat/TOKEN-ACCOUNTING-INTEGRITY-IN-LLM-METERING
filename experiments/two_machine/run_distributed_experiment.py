@@ -89,12 +89,12 @@ def config_hash(*parts: str) -> str:
     return hashlib.sha256("|".join(parts).encode()).hexdigest()[:16]
 
 
-async def new_account(c: httpx.AsyncClient, credits: float, seed: int):
+async def new_account(c: httpx.AsyncClient, credits: float, seed: int, price_tier: str = TIER):
     acct = (await c.post("/admin/accounts",
                          json={"name": f"dist-{uuid.uuid4().hex[:8]}", "balance": 0.0})).json()
     t = (await c.post("/admin/m-trials", json={
         "account_id": acct["id"], "mechanism": "m1", "architecture": "post_completion",
-        "price_tier": TIER, "seed": seed, "prompt": PROMPT,
+        "price_tier": price_tier, "seed": seed, "prompt": PROMPT,
         "initial_credits": credits})).json()
     return acct["id"], acct["api_key"], t["trial_id"]
 
@@ -141,7 +141,8 @@ async def fire_request(c: httpx.AsyncClient, endpoint: str, key: str, trial_id: 
 
 async def run_cell(c: httpx.AsyncClient, *, endpoint: str, delay_ms: float, arrival: str,
                    rep: int, seed: int, fault: str, run_id: str, jsonl_fh,
-                   requests: int = B0_REQUESTS, budget_units: int = B0_BUDGET_UNITS) -> dict:
+                   requests: int = B0_REQUESTS, budget_units: int = B0_BUDGET_UNITS,
+                   price_tier: str = TIER) -> dict:
     """One (delay, arrival, repetition) cell. Writes per-request lines to jsonl_fh as it
     goes (not buffered to the end), and returns the cell summary.
 
@@ -157,14 +158,15 @@ async def run_cell(c: httpx.AsyncClient, *, endpoint: str, delay_ms: float, arri
     # cannot work: /async/b0/complete and /async/b0/complete-atomic only return `cost` in
     # their response when the request is actually served (insufficient-balance responses
     # carry no cost field at all), so the probe account must be funded enough to be served.
-    _, probe_key, probe_tid = await new_account(c, credits=1000.0, seed=seed)
+    _, probe_key, probe_tid = await new_account(c, credits=1000.0, seed=seed, price_tier=price_tier)
     probe = await fire_request(c, endpoint, probe_key, probe_tid, seed, 0.0, "none")
     unit_cost = D(probe.get("cost"))
     if unit_cost == 0:
         raise RuntimeError(f"could not establish unit cost (probe={probe})")
     # Fresh, separately-funded account for the actual timed sequence -- the probe's own
     # effect on its own throwaway account is irrelevant and discarded.
-    acct_id, key, tid = await new_account(c, credits=float(unit_cost * budget_units), seed=seed)
+    acct_id, key, tid = await new_account(c, credits=float(unit_cost * budget_units), seed=seed,
+                                          price_tier=price_tier)
 
     events = []
     if arrival == "sequential":
@@ -247,6 +249,7 @@ async def main_async(args: argparse.Namespace) -> None:
         "b0_budget_units": args.budget,
         "requests_is_default": args.concurrency == B0_REQUESTS,
         "budget_is_default": args.budget == B0_BUDGET_UNITS,
+        "price_tier": args.price_tier,
         "fault": args.fault,
         "config_hash": cfg_hash,
         "notes": args.notes,
@@ -278,6 +281,7 @@ async def main_async(args: argparse.Namespace) -> None:
                             c, endpoint=args.endpoint, delay_ms=delay, arrival=args.arrival,
                             rep=rep, seed=seed, fault=args.fault, run_id=run_id,
                             jsonl_fh=jsonl_fh, requests=args.concurrency, budget_units=args.budget,
+                            price_tier=args.price_tier,
                         )
                     except Exception as exc:  # noqa: BLE001
                         cell = {
@@ -327,6 +331,9 @@ def main() -> None:
     ap.add_argument("--budget", type=int, default=B0_BUDGET_UNITS,
                     help="affordable units per cell (default matches the validated "
                          "historical protocol; added for Tier-2 budget-scaling experiments)")
+    ap.add_argument("--price-tier", default=TIER, choices=["low", "medium", "high"],
+                    help="default matches the validated historical protocol (medium); "
+                         "added for Tier-2 value-scaling experiments")
     ap.add_argument("--notes", default="")
     args = ap.parse_args()
 
