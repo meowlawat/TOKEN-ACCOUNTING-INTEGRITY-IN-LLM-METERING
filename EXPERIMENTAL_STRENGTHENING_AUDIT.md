@@ -265,8 +265,15 @@ ops are slower" claim: `reserve_atomic` is a committed **write** (`UPDATE ... RE
 followed by `session.commit()`), while `read_balance` is a plain **read** — a committed
 write over a real network needs at least one more round trip than a bare read, and that
 extra round trip costs roughly the same ~60–110ms as every other round trip measured in
-this phase, which is exactly the size of the gap observed. This is reported as a real,
-quantified cost of the defense, not claimed to be negligible.
+this phase, which is consistent with the size of the gap observed. This is reported as a
+real, quantified cost of the defense, not claimed to be negligible, and not claimed to be
+*exactly* one round trip: the T1→T2 instrumentation measures each call end-to-end
+(network transit, PostgreSQL's own processing of the `UPDATE`, and — for the atomic path
+— the commit acknowledgment, all aggregated together). This phase did not add
+instrumentation to decompose network transit time from database processing time from
+commit latency separately; the "~one extra round trip" explanation is offered as the
+most parsimonious account consistent with the aggregate numbers and the known per-hop RTT
+(§3), not as a component-level measurement.
 
 **Confidence:** Substantially increased — the defense's robustness claim is now general
 (holds across a 32× concurrency range and an 8× budget range, not just the original
