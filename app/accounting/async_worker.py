@@ -91,16 +91,27 @@ async def queue_depth(redis) -> int:
 
 
 async def drain(redis, apply_debit, *, max_events: int = 10_000,
-                idempotent: bool = True) -> dict:
+                idempotent: bool = True, on_applied=None) -> dict:
     """Worker side: apply every event whose delay has elapsed.
 
     `apply_debit(account_id, amount) -> None` performs the durable ledger write.
+
+    `on_applied`, if given, is an optional `async (ev, popped_ns, applied_ns) -> None`
+    hook called after a debit is successfully applied (never for duplicates/not-yet-due
+    events). It exists for the Tier-1 mechanism instrumentation added in the experimental-
+    strengthening phase (see EXPERIMENTAL_STRENGTHENING_AUDIT.md) and changes nothing about
+    existing behavior when omitted: every pre-existing caller passes no `on_applied`, so
+    `drain()`'s core timing/counters (including `exposure_windows_ms`, unchanged) are
+    identical to before this parameter existed. A failure inside the hook is caught and
+    counted but never aborts the drain pass -- the same "a worker must not die on one
+    event" principle the rest of this function already follows.
 
     Returns counters describing what happened, including the observed exposure window
     per event (creation -> application), which is the quantity the experiment measures.
     """
     applied = duplicates = skipped = 0
     windows_ms: list[float] = []
+    hook_errors = 0
     remaining: list[str] = []
 
     for _ in range(max_events):
@@ -120,17 +131,29 @@ async def drain(redis, apply_debit, *, max_events: int = 10_000,
             duplicates += 1             # at-least-once delivery, applied exactly once
             continue
 
+        popped_ns = time.time_ns()
         await apply_debit(ev.account_id, Decimal(ev.amount))
+        applied_ns = time.time_ns()
         if idempotent:
             await redis.sadd(APPLIED_KEY, ev.event_id)
         applied += 1
-        windows_ms.append((time.time_ns() - ev.created_ns) / 1e6)
+        windows_ms.append((applied_ns - ev.created_ns) / 1e6)
+
+        if on_applied is not None:
+            try:
+                await on_applied(ev, popped_ns, applied_ns)
+            except Exception as exc:  # noqa: BLE001 - instrumentation must not break settlement
+                hook_errors += 1
+                import logging
+                logging.getLogger("async_worker").exception(
+                    "on_applied hook failed for request_id=%s: %s", ev.request_id, exc)
 
     for raw in remaining:
         await redis.rpush(QUEUE_KEY, raw)
 
     return {"applied": applied, "duplicates_suppressed": duplicates,
-            "not_yet_due": skipped, "exposure_windows_ms": windows_ms}
+            "not_yet_due": skipped, "exposure_windows_ms": windows_ms,
+            "on_applied_errors": hook_errors}
 
 
 async def reset(redis) -> None:

@@ -33,14 +33,17 @@ import argparse
 import asyncio
 import logging
 import signal
+import socket
 from decimal import Decimal
 
 import redis.asyncio as aioredis
+from sqlalchemy import select
 
 from . import async_worker as aw
 from . import ledger
 from .. import db as app_db
 from ..config import settings
+from ..models.models import MRecord
 
 log = logging.getLogger("worker_main")
 
@@ -53,12 +56,60 @@ async def _apply_debit_factory():
     return apply_debit
 
 
-async def run(poll_ms: float, stats_every: int) -> None:
+async def _on_applied_factory():
+    """Tier-1 mechanism instrumentation (opt-in via --instrument): persist the worker-side
+    T6 (event popped off the queue, due-check passed) and T7 (debit durably applied) wall-
+    clock timestamps into the SAME MRecord row the gateway already wrote at request time,
+    keyed by request_id, merged into `extra` (never overwriting the gateway's own fields).
+    This is a read-modify-write, not a DB-side JSON merge operator, so it is agnostic to
+    whichever JSON column type SQLAlchemy mapped `extra` to. Never raises past drain()'s
+    own try/except around the hook -- a missing row (e.g. an M1 event, which this worker
+    also drains but which writes no MRecord under `request_id` the same way) is skipped,
+    not an error.
+    """
+    worker_host = socket.gethostname()
+
+    async def on_applied(ev: aw.UsageEvent, popped_ns: int, applied_ns: int) -> None:
+        # The gateway emits the event to Redis BEFORE committing the MRecord row
+        # (pre-existing code, async_routes.py::async_b0_complete -- not something this
+        # instrumentation changed). Under concurrent load this ordering, combined with
+        # DB-connection-pool contention across the gateway's two sessions per request plus
+        # the worker's own session, can make the row genuinely not-yet-visible for a few
+        # tens of milliseconds after the event becomes due. Confirmed empirically: this is
+        # nondeterministic (observed in some runs, not others, at identical D=50ms).
+        # Bounded retry so instrumentation does not silently lose data points to this
+        # timing variance -- never affects the already-completed debit, which has nothing
+        # to do with this lookup.
+        for attempt in range(6):
+            async with app_db.SessionLocal() as s:
+                rec = (await s.execute(
+                    select(MRecord).where(MRecord.request_id == ev.request_id)
+                )).scalars().first()
+                if rec is not None:
+                    rec.extra = {
+                        **rec.extra,
+                        "t6_worker_popped_ns": popped_ns,
+                        "t7_worker_applied_ns": applied_ns,
+                        "worker_host": worker_host,
+                        "event_id": ev.event_id,
+                        "event_created_ns": ev.created_ns,
+                        "event_deliver_after_ns": ev.deliver_after_ns,
+                    }
+                    await s.commit()
+                    return
+            await asyncio.sleep(0.02 * (attempt + 1))
+        log.warning("on_applied: no MRecord found for request_id=%s (event_id=%s) "
+                    "after retries", ev.request_id, ev.event_id)
+    return on_applied
+
+
+async def run(poll_ms: float, stats_every: int, instrument: bool) -> None:
     redis_client = aioredis.from_url(settings.redis_url, decode_responses=True)
     await redis_client.ping()
     ledger.configure(redis_client)
 
     apply_debit = await _apply_debit_factory()
+    on_applied = await _on_applied_factory() if instrument else None
 
     stats = {"applied": 0, "duplicates_suppressed": 0, "passes": 0, "errors": 0}
     stop = asyncio.Event()
@@ -79,7 +130,7 @@ async def run(poll_ms: float, stats_every: int) -> None:
     try:
         while not stop.is_set():
             try:
-                res = await aw.drain(redis_client, apply_debit)
+                res = await aw.drain(redis_client, apply_debit, on_applied=on_applied)
                 stats["applied"] += res["applied"]
                 stats["duplicates_suppressed"] += res["duplicates_suppressed"]
                 stats["passes"] += 1
@@ -106,8 +157,12 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--poll-ms", type=float, default=5.0)
     ap.add_argument("--stats-every", type=int, default=50)
+    ap.add_argument("--instrument", action="store_true",
+                    help="Tier-1 mechanism instrumentation: persist worker-side T6/T7 "
+                         "timestamps into MRecord.extra by request_id. Opt-in, default "
+                         "off -- does not change settlement behavior either way.")
     args = ap.parse_args()
-    asyncio.run(run(args.poll_ms, args.stats_every))
+    asyncio.run(run(args.poll_ms, args.stats_every, args.instrument))
 
 
 if __name__ == "__main__":

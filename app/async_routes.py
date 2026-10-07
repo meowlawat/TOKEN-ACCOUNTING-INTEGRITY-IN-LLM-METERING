@@ -209,17 +209,30 @@ async def async_b0_complete(
     n_out = mock.plan_completion(req.prompt, seed, 40, 80)
     cost = Usage(input_tokens=input_tokens, output_tokens=n_out).cost(prices)
 
+    # Tier-1 mechanism instrumentation (experimental-strengthening phase; see
+    # EXPERIMENTAL_STRENGTHENING_AUDIT.md). All timestamps below are intra-process
+    # perf_counter_ns() deltas -- valid and precise for same-process ordering/intervals,
+    # never compared across the gateway/worker process boundary (that comparison already
+    # exists, correctly, via ev.created_ns/deliver_after_ns in time.time_ns(), per the
+    # clock-domain fix in async_worker.py). These fields are additive: nothing existing
+    # reads them, and omitting --instrument on the worker side leaves them unjoined but
+    # harmless.
+    t1_read_start_ns = time.perf_counter_ns()
     balance = await ledger.read_balance(session, account.id) or Decimal("0")
+    t2_read_done_ns = time.perf_counter_ns()
     if balance < cost:
         return {"request_id": request_id, "served": False, "reason": "insufficient",
                 "balance_seen": str(balance)}
+    t3_decision_ns = time.perf_counter_ns()
 
     ev = aw.new_event(
         account_id=account.id, request_id=request_id, trial_id=trial.id,
         architecture="async_b0", delivered_tokens=n_out, amount=cost,
         authoritative=cost, delay_ms=req.reconcile_delay_ms,
         meta={"fault": req.fault, "balance_seen": str(balance)})
+    t4_event_created_ns = time.perf_counter_ns()
     await _emit(request, ev, req.fault)
+    t4b_emitted_ns = time.perf_counter_ns()
 
     async with SessionLocal() as s:
         s.add(MRecord(
@@ -232,12 +245,22 @@ async def async_b0_complete(
             served=True, completed=True, invariant_ok=False,
             detection_level="D0", abort_pct=None, manipulation=None,
             extra={"fault": req.fault, "reconcile_delay_ms": req.reconcile_delay_ms,
-                   "balance_seen": str(balance), "pending_amount": str(cost)},
+                   "balance_seen": str(balance), "pending_amount": str(cost),
+                   "event_id": ev.event_id, "event_created_ns": ev.created_ns,
+                   "event_deliver_after_ns": ev.deliver_after_ns,
+                   "t1_read_start_ns": t1_read_start_ns, "t2_read_done_ns": t2_read_done_ns,
+                   "t3_decision_ns": t3_decision_ns, "t4_event_created_ns": t4_event_created_ns,
+                   "t4b_emitted_ns": t4b_emitted_ns},
         ))
         await s.commit()
+    t5_response_ns = time.perf_counter_ns()
 
     return {"request_id": request_id, "served": True, "cost": str(cost),
-            "balance_seen": str(balance)}
+            "balance_seen": str(balance),
+            "t1_read_start_ns": t1_read_start_ns, "t2_read_done_ns": t2_read_done_ns,
+            "t3_decision_ns": t3_decision_ns, "t4_event_created_ns": t4_event_created_ns,
+            "t4b_emitted_ns": t4b_emitted_ns, "t5_response_ns": t5_response_ns,
+            "event_id": ev.event_id}
 
 
 @router.post("/async/b0/complete-atomic")
