@@ -137,10 +137,29 @@ previously-published B0 asynchronous-settlement accounting-integrity failure was
 reproduced under a physically separated gateway/settlement topology, for concurrent
 request arrival, at every tested non-zero delay (10/50/100/500 ms over a real internet
 path) — not merely "LLM providers are vulnerable" and not "production systems have this
-vulnerability." Sequential arrival shows zero over-serving at every delay, which is the
-expected, correct result for this mechanism (sequential requests never create the
-concurrent-read TOCTOU window the race requires, regardless of settlement delay) — it is
-not a null result, it is the designed-in negative control for the concurrent condition.
+vulnerability."
+
+**Correction (added during the final hardening pass, `FINAL_HARDENING_BASELINE.md` §8.1
+— not silently rewritten, flagged here instead):** the sentence originally here described
+the sequential-arrival zero-over-serving result as "the designed-in negative control...
+sequential requests never create the concurrent-read TOCTOU window the race requires,
+regardless of settlement delay." That characterization is **wrong** and is retracted. The
+true explanation, found by measuring the harness's own send timestamps directly: the
+harness awaits each request's full round trip before sleeping the nominal 20ms gap, and
+over this real network (RTT 40–108 ms per hop, doubled for `read_balance` + the Redis
+emit) the *achieved* inter-request gap was 513–857 ms, not 20 ms — already exceeding
+every delay tested here (≤500 ms) before the mechanism could manifest. This is not
+architectural immunity to the race under physical separation; it is the fixed 20 ms
+interarrival constant being overwhelmed by real network latency. A corrected, harness-
+fixed rerun with delays chosen relative to the measured real gap
+(`results/two_machine/C2_sequential_20261007T123546Z.summary.json`) shows the race
+**does** reproduce under sequential arrival once the delay properly exceeds the achieved
+gap: zero over-serving through D=2000ms, a transitional region at D=5000ms, and fully
+saturated (4 over-served, every rep) at D=10000ms — exactly the behavior the manuscript's
+own stated mechanism predicts. A genuine, structurally-guaranteed negative control
+(`strict-serial` arrival, which confirms each request's settlement before dispatching the
+next) was added separately and confirmed to never race at any tested delay up to
+10000ms — see `FINAL_HARDENING_AUDIT.md`.
 
 ## 7. Atomic control (C3, real two-machine topology)
 
@@ -203,10 +222,17 @@ updated with the real Host B connection info and the actual commands run for thi
 - **Single Azure region, single VM size, single run.** All C2 numbers come from one
   provisioning of one `Standard_B2ls_v2` VM in Central India; no claim is made about
   variance across regions, VM sizes, or repeated provisioning.
-- **The sequential/D=0..500 "zero over-serving" result is a negative control, not absence
-  of a vulnerability** — see §6's interpretation. It would be a mistake to read "C2
-  sequential shows no leak" as "the real network fixes the race"; the race requires
-  concurrent arrival by construction, independent of topology.
+- **RETRACTED, see the §6 correction and `FINAL_HARDENING_BASELINE.md` §8.1:** this item
+  originally claimed the sequential/D≤500 "zero over-serving" result was a clean negative
+  control showing "the race requires concurrent arrival by construction, independent of
+  topology." That is false — sequential arrival over this real network *does* race once
+  the delay exceeds the real, round-trip-inflated achieved inter-arrival gap
+  (confirmed up to D=10000ms). The corrected threats-to-validity item is: **the D≤500ms
+  sequential sweep on the real topology was not a valid test of the race at all**, because
+  the tested delays never exceeded the achieved ~500-900ms gap — it measured the gap, not
+  the mechanism. The genuine negative control is the separately-added `strict-serial`
+  arrival mode, which does not race at any tested delay because it waits for confirmed
+  settlement before each subsequent authorization.
 - **`network_partition_remote`'s gateway-reachability probe did not test what it was
   designed to test**, due to connection pooling — see §8. The worker-kill and extreme-delay
   scenarios are not subject to this caveat (they do not depend on an application-level
