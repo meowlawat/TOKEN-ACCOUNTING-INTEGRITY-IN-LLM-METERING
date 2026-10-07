@@ -54,10 +54,12 @@ client-declared value leaks 58.3\% of delivered value in a controlled setting an
 against a real serving stack, while server-authoritative billing eliminates the leak.
 Asynchronous settlement reproduces over-serving under strictly sequential arrivals, so
 the synchronization condition concerns not concurrency but whether authorization is
-atomically coupled to economic commitment on the authorizing path. We state model-level
-conditions separately from implementation patterns, report the cost of the strongest
-defense, under 0.1\% of end-to-end time with real inference, and delimit the formal
-model.
+atomically coupled to economic commitment on the authorizing path; this persists under a
+network-separated two-machine deployment, while a settlement-confirmed serialization
+control shows none. We state model-level conditions separately from implementation
+patterns, report the cost of the strongest defense, under 0.1\% of end-to-end time with
+real inference, and delimit the formal model, which we extend with a second,
+causal-ordering specification of the asynchronous mechanism.
 \end{abstract}
 
 \begin{keyword}
@@ -158,11 +160,13 @@ for the M1 defenses.
 reproduces the synchronization failure with strictly sequential arrivals and no
 concurrency at all, which forces a strictly more general condition than the one we
 started with, namely that authorization be atomically coupled to economic commitment on
-the authorizing path.
+the authorizing path; the condition persists under a network-separated two-machine
+deployment, while a settlement-confirmed serialization control shows none
+(Section~\ref{sec:netsep}).
 \item Empirical validation (Sections~\ref{sec:results} and \ref{sec:generality}) across
 three execution topologies, three accounting families including an asynchronous event
-pipeline, and two independent inference data planes, with fail-closed integrity gates and
-independent recomputation.
+pipeline, two independent inference data planes, and a network-separated deployment, with
+fail-closed integrity gates and independent recomputation.
 \item Sufficiency conditions and the implementation patterns that satisfy them, with
 their integrity and performance cost (Sections~\ref{sec:sufficiency}
 and~\ref{sec:economics}), kept explicitly separate from one another, together with
@@ -776,6 +780,43 @@ unused part. Correcting the settlement semantics made the safe configurations ve
 record the failure because a formal model that is edited until it agrees with the paper
 is worth nothing.
 
+\subsection{A second model: the asynchronous-settlement race}
+\label{sec:asyncformal}
+The specification above assumes strongly consistent accounting state and is silent on
+the mechanism behind Section~\ref{sec:b0revised}: deferred settlement, not concurrency,
+separating authorization from commitment. We built a second, separate TLA+
+specification, \texttt{AsyncSettlementTOCTOU.tla}, rather than extending the first,
+because the two mechanisms are different in kind. It is a causal-ordering model, not a
+timed one: a request moves through \textsc{created}
+$\to$ \textsc{admitted}/\textsc{rejected} $\to$ \textsc{settlement\_pending} $\to$
+\textsc{settled} (or \textsc{released}), and interleavings are ordered by happens-before,
+not by milliseconds, matching the T1--T7 instrumentation's own finding that the
+authorization step is a plain read and only settlement ever writes the balance.
+
+We checked it with TLC at two $(N,k)$ points, $(6,2)$, matching the primary B0-async
+workload exactly, and $(4,2)$, matching a second tested empirical configuration. In the
+vulnerable configuration, \textsc{Solvency} is violated at both points; TLC's shortest
+counterexample at $(6,2)$ needs only three staggered, non-simultaneous admissions against
+a two-unit budget. \textsc{AccountingIntegrity} and \textsc{LedgerConservation} hold
+exhaustively at both points (re-checked in isolation, 91{,}921 states generated, 22{,}521
+distinct, no violation). In the atomic configuration all three invariants hold at both
+points.
+
+This is a useful contrast with Table~\ref{tab:formalmatrix}, not a repetition of it: the
+synchronous model's vulnerable B0 configuration violates \textsc{LedgerConservation} and
+holds \textsc{Solvency}, the signature of a lost update; this model's vulnerable
+configuration violates \textsc{Solvency} and holds \textsc{LedgerConservation}, the
+signature of an admission race with no lost write at all. Two mechanistically distinct
+races leave different invariant fingerprints, which is itself a form of cross-check
+between the two specifications rather than noise to explain away.
+
+The same evidence labels and limits apply as in Section~\ref{sec:formal}'s own account of
+itself: this is \emph{model-checked}, exhaustively, at two finite $(N,k)$ points, over an
+abstract, untimed model of the mechanism. It does not verify the implementation, a timed
+or networked behavior, or anything beyond the two configurations checked, and it is the
+formal counterpart of the empirical result in Section~\ref{sec:netsep}, not a substitute
+for it.
+
 \section{Empirical Results}
 \label{sec:results}
 
@@ -996,6 +1037,12 @@ satisfy the architecture on paper while violating (M1-a). The upstream architect
 satisfies (M2-a) only because the provider is honest by assumption. And (B0-a) is a
 property rather than a mechanism: our backends obtain it by a conditional \texttt{UPDATE}
 and by an anchor-row lock respectively, which is what Section~\ref{sec:generality} tests.
+The asynchronous family's own durability caveat is separate from all three: the queued
+settlement event itself needed a durable record independent of the message queue, which
+Section~\ref{sec:outboxdurability} describes; that fix was validated against the specific
+failure points we injected (worker termination before, during, and after consumption;
+hard termination of the queue process; duplicate delivery) and not against arbitrary-scale
+distributed failure or a host restart.
 
 \subsection{Practical guidance}
 Table~\ref{tab:practical} condenses the analysis into what an operator can act on,
@@ -1036,8 +1083,10 @@ for reconciliation \\
 Async & Usage event lost, duplicated, or applied after the next authorization &
 Accounting integrity; conservation &
 Durable, idempotent accounting events with bounded reconciliation lag &
-Idempotency key per event, at-least-once delivery with duplicate suppression, and
-authorization that accounts for in-flight events \\
+PostgreSQL transactional outbox committing the settlement event durably, in the same
+transaction as the accounting record, before the event reaches the queue; idempotency
+key per event; at-least-once delivery with duplicate suppression; a queue-independent
+reconciliation scan recovers any event the queue fails to deliver \\
 \bottomrule
 \end{tabular}}
 \end{table*}
@@ -1175,7 +1224,10 @@ exposure window between value delivery and durable debit tracks $D$ closely: at 
 10, 50, 100, 500$\,ms the measured windows are 14.0, 14.9, 54.3, 103.7, and 504.1\,ms, and
 the leak reconciles to exactly zero. Duplicated events are suppressed idempotently across
 all 25 injected duplicates. A lost event, by contrast, leaks permanently at every delay.
-Whether a straggler looks lost or merely late is a property of the observation horizon
+This is an injected application-level fault (the event is never created), distinct from
+the infrastructure-level queue failure discussed in Section~\ref{sec:outboxdurability}, and
+the result above is unaffected by that section's fix. Whether a straggler looks lost or
+merely late is a property of the observation horizon
 rather than of the architecture; we used four times the configured delay, floored at
 400\,ms, and the released artifact records the per-cell outcome. The reconciliation
 delays used here are injected experimental parameters, not delays observed in a
@@ -1187,7 +1239,12 @@ The asynchronous family changed one of our own conclusions, and it is the sharpe
 systems result in the paper.
 
 We issued requests strictly sequentially, 20\,ms apart, so that no two were ever in
-flight together. Any over-serving therefore cannot be a concurrency race. Over-serving
+flight together. We use ``sequential'' throughout this paper in exactly this sense:
+arrivals do not overlap, but settlement may still be pending when the next request is
+authorized. Section~\ref{sec:netsep} introduces a deliberately different control, strict
+serialization of authorization and settlement, which additionally waits for settlement
+confirmation and is not interchangeable with the sequential arrivals studied here. Any
+over-serving in this experiment therefore cannot be a concurrency race. Over-serving
 nonetheless appears once $D$ reaches 100\,ms, and reaches four requests over a
 two-request budget at $D = 500$\,ms, with the balance driven negative
 (Table~\ref{tab:asyncb0}).
@@ -1225,6 +1282,106 @@ with, and the earlier framing was too weak rather than wrong.
 
 M2, by contrast, is untouched: leakage efficiency is identical at 0.5823 at every delay,
 confirming the analytic independence of usage authority from settlement timing.
+
+\subsection{Network-separated validation}
+\label{sec:netsep}
+Every topology in Section~\ref{sec:generality} so far ran on a single host over loopback,
+which leaves open whether Section~\ref{sec:b0revised}'s result is an artifact of that
+communication path. We repeated the asynchronous B0 experiment with the gateway on one
+machine and the accounting store, Redis, and the settlement worker on a second, reached
+over the real internet (a cloud VM in a different data center than the gateway host), with
+the attack harness, architectures, and integrity gates unchanged.
+
+While building this topology we found that our own sequential-arrival harness had a pacing
+confound: it paced requests by sleeping a nominal interval after each full round trip, and
+over the real network the round trip itself, not the sleep, dominated the achieved
+inter-arrival gap, measured directly from request timestamps at 513--857\,ms rather than
+the intended 20\,ms. We fixed the harness to record the achieved gap per request and reran
+with a delay range chosen to straddle that measured gap. The corrected sweep
+(Table~\ref{tab:twomachine}, $N=6$, budget $k=2$, 5 repetitions per delay) shows a clean
+transition: no over-serving through $D=2000$\,ms, partial over-serving at $D=5000$\,ms,
+and saturation at $N-k=4$ by $D=10000$\,ms.
+
+\begin{table}[t]
+\centering
+\caption{Sequential arrivals with deferred settlement over the network-separated
+two-machine topology, budget $k=2$, $N=6$. Over-served counts across 5 repetitions per
+delay.}
+\label{tab:twomachine}
+\begin{tabular}{lc}
+\toprule
+Settlement delay $D$ & Over-served (5 reps) \\
+\midrule
+0--2000\,ms & 0, 0, 0, 0, 0 \\
+5000\,ms & 3, 2, 2, 2, 2 \\
+10000\,ms & 4, 4, 4, 4, 4 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The B0 mechanism persisted under a network-separated two-machine deployment, while strict
+serialization of authorization and settlement produced no observed over-serving across the
+tested settlement delays. We distinguish the two deliberately: \emph{sequential arrivals
+with deferred settlement} (the mechanism above, and in Section~\ref{sec:b0revised}) means
+requests do not overlap but settlement may still be pending when the next request is
+authorized; \emph{strict serialization of authorization and settlement} means the harness
+confirms, from the account's own authoritative balance, that settlement for request $i$
+has completed before request $i+1$ is dispatched. The strict-serial control polls the
+authoritative balance until it equals the expected post-settlement value; an earlier
+implementation polled the queue's reported depth instead and was replaced after we found a
+transient window in which the queue reports empty while an event is still in transit. Over
+the same two-machine topology, strict serialization produced zero over-serving in every one
+of twelve tested cells ($D \in \{0, 500, 2000, 10000\}$\,ms, 3 repetitions each; served
+equaled the budget exactly in all twelve).
+
+This is evidence for one tested topology, one cloud region, and one host pair, not a
+characterization of networked deployments in general; Section~\ref{sec:limits} states the
+remaining scope precisely.
+
+\subsection{Durability of the queued settlement event}
+\label{sec:outboxdurability}
+Fault injection during the network-separated work surfaced a second, independent finding
+about the testbed's own queue, distinct from the B0 admission race above. Before this fix,
+the only record of a pending settlement event was the message in the Redis queue; no
+durable record existed until the worker applied the debit. We tested this directly, not by
+simulation: we queued an event with its delay not yet elapsed, confirmed it was queued, hard
+-terminated the Redis process, restarted it, and found the event permanently lost, with the
+queue empty and the corresponding debit never applied.
+
+The fix is a PostgreSQL transactional outbox, described as an implementation pattern in
+Table~\ref{tab:practical}: the settlement event is written as a durable row in the same
+database transaction as the accounting record, committed before the event is handed to the
+queue, so a durable record exists independent of the queue from the moment the request is
+admitted. A settlement worker claims and applies an event in one atomic transaction, so no
+intermediate state exists in which an event is marked settled without the debit having
+landed. A queue-independent reconciliation pass scans for due, unsettled events and applies
+them directly from the durable record, recovering anything the queue failed to deliver.
+
+We re-ran the targeted failure points this fix addresses and confirmed each by raw evidence,
+not inference: a worker terminated before an event was due recovered correctly on restart
+with exactly one debit applied; a hard termination of the queue process after an event was
+queued but not yet due was recovered by the reconciliation pass once the event's delay
+elapsed, rather than lost; duplicate delivery was suppressed with zero double-charging; and
+ledger conservation and final-balance correctness held in every case tested. We did not
+force a live database transaction rollback (argued analytically from the single-transaction
+design instead) and did not test a virtual-machine or host restart. Delivery remains
+at-least-once, not exactly-once: the queue or the reconciliation pass may both attempt to
+apply the same event, and the atomic claim ensures duplicate delivery does not result in a
+duplicate debit, which is a narrower and verifiable guarantee than claiming no event is ever
+delivered twice.
+
+We characterize this architecture, before and after, precisely rather than with a single
+adjective. Before the fix it was process-crash vulnerable, specifically to termination of
+the queue process, not merely eventually durable, because the failure was a permanent loss
+rather than a recoverable delay. After the fix it is eventually durable with at-least-once
+delivery and idempotent settlement application, at the specific failure points we tested;
+it is not validated against a host restart, arbitrary-scale distributed failure, or any
+topology beyond Section~\ref{sec:netsep}'s own two-machine pair. This fix changes nothing
+about the B0 admission race studied throughout this paper: the race is in the authorization
+read, which this fix does not touch, and every pre-existing experiment that exercises the
+asynchronous family (Section~\ref{sec:async}, Section~\ref{sec:b0revised}) was re-run
+against it unmodified and reproduced identical results, since none of them inject a queue
+failure in the first place.
 
 \section{Economic and Pricing Analysis}
 \label{sec:economics}
@@ -1315,7 +1472,9 @@ lands after the next authorization has read the balance provides nothing. The bi
 input belongs to state outside attacker control, so the recount that feeds billing must be
 authoritative rather than merely computed. Every terminal path of the request lifecycle
 must reach a durable accounting event, which in our implementation required a
-cancellation-shielded settlement task. The implementation patterns we built are not
+cancellation-shielded settlement task for M1 and, for the asynchronous family's queued
+event itself, the transactional outbox of Section~\ref{sec:outboxdurability}. The
+implementation patterns we built are not
 equivalent to the model-level conditions: satisfying a pattern in another system does not
 by itself establish the condition there, which is why Table~\ref{tab:practical} keeps them
 apart. These are implications for engineering metered services under the stated
@@ -1363,13 +1522,16 @@ experimenter-assigned labels rather than measuring evidence, so we make no detec
 claim.
 
 \paragraph{Formal}
-The specification is finite (two to three concurrent requests, two value chunks, unit
-pricing), and only safety properties are checked. No liveness property and no
-parameterized or inductive result is claimed. There is no refinement proof from
-specification to implementation. The model assumes strongly consistent accounting state,
-so the asynchronous family of Section~\ref{sec:async} lies outside it and its results are
-labeled empirical only. Multi-category pricing and tokenizer disagreement are likewise
-unmodeled.
+The primary specification (Section~\ref{sec:formal}) is finite (two to three concurrent
+requests, two value chunks, unit pricing), and only safety properties are checked. No
+liveness property and no parameterized or inductive result is claimed. There is no
+refinement proof from specification to implementation. That specification assumes
+strongly consistent accounting state and does not cover the asynchronous family. A
+second, separate specification (Section~\ref{sec:asyncformal}) covers the
+asynchronous-settlement mechanism itself, but it is an untimed, causal-ordering
+abstraction: it has no notion of milliseconds, network behavior, or database semantics,
+and is checked at two finite $(N,k)$ points, not for arbitrary request counts. Neither
+specification models multi-category pricing or tokenizer disagreement.
 
 \paragraph{External}
 One serving stack, one small model on CPU, one prompt family. This establishes that the
@@ -1393,21 +1555,20 @@ state.
 
 \paragraph{Distribution}
 This limitation deserves its own heading because the paper's central systems claim
-concerns settlement that is separated from authorization, and separation in our
-experiments is temporal, not physical. All execution topologies, including the two
-multi-process ones and the two-container load-balanced one, ran on a single host under
-Docker Compose and communicated over loopback. The asynchronous settlement family
-separates authorization from commitment by an injected delay $D$ under our control, and
-that delay is the independent variable: we did not run the accounting store or the
-settlement worker on a second machine, and we did not measure a real network path
-between them. Consequently we establish that breaking the coupling between authorization
-and economic commitment is sufficient to produce over-serving, and that the effect
-appears once $D$ exceeds the inter-arrival time; we do not establish what $D$ is in any
-physically distributed deployment, nor that network partition, clock skew, or
-cross-machine queueing behave as our injected delay does. A two-machine replication
-would test whether the condition survives physical service separation and is the
-obvious next experiment; it was not performed here and none of our conclusions should be
-read as if it had been. No production deployment or field evaluation was performed.
+concerns settlement that is separated from authorization, and separation in the topology
+experiments of Section~\ref{sec:generality} (execution topologies, accounting backends)
+is temporal, not physical: those topologies ran on a single host under Docker Compose and
+communicated over loopback. The asynchronous settlement family, by contrast, was
+additionally run with the accounting store, Redis, and the settlement worker on a second
+machine reached over the real internet (Section~\ref{sec:netsep}), and the condition
+persisted there. This narrows but does not remove the limitation: we tested one
+cloud-region pair of hosts, not a characterization of $D$ against network partition,
+clock skew, or cross-machine queueing behavior in general, and we did not test a VM or
+host restart, a wide-area or multi-region topology, or a production deployment. The
+two-machine result establishes that the condition is not an artifact of loopback
+communication specifically; it does not establish what $D$ is, or how it behaves, in any
+deployment topology beyond the one tested. No production deployment or field evaluation
+was performed.
 
 \section{Responsible Disclosure and Ethics}
 This work produced no new vulnerability findings against any third-party, live, or
