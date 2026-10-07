@@ -57,8 +57,8 @@ the synchronization condition concerns not concurrency but whether authorization
 atomically coupled to economic commitment on the authorizing path; this persists under a
 network-separated two-machine deployment, while a settlement-confirmed serialization
 control shows none. We state model-level conditions separately from implementation
-patterns, report the cost of the strongest defense, under 0.1\% of end-to-end time with
-real inference, and delimit the formal model, which we extend with a second,
+patterns, report the cost of the strongest M2 defense, under 0.1\% of end-to-end time
+with real inference, and delimit the formal model, which we extend with a second,
 causal-ordering specification of the asynchronous mechanism.
 \end{abstract}
 
@@ -1091,7 +1091,7 @@ reconciliation scan recovers any event the queue fails to deliver \\
 \end{tabular}}
 \end{table*}
 
-\subsection{What the strongest defense costs}
+\subsection{What the strongest M2 defense costs}
 We measure the M2 recount at three levels because they answer different questions,
 and we report the noise band alongside the measured ratios, in line with standard concerns about
 benchmarking rigor \citep{kalibera} and about measurement bias from innocuous setup
@@ -1244,7 +1244,8 @@ arrivals do not overlap, but settlement may still be pending when the next reque
 authorized. Section~\ref{sec:netsep} introduces a deliberately different control, strict
 serialization of authorization and settlement, which additionally waits for settlement
 confirmation and is not interchangeable with the sequential arrivals studied here. Any
-over-serving in this experiment therefore cannot be a concurrency race. Over-serving
+over-serving in this experiment therefore does not arise from overlapping in-flight
+requests. Over-serving
 nonetheless appears once $D$ reaches 100\,ms, and reaches four requests over a
 two-request budget at $D = 500$\,ms, with the balance driven negative
 (Table~\ref{tab:asyncb0}).
@@ -1599,8 +1600,9 @@ incidental to the underlying failure: what matters is whether authorization is
 atomically coupled to economic commitment on the path that authorizes service. Delayed
 settlement breaks that coupling with no concurrency whatsoever. The corrected condition
 is more general than the one we started with, and it is the form an operator should test
-against. In the tested configuration the strongest defense costs a small and predictable
-fraction of real inference time.
+against. In the tested configuration the strongest M2 defense costs a small and
+predictable fraction of real inference time; B0's atomic decrement and M1's
+reserve-reconcile path are not characterized by this same cost measurement.
 
 \section*{Acknowledgements}
 No external acknowledgements apply to this work.
@@ -1622,15 +1624,22 @@ commercial, or not-for-profit sectors.
 Source code, the attack harness, defense implementations, the TLA+ specification, and all
 raw experimental data are released at
 \url{https://github.com/meowlawat/TOKEN-ACCOUNTING-INTEGRITY-IN-LLM-METERING}, tagged
-release \texttt{v1.0.1}, which is the version reported in this paper. Tag
-\texttt{v1.0.0} is preserved unchanged as the earlier historical snapshot; it differs only
-in how the B0 condition is stated in the accompanying manuscript and in no measured value.
-The complete artifact (source code, experiment scripts, the formal
-specification, raw and processed results, figures, tables, and reproduction scripts)
-is archived in Zenodo under the concept DOI
-\href{https://doi.org/10.5281/zenodo.22085827}{10.5281/zenodo.22085827}, which always
-resolves to the most recent archived version of the artifact. The archive contents and their SHA-256 checksum are listed in
-\texttt{release/zenodo/} in the repository.
+release \texttt{v1.1.0}, which is the version reported in this paper, including the
+network-separated validation and strict-serialization control (Section~\ref{sec:netsep}),
+the transactional-outbox durability fix (Section~\ref{sec:outboxdurability}), and the
+second, asynchronous-settlement formal model (Section~\ref{sec:asyncformal}). Tags
+\texttt{v1.0.0} and
+\texttt{v1.0.1} are preserved unchanged as earlier historical snapshots that precede this
+manuscript's additions and do not contain them; \texttt{v1.0.1} differs from
+\texttt{v1.0.0} only in how the B0 condition is stated and in no measured value. A Zenodo
+archival deposit exists under the concept DOI
+\href{https://doi.org/10.5281/zenodo.22085827}{10.5281/zenodo.22085827}, intended to
+always resolve to the most recently deposited version; as of this manuscript's
+preparation that deposit corresponds to \texttt{v1.0.1} and has not been updated to
+\texttt{v1.1.0}, so the DOI should not yet be read as covering the results reported here.
+The GitHub release is therefore the authoritative source for this version. The release
+contents and their SHA-256 checksum are listed in \texttt{release/zenodo/} in the
+repository once prepared for that release.
 
 \bibliographystyle{elsarticle-num}
 \begin{thebibliography}{81}
