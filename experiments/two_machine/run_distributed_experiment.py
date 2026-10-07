@@ -140,9 +140,15 @@ async def fire_request(c: httpx.AsyncClient, endpoint: str, key: str, trial_id: 
 
 
 async def run_cell(c: httpx.AsyncClient, *, endpoint: str, delay_ms: float, arrival: str,
-                   rep: int, seed: int, fault: str, run_id: str, jsonl_fh) -> dict:
+                   rep: int, seed: int, fault: str, run_id: str, jsonl_fh,
+                   requests: int = B0_REQUESTS, budget_units: int = B0_BUDGET_UNITS) -> dict:
     """One (delay, arrival, repetition) cell. Writes per-request lines to jsonl_fh as it
-    goes (not buffered to the end), and returns the cell summary."""
+    goes (not buffered to the end), and returns the cell summary.
+
+    `requests`/`budget_units` default to the historical validated protocol's values
+    (B0_REQUESTS=6, B0_BUDGET_UNITS=2) and only differ when the caller explicitly passes
+    --concurrency/--budget (added for the experimental-strengthening phase's Tier 2
+    robustness matrix) -- every pre-existing invocation gets byte-identical behavior."""
     await c.post("/admin/async/reset")
 
     # Establish unit cost via a throwaway, GENEROUSLY funded probe account against the
@@ -158,11 +164,11 @@ async def run_cell(c: httpx.AsyncClient, *, endpoint: str, delay_ms: float, arri
         raise RuntimeError(f"could not establish unit cost (probe={probe})")
     # Fresh, separately-funded account for the actual timed sequence -- the probe's own
     # effect on its own throwaway account is irrelevant and discarded.
-    acct_id, key, tid = await new_account(c, credits=float(unit_cost * B0_BUDGET_UNITS), seed=seed)
+    acct_id, key, tid = await new_account(c, credits=float(unit_cost * budget_units), seed=seed)
 
     events = []
     if arrival == "sequential":
-        for _ in range(B0_REQUESTS):
+        for _ in range(requests):
             ev = await fire_request(c, endpoint, key, tid, seed, delay_ms, fault)
             ev["condition_delay_ms"] = delay_ms
             ev["arrival"] = arrival
@@ -174,7 +180,7 @@ async def run_cell(c: httpx.AsyncClient, *, endpoint: str, delay_ms: float, arri
     elif arrival == "concurrent":
         results = await asyncio.gather(*[
             fire_request(c, endpoint, key, tid, seed, delay_ms, fault)
-            for _ in range(B0_REQUESTS)
+            for _ in range(requests)
         ])
         for ev in results:
             ev["condition_delay_ms"] = delay_ms
@@ -197,9 +203,9 @@ async def run_cell(c: httpx.AsyncClient, *, endpoint: str, delay_ms: float, arri
     return {
         "run_id": run_id, "delay_ms": delay_ms, "arrival": arrival, "rep": rep,
         "seed": seed, "fault": fault, "endpoint": endpoint,
-        "unit_cost": str(unit_cost), "issued": B0_REQUESTS,
-        "served": served_count, "affordable": B0_BUDGET_UNITS,
-        "over_served": max(0, served_count - B0_BUDGET_UNITS),
+        "unit_cost": str(unit_cost), "issued": requests,
+        "served": served_count, "affordable": budget_units,
+        "over_served": max(0, served_count - budget_units),
         "final_balance": str(final_balance),
         "queue_state_after": qstate,
         "error_count": error_count,
@@ -237,8 +243,10 @@ async def main_async(args: argparse.Namespace) -> None:
         "delays_ms": delays,
         "repetitions_requested": args.reps,
         "b0_interarrival_ms": B0_INTERARRIVAL_MS,
-        "b0_requests": B0_REQUESTS,
-        "b0_budget_units": B0_BUDGET_UNITS,
+        "b0_requests": args.concurrency,
+        "b0_budget_units": args.budget,
+        "requests_is_default": args.concurrency == B0_REQUESTS,
+        "budget_is_default": args.budget == B0_BUDGET_UNITS,
         "fault": args.fault,
         "config_hash": cfg_hash,
         "notes": args.notes,
@@ -269,7 +277,7 @@ async def main_async(args: argparse.Namespace) -> None:
                         cell = await run_cell(
                             c, endpoint=args.endpoint, delay_ms=delay, arrival=args.arrival,
                             rep=rep, seed=seed, fault=args.fault, run_id=run_id,
-                            jsonl_fh=jsonl_fh,
+                            jsonl_fh=jsonl_fh, requests=args.concurrency, budget_units=args.budget,
                         )
                     except Exception as exc:  # noqa: BLE001
                         cell = {
@@ -313,6 +321,12 @@ def main() -> None:
     ap.add_argument("--endpoint", default="/async/b0/complete",
                     help="use /async/b0/complete-atomic for condition C3")
     ap.add_argument("--fault", default="none", choices=["none", "lost_event", "duplicate_event"])
+    ap.add_argument("--concurrency", type=int, default=B0_REQUESTS,
+                    help="requests per cell (default matches the validated historical "
+                         "protocol; added for Tier-2 concurrency-scaling experiments)")
+    ap.add_argument("--budget", type=int, default=B0_BUDGET_UNITS,
+                    help="affordable units per cell (default matches the validated "
+                         "historical protocol; added for Tier-2 budget-scaling experiments)")
     ap.add_argument("--notes", default="")
     args = ap.parse_args()
 

@@ -314,8 +314,15 @@ async def async_b0_complete_atomic(
     n_out = mock.plan_completion(req.prompt, seed, 40, 80)
     cost = Usage(input_tokens=input_tokens, output_tokens=n_out).cost(prices)
 
+    # Tier-3 overhead instrumentation (experimental-strengthening phase; see
+    # EXPERIMENTAL_STRENGTHENING_AUDIT.md): same perf_counter_ns pattern as the vulnerable
+    # endpoint's T1/T2, for an apples-to-apples authorization-latency comparison. There is
+    # no T3/T4/T4b/worker side here by construction (no event is queued -- see docstring),
+    # so only the quantities that actually exist are measured.
+    t1_reserve_start_ns = time.perf_counter_ns()
     ok, balance_after = await ledger.reserve_atomic(session, account.id, cost)
     await session.commit()  # commit the reserve immediately, before any further work
+    t2_reserve_done_ns = time.perf_counter_ns()
 
     if not ok:
         return {"request_id": request_id, "served": False, "reason": "insufficient"}
@@ -333,12 +340,16 @@ async def async_b0_complete_atomic(
             served=True, completed=True, invariant_ok=True,
             detection_level="D0", abort_pct=None, manipulation=None,
             extra={"fault": req.fault, "reconcile_delay_ms": req.reconcile_delay_ms,
-                   "atomic": True},
+                   "atomic": True, "t1_reserve_start_ns": t1_reserve_start_ns,
+                   "t2_reserve_done_ns": t2_reserve_done_ns},
         ))
         await s.commit()
+    t5_response_ns = time.perf_counter_ns()
 
     return {"request_id": request_id, "served": True, "cost": str(cost),
-            "balance_after": str(balance_after)}
+            "balance_after": str(balance_after),
+            "t1_reserve_start_ns": t1_reserve_start_ns, "t2_reserve_done_ns": t2_reserve_done_ns,
+            "t5_response_ns": t5_response_ns}
 
 
 # --------------------------------------------------------------------------- #
