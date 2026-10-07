@@ -39,9 +39,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from .accounting import async_worker as aw
 from .accounting import ledger
 from .accounting.usage import CENTS, Prices, Usage, D
+from .accounting.worker_main import reconcile_outbox
 from .db import SessionLocal, get_session
 from .llm import mock
-from .models.models import Account, MRecord, MTrial
+from .models.models import Account, MRecord, MTrial, OutboxEvent
 
 router = APIRouter(tags=["async-accounting"])
 
@@ -231,10 +232,23 @@ async def async_b0_complete(
         authoritative=cost, delay_ms=req.reconcile_delay_ms,
         meta={"fault": req.fault, "balance_seen": str(balance)})
     t4_event_created_ns = time.perf_counter_ns()
-    await _emit(request, ev, req.fault)
-    t4b_emitted_ns = time.perf_counter_ns()
 
+    # DURABILITY FIX (DURABILITY_HARDENING_AUDIT.md): the outbox row is the durable
+    # source of truth for this pending debit, committed to Postgres BEFORE the event is
+    # handed to Redis at all. Previously `_emit` (the Redis push) ran first, so a process
+    # crash after the push but before this commit could leave an event in Redis with no
+    # corresponding durable record -- and, separately, a direct SIGKILL of the Redis
+    # container was shown to permanently lose a queued event with NO durable record
+    # anywhere. Reordering so Redis is the fast-path hint, not the source of truth, closes
+    # both: if this commit never happens, the crash is clean (client never saw `served`,
+    # nothing is queued anywhere); if it happens and Redis later loses the event,
+    # `reconcile_outbox` recovers it directly from this table.
     async with SessionLocal() as s:
+        s.add(OutboxEvent(
+            event_id=ev.event_id, request_id=request_id, account_id=account.id,
+            amount=cost, created_ns=ev.created_ns, deliver_after_ns=ev.deliver_after_ns,
+            status="pending",
+        ))
         s.add(MRecord(
             trial_id=trial.id, account_id=account.id, request_id=request_id,
             mechanism="async_b0", architecture="async_b0",
@@ -249,16 +263,20 @@ async def async_b0_complete(
                    "event_id": ev.event_id, "event_created_ns": ev.created_ns,
                    "event_deliver_after_ns": ev.deliver_after_ns,
                    "t1_read_start_ns": t1_read_start_ns, "t2_read_done_ns": t2_read_done_ns,
-                   "t3_decision_ns": t3_decision_ns, "t4_event_created_ns": t4_event_created_ns,
-                   "t4b_emitted_ns": t4b_emitted_ns},
+                   "t3_decision_ns": t3_decision_ns, "t4_event_created_ns": t4_event_created_ns},
         ))
         await s.commit()
+    t4c_outbox_committed_ns = time.perf_counter_ns()
+
+    await _emit(request, ev, req.fault)
+    t4b_emitted_ns = time.perf_counter_ns()
     t5_response_ns = time.perf_counter_ns()
 
     return {"request_id": request_id, "served": True, "cost": str(cost),
             "balance_seen": str(balance),
             "t1_read_start_ns": t1_read_start_ns, "t2_read_done_ns": t2_read_done_ns,
             "t3_decision_ns": t3_decision_ns, "t4_event_created_ns": t4_event_created_ns,
+            "t4c_outbox_committed_ns": t4c_outbox_committed_ns,
             "t4b_emitted_ns": t4b_emitted_ns, "t5_response_ns": t5_response_ns,
             "event_id": ev.event_id}
 
@@ -358,9 +376,12 @@ async def async_b0_complete_atomic(
 @router.post("/admin/async/drain")
 async def async_drain(request: Request, idempotent: bool = True) -> dict:
     """Run the accounting worker until the queue is empty of due events."""
-    async def apply_debit(account_id: int, amount: Decimal) -> None:
+    async def apply_debit(account_id: int, amount: Decimal, event_id: str | None = None) -> None:
         async with SessionLocal() as s:
-            await ledger.debit_unchecked(s, account_id, amount)
+            if event_id is not None:
+                await ledger.claim_and_debit_outbox(s, event_id, account_id, amount)
+            else:
+                await ledger.debit_unchecked(s, account_id, amount)
             await s.commit()
 
     res = await aw.drain(request.app.state.redis, apply_debit, idempotent=idempotent)
@@ -396,9 +417,12 @@ async def async_reset(request: Request) -> dict:
 # flight. The window is only meaningful against a worker that is actually running, so the
 # worker runs.
 async def _worker_loop(app, poll_ms: float) -> None:
-    async def apply_debit(account_id: int, amount: Decimal) -> None:
+    async def apply_debit(account_id: int, amount: Decimal, event_id: str | None = None) -> None:
         async with SessionLocal() as s:
-            await ledger.debit_unchecked(s, account_id, amount)
+            if event_id is not None:
+                await ledger.claim_and_debit_outbox(s, event_id, account_id, amount)
+            else:
+                await ledger.debit_unchecked(s, account_id, amount)
             await s.commit()
 
     try:
@@ -410,6 +434,11 @@ async def _worker_loop(app, poll_ms: float) -> None:
                 st["duplicates_suppressed"] += res["duplicates_suppressed"]
                 st["windows_ms"].extend(res["exposure_windows_ms"])
                 st["passes"] += 1
+                # DURABILITY_HARDENING_AUDIT.md: the Redis-independent fallback, so the
+                # local/single-host topology (this in-process worker) gets the same
+                # durability property as the standalone two-machine worker
+                # (worker_main.py), not just the two-machine deployment.
+                await reconcile_outbox(st)
             except Exception as exc:  # noqa: BLE001 - a worker must not die on one event
                 app.state.async_worker_stats["errors"] += 1
                 app.state.async_worker_stats["last_error"] = str(exc)

@@ -34,6 +34,7 @@ import asyncio
 import logging
 import signal
 import socket
+import time
 from decimal import Decimal
 
 import redis.asyncio as aioredis
@@ -43,17 +44,66 @@ from . import async_worker as aw
 from . import ledger
 from .. import db as app_db
 from ..config import settings
-from ..models.models import MRecord
+from ..models.models import MRecord, OutboxEvent
 
 log = logging.getLogger("worker_main")
 
 
 async def _apply_debit_factory():
-    async def apply_debit(account_id: int, amount: Decimal) -> None:
+    """DURABILITY_HARDENING_AUDIT.md: when `event_id` is given (B0-async events only --
+    see async_worker.py::drain's call site), the outbox claim and the actual balance
+    decrement happen in the SAME transaction, not as two separate commits. This is the
+    specific property that closes the "crashed between claiming and settling" gap: either
+    both the claim and the debit land together, or the whole transaction rolls back and
+    the row is still 'pending' for the next attempt (by this worker on restart, or by
+    `reconcile_outbox`) to retry. `event_id=None` (M1 events, which have no outbox row at
+    all) falls through to the exact prior behavior -- a plain debit, no outbox involved.
+    """
+    async def apply_debit(account_id: int, amount: Decimal, event_id: str | None = None) -> None:
         async with app_db.SessionLocal() as s:
-            await ledger.debit_unchecked(s, account_id, amount)
-            await s.commit()
+            if event_id is not None:
+                applied = await ledger.claim_and_debit_outbox(s, event_id, account_id, amount)
+                await s.commit()
+                if not applied:
+                    return  # already claimed/settled elsewhere -- harmless duplicate
+            else:
+                await ledger.debit_unchecked(s, account_id, amount)
+                await s.commit()
     return apply_debit
+
+
+async def reconcile_outbox(stats: dict | None = None) -> dict:
+    """Fallback settlement path, independent of Redis entirely: finds outbox rows that
+    are due and still 'pending' -- which Redis may simply never have delivered (a lost
+    event, or a hard crash of the Redis process itself, DURABILITY_HARDENING_AUDIT.md) --
+    and settles them directly from Postgres. The claim (flip to 'applied') and the actual
+    balance decrement happen in ONE transaction, exactly like the outbox-aware branch of
+    `apply_debit` above, for the identical reason: no window in which a row is marked
+    applied without the debit having actually landed, or vice versa.
+
+    Safe to run concurrently with the normal Redis-driven path: both go through the same
+    `WHERE status = 'pending'` conditional update, so whichever one reaches a given row
+    first wins the claim and the other sees zero rows affected -- not a race, a single
+    atomic gate enforced by PostgreSQL itself.
+    """
+    now_ns = time.time_ns()
+    claimed_count = 0
+    async with app_db.SessionLocal() as s:
+        due = (await s.execute(
+            select(OutboxEvent)
+            .where(OutboxEvent.status == "pending", OutboxEvent.deliver_after_ns <= now_ns)
+            .limit(1000)
+        )).scalars().all()
+    for row in due:
+        async with app_db.SessionLocal() as s:
+            applied = await ledger.claim_and_debit_outbox(s, row.event_id, row.account_id, row.amount)
+            await s.commit()
+            if not applied:
+                continue  # the Redis-driven path (or another reconcile pass) won the race
+            claimed_count += 1
+            if stats is not None:
+                stats["reconciled_from_outbox"] = stats.get("reconciled_from_outbox", 0) + 1
+    return {"reconciled": claimed_count, "scanned": len(due)}
 
 
 async def _on_applied_factory():
@@ -111,7 +161,8 @@ async def run(poll_ms: float, stats_every: int, instrument: bool) -> None:
     apply_debit = await _apply_debit_factory()
     on_applied = await _on_applied_factory() if instrument else None
 
-    stats = {"applied": 0, "duplicates_suppressed": 0, "passes": 0, "errors": 0}
+    stats = {"applied": 0, "duplicates_suppressed": 0, "passes": 0, "errors": 0,
+              "reconciled_from_outbox": 0}
     stop = asyncio.Event()
 
     def _handle_signal(*_args) -> None:
@@ -135,20 +186,33 @@ async def run(poll_ms: float, stats_every: int, instrument: bool) -> None:
                 stats["duplicates_suppressed"] += res["duplicates_suppressed"]
                 stats["passes"] += 1
                 if stats["passes"] % stats_every == 0:
-                    log.info("passes=%d applied=%d duplicates_suppressed=%d errors=%d",
+                    log.info("passes=%d applied=%d duplicates_suppressed=%d "
+                              "reconciled_from_outbox=%d errors=%d",
                               stats["passes"], stats["applied"],
-                              stats["duplicates_suppressed"], stats["errors"])
+                              stats["duplicates_suppressed"],
+                              stats["reconciled_from_outbox"], stats["errors"])
             except Exception as exc:  # noqa: BLE001 - a worker must not die on one event
                 stats["errors"] += 1
                 log.exception("drain pass failed: %s", exc)
+            try:
+                # DURABILITY_HARDENING_AUDIT.md: the Redis-independent fallback. Runs
+                # every pass alongside drain() -- for this testbed's scale a full table
+                # scan of due, pending rows every poll interval is negligible cost, and
+                # correctness (via the atomic claim) does not depend on how often this
+                # runs, only how soon a Redis-lost event gets recovered.
+                await reconcile_outbox(stats)
+            except Exception as exc:  # noqa: BLE001 - same principle as drain() above
+                stats["errors"] += 1
+                log.exception("reconcile_outbox pass failed: %s", exc)
             try:
                 await asyncio.wait_for(stop.wait(), timeout=poll_ms / 1000.0)
             except asyncio.TimeoutError:
                 pass
     finally:
-        log.info("worker stopping: passes=%d applied=%d duplicates_suppressed=%d errors=%d",
+        log.info("worker stopping: passes=%d applied=%d duplicates_suppressed=%d "
+                  "reconciled_from_outbox=%d errors=%d",
                   stats["passes"], stats["applied"], stats["duplicates_suppressed"],
-                  stats["errors"])
+                  stats["reconciled_from_outbox"], stats["errors"])
         await redis_client.aclose()
 
 

@@ -94,7 +94,11 @@ async def drain(redis, apply_debit, *, max_events: int = 10_000,
                 idempotent: bool = True, on_applied=None) -> dict:
     """Worker side: apply every event whose delay has elapsed.
 
-    `apply_debit(account_id, amount) -> None` performs the durable ledger write.
+    `apply_debit(account_id, amount, event_id=None) -> None` performs the durable ledger
+    write. `event_id` is passed for B0-async events only (those with a durable outbox row,
+    DURABILITY_HARDENING_AUDIT.md) so an outbox-aware implementation can atomically claim
+    the outbox row in the same transaction as the debit; an implementation that ignores
+    the parameter (every pre-existing one) behaves exactly as before.
 
     `on_applied`, if given, is an optional `async (ev, popped_ns, applied_ns) -> None`
     hook called after a debit is successfully applied (never for duplicates/not-yet-due
@@ -132,7 +136,13 @@ async def drain(redis, apply_debit, *, max_events: int = 10_000,
             continue
 
         popped_ns = time.time_ns()
-        await apply_debit(ev.account_id, Decimal(ev.amount))
+        # `event_id` is passed only for B0-async events (the ones with a durable outbox
+        # row, DURABILITY_HARDENING_AUDIT.md) -- every pre-existing `apply_debit`
+        # implementation accepts and ignores this as an optional keyword argument, so
+        # callers that pass none (M1's settlement path, which has no outbox row) are
+        # completely unaffected. Only an outbox-aware `apply_debit` acts on it.
+        event_id_for_outbox = ev.event_id if ev.architecture == "async_b0" else None
+        await apply_debit(ev.account_id, Decimal(ev.amount), event_id=event_id_for_outbox)
         applied_ns = time.time_ns()
         if idempotent:
             await redis.sadd(APPLIED_KEY, ev.event_id)
