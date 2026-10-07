@@ -170,8 +170,25 @@ async def run_cell(c: httpx.AsyncClient, *, endpoint: str, delay_ms: float, arri
 
     events = []
     if arrival == "sequential":
+        # "Sequential arrivals with deferred settlement" (terminology fixed per
+        # FINAL_HARDENING_BASELINE.md Step 8.1): each request's full round trip is
+        # awaited before the next is dispatched (so authorizations never literally
+        # overlap -- any over-serving here cannot be a concurrency race), but the
+        # B0_INTERARRIVAL_MS sleep is a NOMINAL target, not a guarantee. Over a real
+        # network the round trip itself (both read_balance and the Redis emit are
+        # separate hops) can take far longer than the nominal interval -- confirmed
+        # directly: on the real two-machine topology this gap was measured at 513-857ms,
+        # not 20ms, which silently changes what "sequential, 20ms apart" is actually
+        # testing. The ACHIEVED gap is therefore measured and recorded per request
+        # (wall-clock, from the harness's own send timestamps), never assumed.
+        prev_sent = None
         for _ in range(requests):
             ev = await fire_request(c, endpoint, key, tid, seed, delay_ms, fault)
+            sent = datetime.fromisoformat(ev["sent_at_utc"])
+            ev["achieved_gap_from_prev_ms"] = (
+                (sent - prev_sent).total_seconds() * 1000.0 if prev_sent else None
+            )
+            prev_sent = sent
             ev["condition_delay_ms"] = delay_ms
             ev["arrival"] = arrival
             ev["run_id"] = run_id
@@ -179,6 +196,45 @@ async def run_cell(c: httpx.AsyncClient, *, endpoint: str, delay_ms: float, arri
             jsonl_fh.write(json.dumps(ev) + "\n")
             jsonl_fh.flush()
             await asyncio.sleep(B0_INTERARRIVAL_MS / 1000.0)
+    elif arrival == "strict-serial":
+        # "Strictly serialized authorization and settlement": each request's SETTLEMENT
+        # (not just its HTTP response) is confirmed complete -- by polling the ACCOUNT'S
+        # OWN BALANCE until it reaches the exact expected post-settlement value -- before
+        # the next request is even dispatched. This is a TRUE negative control: by
+        # construction, no request can ever observe a sibling's pending (not-yet-applied)
+        # debit, so it must never over-serve regardless of the configured delay.
+        # Distinguishing this from "sequential arrivals with deferred settlement" above
+        # is the whole point -- they are not the same condition, and conflating them was
+        # the terminology gap this mode exists to close.
+        #
+        # NOTE on a rejected approach: polling `/admin/async/state`'s queue_depth to 0 was
+        # tried first and found UNRELIABLE -- confirmed directly, not assumed: it produced
+        # over-serving at D=500/2000ms with achieved gaps of 109-1364ms, nowhere near the
+        # configured delay. Root cause: async_worker.py::drain() pops a not-yet-due event,
+        # appends it to a local `remaining` list, and only re-pushes it to Redis AFTER its
+        # whole scan loop completes -- so queue_depth briefly reads 0 while the one
+        # outstanding event is "in transit" (popped, not yet re-queued), and a 50ms-interval
+        # poller can land in that window purely by chance across the many worker poll
+        # cycles a long D requires. Balance-based confirmation has no such window: balance
+        # only changes inside the worker's own committed SQL transaction.
+        for _ in range(requests):
+            balance_before = await live_balance(c, acct_id)
+            ev = await fire_request(c, endpoint, key, tid, seed, delay_ms, fault)
+            ev["condition_delay_ms"] = delay_ms
+            ev["arrival"] = arrival
+            ev["run_id"] = run_id
+            events.append(ev)
+            jsonl_fh.write(json.dumps(ev) + "\n")
+            jsonl_fh.flush()
+            if ev.get("served"):
+                expected_after = balance_before - D(ev.get("cost"))
+                for _ in range(1200):  # 1200 x 50ms = 60s ceiling, generous vs. any tested D
+                    if await live_balance(c, acct_id) == expected_after:
+                        break
+                    await asyncio.sleep(0.05)
+                else:
+                    ev["strict_serial_settlement_timeout"] = True
+            # Rejected requests settle nothing -- no wait needed, balance is unchanged.
     elif arrival == "concurrent":
         results = await asyncio.gather(*[
             fire_request(c, endpoint, key, tid, seed, delay_ms, fault)
@@ -317,7 +373,14 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--condition", required=True, choices=["C0", "C1", "C2", "C3"])
-    ap.add_argument("--arrival", required=True, choices=["sequential", "concurrent"])
+    ap.add_argument("--arrival", required=True,
+                    choices=["sequential", "strict-serial", "concurrent"],
+                    help="sequential = sequential arrivals with deferred settlement "
+                         "(nominal 20ms apart, but see achieved_gap_from_prev_ms -- "
+                         "real network RTT can dominate); strict-serial = each "
+                         "request's settlement is confirmed complete before the next "
+                         "is dispatched (true negative control, never races by "
+                         "construction); concurrent = all requests fired simultaneously")
     ap.add_argument("--delays", default="0,10,50,100,500",
                     help="comma-separated delay list in ms")
     ap.add_argument("--reps", type=int, default=10)
