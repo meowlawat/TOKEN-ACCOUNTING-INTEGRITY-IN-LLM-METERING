@@ -33,9 +33,14 @@ $ErrorActionPreference = "Stop"
 $az = "E:\python\Scripts\az.bat"
 
 function Invoke-Az {
-    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$Args)
-    $out = & $az @Args 2>&1
-    if ($LASTEXITCODE -ne 0) { throw "az $($Args -join ' ') failed:`n$out" }
+    # See provision-two-machine.ps1's Invoke-Az for the two bugs this avoids: a named
+    # ValueFromRemainingArguments parameter makes '-o' ambiguous with -OutVariable, and
+    # 2>&1 under $ErrorActionPreference="Stop" turns benign stderr into a thrown error.
+    $prevEap = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    $out = & $az @args 2>$null
+    $ErrorActionPreference = $prevEap
+    if ($LASTEXITCODE -ne 0) { throw "az $($args -join ' ') failed:`n$out" }
     return $out
 }
 

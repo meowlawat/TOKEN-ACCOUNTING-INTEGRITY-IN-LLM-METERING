@@ -19,12 +19,18 @@ if [[ ! -f "$INFO_JSON" ]]; then
     exit 1
 fi
 
-PUBLIC_IP=$(python -c "import json; print(json.load(open('$INFO_JSON'))['public_ip'])")
-ADMIN_USER=$(python -c "import json; print(json.load(open('$INFO_JSON'))['admin_username'])")
+to_win_path() { echo "$1" | sed -E 's#^/([a-zA-Z])/#\1:/#' | tr '/' '\\'; }
+INFO_JSON_WIN=$(to_win_path "$INFO_JSON")
+
+PUBLIC_IP=$(python -c "import json; print(json.load(open(r'$INFO_JSON_WIN', encoding='utf-8-sig'))['public_ip'])")
+ADMIN_USER=$(python -c "import json; print(json.load(open(r'$INFO_JSON_WIN', encoding='utf-8-sig'))['admin_username'])")
 REMOTE_DIR="llm-metering"
 
 SSH_OPTS="-i $SSH_KEY -o StrictHostKeyChecking=accept-new -o ConnectTimeout=15"
 
+# NSG SSH/Postgres/Redis rules are scoped to the observed /21 ISP CGNAT range (approved
+# exception -- see FINAL_EXPERIMENT_AUDIT.md limitations), not refreshed to a per-call /32,
+# so no refresh-admin-ip.sh call is needed here.
 echo "== Staging files for transfer (Dockerfile, requirements.txt, app/, compose file) =="
 cd "$REPO_ROOT"
 ssh $SSH_OPTS "${ADMIN_USER}@${PUBLIC_IP}" "mkdir -p ~/${REMOTE_DIR}"

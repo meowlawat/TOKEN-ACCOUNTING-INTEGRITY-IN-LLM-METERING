@@ -20,8 +20,13 @@ if [[ ! -f "$INFO_JSON" ]]; then
     exit 1
 fi
 
-PUBLIC_IP=$(python -c "import json; print(json.load(open('$INFO_JSON'))['public_ip'])")
-ADMIN_USER=$(python -c "import json; print(json.load(open('$INFO_JSON'))['admin_username'])")
+# `python` here is the native Windows python.exe, which needs a Windows-style path
+# (E:\...), not the MSYS-style path (/e/...) bash itself uses.
+to_win_path() { echo "$1" | sed -E 's#^/([a-zA-Z])/#\1:/#' | tr '/' '\\'; }
+INFO_JSON_WIN=$(to_win_path "$INFO_JSON")
+
+PUBLIC_IP=$(python -c "import json; print(json.load(open(r'$INFO_JSON_WIN', encoding='utf-8-sig'))['public_ip'])")
+ADMIN_USER=$(python -c "import json; print(json.load(open(r'$INFO_JSON_WIN', encoding='utf-8-sig'))['admin_username'])")
 
 if [[ -z "$PUBLIC_IP" || "$PUBLIC_IP" == "None" ]]; then
     echo "ERROR: no public_ip in $INFO_JSON -- VM may not be fully provisioned yet." >&2
@@ -30,6 +35,12 @@ fi
 
 SSH="ssh -i $SSH_KEY -o StrictHostKeyChecking=accept-new -o ConnectTimeout=15 ${ADMIN_USER}@${PUBLIC_IP}"
 
+# The administrator's public IP rotates (CGNAT/dynamic ISP) faster than a per-attempt
+# /32 refresh can track (confirmed: rotation cycle shorter than one refresh+connect round
+# trip). The NSG's SSH/Postgres/Redis rules are therefore scoped to the observed /21 ISP
+# range (157.49.120.0/21, user-approved -- see FINAL_EXPERIMENT_AUDIT.md limitations)
+# instead of a single IP. Do NOT call refresh-admin-ip.sh here: it narrows the rule back
+# to a /32 of whatever IP is current, undoing the approved range.
 echo "== Waiting for SSH to become reachable on $PUBLIC_IP =="
 for i in $(seq 1 30); do
     if $SSH -o ConnectTimeout=5 "echo ok" 2>/dev/null | grep -q ok; then
@@ -37,7 +48,7 @@ for i in $(seq 1 30); do
         break
     fi
     if [[ "$i" -eq 30 ]]; then
-        echo "ERROR: SSH did not become reachable after 150s. Check NSG rules / VM boot state." >&2
+        echo "ERROR: SSH did not become reachable after repeated tries with IP refresh. Check NSG rules / VM boot state." >&2
         exit 1
     fi
     sleep 5

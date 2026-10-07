@@ -1,0 +1,34 @@
+[
+  {
+    "scenario": "network_partition_remote",
+    "topology": "real two-machine (Host A gateway -> Azure Host B worker/db/redis)",
+    "admin_ip_blocked": "157.49.127.212",
+    "drop_rule_insert_exit_code": 0,
+    "drop_rule_insert_output": "",
+    "drop_rule_remove_exit_code": 0,
+    "requests_issued": 3,
+    "requests_served": 3,
+    "queue_depth_before_partition": {
+      "queue_depth": 1
+    },
+    "gateway_probe_during_partition": {
+      "status": 200,
+      "reachable": true
+    },
+    "queue_depth_after_restore_and_wait": {
+      "queue_depth": 0
+    },
+    "balance_after_recovery": {
+      "account_id": 335,
+      "balance": "0.000000"
+    },
+    "queue_drained_to_zero": true,
+    "balance_reconciled": true,
+    "server_audit_record_count": 3,
+    "server_audit_served_count": 3,
+    "all_sent_request_ids_present_in_server_audit": true,
+    "server_audit_matches_client_served_count": true,
+    "interpretation": "OBSERVED: a real packet-level partition between Host A and Host B (iptables DROP on Host B targeting Host A's actual public IP, inserted and removed over SSH) blocked Postgres/Redis reachability during the window; the gateway's own already-authorized requests and queued events were not lost (Redis/Postgres on Host B retained state) and reconciled once the DROP rule was removed.",
+    "superseded_note": "This run used an in-VM iptables -I DOCKER-USER DROP rule as the partition mechanism. That mechanism was directly verified AFTER this run to be a silent no-op on this Docker/Ubuntu 24.04 host (0 packets/bytes matched; a live connection succeeded straight through it) due to a Docker/nftables backend mismatch -- the rule never actually blocked anything, so drop_rule_added being true here does not mean a real partition occurred. Superseded by the verified Azure-NSG-Deny-rule run: failure_injection_remote_network_partition_remote_20261006T235827Z.json, which is the one cited in FINAL_EXPERIMENT_AUDIT.md. Kept, not deleted, per the never-delete-raw-data rule."
+  }
+]

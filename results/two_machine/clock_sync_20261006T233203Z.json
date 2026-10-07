@@ -1,0 +1,40 @@
+{
+  "host_b": "20.198.74.220",
+  "measured_at_utc": "2026-10-06T23:32:03.730302+00:00",
+  "chronyc_tracking_exit_code": 0,
+  "chronyc_tracking_raw": "Reference ID    : 50484330 (PHC0)\nStratum         : 1\nRef time (UTC)  : Tue Oct 06 23:31:51 2026\nSystem time     : 0.000000971 seconds slow of NTP time\nLast offset     : -0.000005192 seconds\nRMS offset      : 0.000004558 seconds\nFrequency       : 6.730 ppm fast\nResidual freq   : -0.066 ppm\nSkew            : 0.253 ppm\nRoot delay      : 0.000000001 seconds\nRoot dispersion : 0.000012666 seconds\nUpdate interval : 8.0 seconds\nLeap status     : Normal\n",
+  "chronyc_sources_exit_code": 0,
+  "chronyc_sources_raw": "\n  .-- Source mode  '^' = server, '=' = peer, '#' = local clock.\n / .- Source state '*' = current best, '+' = combined, '-' = not combined,\n| /             'x' = may be in error, '~' = too variable, '?' = unusable.\n||                                                 .- xxxx [ yyyy ] +/- zzzz\n||      Reachability register (octal) -.           |  xxxx = adjusted offset,\n||      Log2(Polling interval) --.      |          |  yyyy = measured offset,\n||                                \\     |          |  zzzz = estimated error.\n||                                 |    |           \\\nMS Name/IP address         Stratum Poll Reach LastRx Last sample               \n===============================================================================\n#* PHC0                          0   3   377     7  -1745ns[-6615ns] +/- 1409ns\n",
+  "independent_offset_measurement": {
+    "rounds_attempted": 5,
+    "rounds_succeeded": 5,
+    "samples": [
+      {
+        "offset_ns": 795062169,
+        "round_trip_ns": 836586600,
+        "uncertainty_ns": 418293300
+      },
+      {
+        "offset_ns": 796944144,
+        "round_trip_ns": 831591400,
+        "uncertainty_ns": 415795700
+      },
+      {
+        "offset_ns": 791457992,
+        "round_trip_ns": 827776400,
+        "uncertainty_ns": 413888200
+      },
+      {
+        "offset_ns": 821303404,
+        "round_trip_ns": 894351200,
+        "uncertainty_ns": 447175600
+      },
+      {
+        "offset_ns": 809098935,
+        "round_trip_ns": 880366000,
+        "uncertainty_ns": 440183000
+      }
+    ]
+  },
+  "note": "This offset measurement is diagnostic only. Economic correctness in this experiment is read from ledger/balance state, never derived by subtracting unsynchronized wall-clock timestamps across hosts."
+}

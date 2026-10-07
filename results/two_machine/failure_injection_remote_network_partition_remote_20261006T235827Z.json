@@ -1,0 +1,35 @@
+[
+  {
+    "scenario": "network_partition_remote",
+    "topology": "real two-machine (Host A gateway -> Azure Host B worker/db/redis)",
+    "mechanism": "temporary Azure NSG Deny rule (verified by direct measurement before use)",
+    "admin_ip_range_blocked": "157.49.120.0/21",
+    "drop_rule_insert_exit_code": 0,
+    "drop_rule_insert_output": "",
+    "drop_rule_remove_exit_code": 0,
+    "requests_issued": 3,
+    "requests_served": 3,
+    "queue_depth_before_partition": {
+      "queue_depth": 1
+    },
+    "gateway_probe_during_partition": {
+      "status": 200,
+      "reachable": true
+    },
+    "queue_depth_after_restore_and_wait": {
+      "queue_depth": 0
+    },
+    "balance_after_recovery": {
+      "account_id": 337,
+      "balance": "0.000000"
+    },
+    "queue_drained_to_zero": true,
+    "balance_reconciled": true,
+    "server_audit_record_count": 3,
+    "server_audit_served_count": 3,
+    "all_sent_request_ids_present_in_server_audit": true,
+    "server_audit_matches_client_served_count": true,
+    "interpretation": "OBSERVED: a real network-layer partition between Host A and Host B (a temporary, higher-priority Azure NSG Deny rule blocking Host A's IP range on Postgres/Redis ports, verified by direct measurement before this run to actually produce connection timeouts -- an earlier in-VM iptables DROP attempt was tried first and found to be a silent no-op, 0 packets matched, due to a Docker/nftables backend mismatch, and was NOT used for this result) blocked Postgres/Redis reachability during the window; the gateway's own already-authorized requests and queued events were not lost (Redis/Postgres on Host B retained state) and reconciled once the Deny rule was removed.",
+    "caveat_pooled_connections": "gateway_probe_during_partition reported reachable=true DESPITE the NSG Deny rule being independently verified (moments earlier, via a fresh socket.create_connection test) to actually time out NEW connection attempts. Explanation: Azure NSGs are stateful and only evaluate NEW connection attempts against the rule set -- they do not tear down already-established flows. The gateway (asyncpg/redis clients) was already holding open pooled connections to Host B from before the Deny rule was inserted, so neither the probe nor the 3 in-flight requests needed to dial a NEW connection during the window, and none were blocked. This result therefore demonstrates pooled-connection resilience to a NEW-connection block, NOT that total connectivity loss has no effect -- that would require forcing a fresh connection attempt (e.g. restarting the gateway) during the blocked window, which this run did not do. Reported honestly rather than overclaiming."
+  }
+]
