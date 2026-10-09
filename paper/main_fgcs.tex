@@ -86,9 +86,8 @@ LLM inference serving makes the question concrete and current. The billed unit, 
 token, is produced at runtime by an opaque, streamed, long-running computation delivered
 to a remote client over a network; the quantity is a multi-category vector; and the
 usage record that determines the charge is itself produced by the serving system while
-the response is still in flight. The subsystem that authorizes, meters, and commits a
-charge for that computation therefore holds security-critical state and drives
-authorization, settlement, and billing behaviour. Mistakes in how that state is
+the response is still in flight -- so the authorization, execution, and settlement paths
+above now carry security-critical state. Mistakes in how that state is
 partitioned across components can produce integrity failures even when every individual
 component computes usage correctly, which is why this paper studies the accounting
 lifecycle itself: its states, its transitions, the conditions under which it is safe, and
@@ -111,10 +110,9 @@ states precisely when each defense is sufficient; that unification, verification
 empirical validation is the contribution of this paper. Accordingly, B0 is presented as a
 known baseline and M1 and M2 as systematization and measurement contributions.
 
-What is missing is not a primitive but a frame: these failures are usually discussed as
-unrelated bugs in unrelated systems, but placed on a single request lifecycle they are
-the same integrity property violated at three points. That unification yields three
-things individual bug reports do not: defenses separate into properties that do not
+These failures are usually discussed as unrelated bugs in unrelated systems; placed on one
+request lifecycle, they are the same integrity property violated at three points, which
+yields three things no bug report does: defenses separate into properties that do not
 substitute for one another, the exploitable attack set becomes a function of the pricing
 basis rather than attacker ingenuity, and the conditions under which each defense
 suffices can be stated and checked.
@@ -136,10 +134,10 @@ reservation, debit, reconciliation, and refund, with a single integrity property
 $V(r) \le N(r)$, that admits legitimate refunds. The model is stated over the request
 lifecycle of a metered service and is not specific to language-model inference.
 \item A taxonomy of three experimentally distinguishable failure dimensions
-(Section~\ref{sec:taxonomy}): synchronization, commitment timing, and usage authority,
-each localized to a distinct element of that lifecycle, a shared-state transition, a
-terminal path, and a data-authority boundary respectively, with the known, systematized,
-and defensive boundaries stated explicitly.
+(Section~\ref{sec:taxonomy}) -- synchronization, commitment timing, and usage authority --
+each localized to a distinct lifecycle element (a shared-state transition, a terminal
+path, a data-authority boundary), with known, systematized, and defensive boundaries
+stated explicitly.
 \item Machine-checked verification of the lifecycle (Section~\ref{sec:formal}) in TLA+,
 checked exhaustively with TLC over ten configurations and four invariants, producing
 counterexamples that match the measured failures and an exhaustive orthogonality result
@@ -157,7 +155,7 @@ pipeline, two independent inference data planes, and a network-separated deploym
 fail-closed integrity gates and independent recomputation.
 \item Sufficiency conditions and the implementation patterns that satisfy them, with
 their integrity and performance cost (Sections~\ref{sec:sufficiency}
-and~\ref{sec:economics}), kept explicitly separate from one another, together with
+and~\ref{sec:economics}), kept explicitly separate, together with
 public evidence (Section~\ref{sec:deployed}) that the same architectural ingredient
 appears in independently developed, deployed metering gateways.
 \end{enumerate}
@@ -189,9 +187,8 @@ permitted headers; request concurrency; the connection lifecycle, so it may abor
 moment; retries; and observation of its own responses and balance. It cannot compromise
 TLS, reach the database or Redis, read the gateway filesystem, compromise the inference
 backend, forge authenticated upstream metadata, or modify server code. This is an
-ordinary application-layer adversary rather than a symbolic cryptographic one, which
-matters for interpretation: every leak we report is attributable to the provider's own
-accounting design, not to a compromise.
+ordinary application-layer adversary, not a symbolic cryptographic one -- every leak we
+report is attributable to the provider's own accounting design, not a compromise.
 
 \subsection{Attacker knowledge}
 Our M2 harness builds each declared-usage manipulation by transforming the true
@@ -247,122 +244,112 @@ shows exhaustive checking that neither substitutes for the other.
 \section{Background and Related Work}
 \label{sec:related}
 LLM APIs meter multi-category token vectors, stream output incrementally, and settle
-charges after the fact. Each of those properties has a literature, and the gap we occupy
-sits between them. The study also draws on the transaction and consistency literature
-that governs shared economic state, on the escrow-style reservation pattern for
-high-contention counters, and on the verification practice used to check stateful
-service designs, all discussed below.
+charges after the fact, each with its own literature; the gap we occupy sits between
+them. The study also draws on the transaction and consistency literature that governs
+shared economic state, the escrow-style reservation pattern for high-contention counters,
+and the verification practice used to check stateful service designs.
 
 \subsection{Prior adversary framings}
-Pay-as-you-go pricing is a defining feature of cloud services \citep{armbrust}, and
-metering enforces it: a service decides whether to admit work, observes how much was
-done, and commits a charge, with security among the quality attributes this placement of
-responsibilities determines \citep{bass}. The failures studied here follow from where
-authorization, settlement, and the billing input sit in the request path, not from a
-defect in any single component. Existing work covers the other three quadrants of
-Table~\ref{tab:quadrant}. CoIn \citep{coin} shows that reasoning tokens invisible to the
-client can be counted and audited only with effort; a companion analysis \citep{invisible}
-argues opaque LLM services need audit mechanisms because the billed quantity is
-unverifiable to the payer; and \citet{tokeninflation} measure how far a dishonest provider
-can overcharge before detection becomes likely -- all three take the client's side against
-the provider, a direction we invert while keeping their observation that the billed
-quantity is runtime-produced and hard to verify. A second group inflates somebody else's
-bill rather than the provider's own: \citet{dow} define forced financial exhaustion as a
-threat distinct from denial-of-service in serverless settings, consolidated by
-\citet{dowreview}; OWASP \citep{owasp} ranks unbounded consumption among the top LLM-application
-risks; \citet{llmjacking} document stolen cloud credentials resold for inference at the
-victim's expense; and \citet{sponge} show inference cost itself can be driven
-adversarially. Logic flaws in payment flows are a related documented class --
-cashier-as-a-service lets shoppers obtain goods without paying \citep{cashier}, and
-concurrency attacks on database-backed applications exploit weak isolation for financial
-effect \citep{acidrain} -- but our billed quantity is produced during the request rather
-than fixed at checkout; complete mediation and fail-safe defaults \citep{saltzer} apply
+Pay-as-you-go pricing is a defining feature of cloud services \citep{armbrust}, enforced
+by deciding whether to admit work, observing usage, and committing a charge -- a
+placement of responsibilities that determines security \citep{bass}; the failures studied
+here follow from where that placement sits in the request path, not from a defect in any
+single component. Existing work covers the other three quadrants of
+Table~\ref{tab:quadrant}. CoIn \citep{coin} shows reasoning tokens invisible to the client
+can be counted and audited only with effort; \citet{invisible} argues opaque LLM services
+need audit mechanisms because the billed quantity is unverifiable to the payer; and
+\citet{tokeninflation} measure how far a dishonest provider can overcharge before
+detection becomes likely -- all three take the client's side against the provider, a
+direction we invert while keeping their observation that the billed quantity is
+runtime-produced and hard to verify. A second group inflates somebody else's bill: \citet{dow} define forced financial
+exhaustion as a DoS-adjacent threat in serverless settings, consolidated by
+\citet{dowreview}; OWASP \citep{owasp} ranks unbounded consumption among the top
+LLM-application risks; \citet{llmjacking} document stolen credentials resold for
+inference at the victim's expense; and \citet{sponge} show inference cost can be driven
+adversarially. Logic flaws in payment flows are related: cashier-as-a-service lets
+shoppers obtain goods without paying \citep{cashier}, and concurrency attacks on
+database-backed applications exploit weak isolation for financial effect
+\citep{acidrain}, but our billed quantity is produced during the request rather than
+fixed at checkout; complete mediation and fail-safe defaults \citep{saltzer} apply
 directly, and the fail-closed recount path in Section~\ref{sec:results} follows the
-second. Attestation and provenance work targets the gateway path instead of the endpoint:
-\citet{aex} provide non-intrusive multi-hop attestation for LLM APIs, and \citet{gwprov}
-address forged routing claims with evidence-bound provenance, assuming a dishonest
-intermediary rather than a dishonest endpoint.
+second. Attestation and provenance work targets the gateway path, not the endpoint: \citet{aex}
+provide multi-hop attestation for LLM APIs, and \citet{gwprov} address forged routing
+claims with evidence-bound provenance, assuming a dishonest intermediary rather than
+endpoint.
 
 \subsection{Generic mechanisms}
 Relying on untrusted input in a security decision is CWE-807 \citep{cwe807}. Concurrent
 quota races are well-characterized, and \citet{kettle} shows how narrow the exploitable
-window can be in practice; the escrow transactional method \citep{escrow} is the classical
-treatment of high-contention counter updates and the ancestor of the reserve-and-reconcile
-pattern we evaluate. Streaming and client cancellation are specified behavior, not exotic
-conditions: server-sent events \citep{sse} define a channel the client may close at any
-time, and HTTP semantics \citep{rfc9110} leave an aborted response's consequences to the
-application.
+window can be; the escrow transactional method \citep{escrow} is the classical treatment
+of high-contention counter updates and ancestor of the reserve-and-reconcile pattern we
+evaluate. Streaming and client cancellation are specified behavior: server-sent events
+\citep{sse} define a channel the client may close at any time, and HTTP semantics
+\citep{rfc9110} leave an aborted response's consequences to the application.
 
-B0 is a lost update in the sense catalogued by critiques of the ANSI isolation levels
-\citep{berenson}, sharpened by implementation-independent isolation definitions
-\citep{adya}. Reserve-and-reconcile with a compensating refund resembles long-lived
-transactions with compensating actions (sagas) \citep{sagas}, and our asynchronous
-family's idempotent, at-least-once event handling follows the standard treatment of
-idempotence in messaging \citep{helland12}. \citet{bailis} analyzes whether an invariant
-such as a non-negative balance can be maintained without coordination; an authorization
-check against a bound needs coordination between check and commitment, the content of the
-B0 condition, in the spirit of linearizability \citep{linearizability}. The delay between
-value delivery and durable debit in the asynchronous family is an instance of the
-staleness that eventually consistent stores expose \citep{vogels}, given a
-practitioner-oriented treatment by \citet{kleppmann}.
+B0 is a lost update per critiques of the ANSI isolation levels \citep{berenson}, sharpened
+by implementation-independent isolation definitions \citep{adya}. Reserve-and-reconcile
+with a compensating refund resembles sagas \citep{sagas}, and our asynchronous family's
+idempotent, at-least-once handling follows standard messaging idempotence
+\citep{helland12}. \citet{bailis} analyzes whether an invariant like a non-negative
+balance needs coordination to maintain; an authorization check against a bound does --
+the B0 condition -- in the spirit of linearizability \citep{linearizability}. The delay
+between value delivery and durable debit in the asynchronous family instances the
+staleness eventually consistent stores expose \citep{vogels}, treated practically by
+\citet{kleppmann}.
 
 \subsection{Serving and tokenization}
 The billed quantity depends on a tokenizer: subword segmentation \citep{bpe} and
 SentencePiece \citep{sentencepiece} underlie today's tokenizers, and engines legitimately
 disagree on the token count for identical text. Modern serving systems batch and cache
-aggressively -- PagedAttention and vLLM \citep{vllm} established the memory management
-behind standard prefix reuse, precisely what makes the cached-token category observable
-and unstable in Section~\ref{sec:generality} -- and keep changing execution structure:
-chunked prefill \citep{sarathi}, disaggregated prefill and decoding \citep{distserve},
-prefix reuse in structured language-model programs \citep{sglang}, and speculative
-decoding \citep{leviathan} all alter timing, so a metering subsystem cannot assume one
-fixed execution model. Token counts also depend on tokenizer and language \citep{petrov}.
-Our real-stack validation uses llama.cpp \citep{llamacpp} serving SmolLM2-135M-Instruct
-\citep{smollm2}, with tiktoken \citep{tiktoken} among the tokenizers benchmarked.
+aggressively: PagedAttention/vLLM \citep{vllm} established the prefix-reuse memory
+management that makes the cached-token category observable and unstable in
+Section~\ref{sec:generality}, and keep changing execution structure -- chunked prefill
+\citep{sarathi}, disaggregated prefill/decoding \citep{distserve}, structured-program
+prefix reuse \citep{sglang}, and speculative decoding \citep{leviathan} -- so a metering
+subsystem cannot assume one fixed execution model. Token counts also depend on tokenizer
+and language \citep{petrov}. Our real-stack validation uses llama.cpp \citep{llamacpp}
+serving SmolLM2-135M-Instruct \citep{smollm2}, with tiktoken \citep{tiktoken} among the
+tokenizers benchmarked.
 
 \subsection{Verification and validation practice}
 We specify the lifecycle in TLA+ \citep{tla,lamportspec} and check it with TLC
-\citep{tlc}, in the model-checking tradition \citep{clarke} that also includes SPIN
-\citep{spin} and lightweight relational modeling \citep{alloy}. Using model checking to
-find architectural defects that testing misses is established industrial practice
-\citep{awsformal}, and our experience matches the reported pattern: the checker's value
-lay in refuting a specification we believed, not confirming one. Surveys of
-formal-methods practice and of practitioners \citep{woodcock,gleirscher} describe both
-adoption and its obstacles, and Lamport argues specifying before coding is ordinary
-engineering discipline \citep{blueprints}. Implementation-level verification has been
-achieved for an operating-system kernel \citep{sel4}, a compiler \citep{compcert}, and
-distributed systems \citep{ironfleet} at substantial proof effort; lightweight methods
-instead validate against executable reference models \citep{s3lightweight}, and an
+\citep{tlc}, in the model-checking tradition \citep{clarke,spin,alloy}. Using model
+checking to find architectural defects that testing misses is established industrial
+practice \citep{awsformal}, and our experience matches the reported pattern: the
+checker's value lay in refuting a specification we believed, not confirming one. Surveys
+of formal-methods adoption \citep{woodcock,gleirscher} and Lamport's case for specifying
+before coding \citep{blueprints} motivate the practice; implementation-level verification
+has been achieved for an OS kernel \citep{sel4}, a compiler \citep{compcert}, and
+distributed systems \citep{ironfleet} at substantial proof effort, while lightweight
+methods validate against executable reference models \citep{s3lightweight} -- an
 empirical study found bugs concentrated where a verified specification meets unverified
-components \citep{fonseca} -- the gap our evidence labels keep explicit. On the empirical
-side, property-based testing checks stated properties on generated inputs
-\citep{quickcheck}, and metamorphic testing checks relations between outputs when no
-oracle is available \citep{metamorphic18,segura}, as our price-scaling invariance check
-does; the oracle problem \citep{oracle} is one reason we re-derive every reported
-quantity independently rather than trust the system's own bookkeeping. Fault injection is
+components \citep{fonseca}, the gap our evidence labels keep explicit. Property-based testing
+\citep{quickcheck} and metamorphic testing \citep{metamorphic18,segura} check properties
+and relations between outputs without an oracle, as our price-scaling invariance check
+does; the oracle problem \citep{oracle} is why we re-derive every reported quantity
+independently rather than trust the system's own bookkeeping. Fault injection is
 established practice: chaos engineering perturbs running systems \citep{chaos},
-lineage-driven injection guides fault selection using data lineage \citep{lineage}, and
-Elle checks recorded histories for isolation anomalies without trusting the database
-under test \citep{elle}; our nine lifecycle failures are enumerated rather than guided,
-and studies of real cloud outages \citep{gunawi} motivate treating abnormal terminal
-paths as first-class test targets.
+lineage-driven injection guides fault selection \citep{lineage}, and Elle checks recorded
+histories for isolation anomalies \citep{elle}; our nine lifecycle failures are
+enumerated rather than guided, and real cloud-outage studies \citep{gunawi} motivate
+treating abnormal terminal paths as first-class test targets.
 
 \subsection{Evidence from deployed systems}
 \label{sec:deployed}
-The mechanisms studied here are not confined to our testbed. Table~\ref{tab:deployed}
+The mechanisms studied here are not confined to our testbed: Table~\ref{tab:deployed}
 lists public, independently filed reports from five separately developed metering
-gateways and proxies in which the same architectural ingredient appears; we reviewed the
-linked issue and pull-request pages directly, and each row states what the report does
-and does not establish.
+gateways and proxies showing the same architectural ingredient, reviewed directly from
+the linked issue and pull-request pages, with each row stating what the report does and
+does not establish.
 
-This evidence is used carefully. We make no claim that any listed system is exploitable,
-and attempted nothing against any of them -- every measurement in this paper comes from
-our own local testbed. Presence of an architectural ingredient is not presence of a
-vulnerability, which is why the table separates the two columns, and two of the five
-reports are already fixed by their own maintainers, so they are historical evidence that
-the failure mode occurs and is repairable, not a statement about those systems today. What
-the table supports is the weaker claim we need: the accounting-lifecycle gaps this paper
-models occur in independently written gateway code, not only in ours.
+This evidence is used carefully: we claim no listed system is exploitable and attempted
+nothing against any of them -- every measurement here comes from our own local testbed;
+presence of an architectural ingredient is not presence of a vulnerability, which is why
+the table separates the two columns; and two of the five reports are already fixed by
+their own maintainers, so they are historical evidence the failure mode occurs and is
+repairable, not a statement about those systems today. The table supports the weaker
+claim we need: these accounting-lifecycle gaps occur in independently written gateway
+code, not only in ours.
 
 \begin{table*}[t]
 \caption{Public reports from independently developed metering gateways exhibiting the
@@ -375,11 +362,11 @@ systems is exploitable; none was tested. Pages reviewed 23 September 2026.}
 \toprule
 System & Public report & Ingredient & What it establishes & What it does not establish \\
 \midrule
-LiteLLM & Issue \#14457, open \citep{litellm14457} & Terminal path without a committed accounting event (M1) & That an independently developed gateway loses usage tracking when a client disconnects before the provider's final usage chunk & Any statement about exploitability, financial impact, or the system's behaviour after the review date \\
-OpenGateLLM & Issue \#1148, fixed \citep{opengate1148} & Terminal path without a committed debit (M1), with a measured instance & That the $V(r) > N(r)$ condition has been observed and quantified in deployed code by its own maintainers, who report one case of 254{,}347 completion tokens delivered and never billed, and that it was repairable once identified & That the reported instance is representative of any deployment's volumes, or that the system exhibits it now \\
-CLIProxyAPI & Issue \#2179, closed \citep{cliproxy2179} & Usage record absent at the accounting transition despite delivered value & That usage-record loss also occurs on successful responses, not only on aborts, broadening where the accounting event can be missed & Root-cause parity with our taxonomy; the fix is not analysed here \\
+LiteLLM & Issue \#14457, open \citep{litellm14457} & Terminal path without a committed accounting event (M1) & That an independently developed gateway loses usage tracking when a client disconnects before the provider's final usage chunk & Exploitability, financial impact, or behaviour after the review date \\
+OpenGateLLM & Issue \#1148, fixed \citep{opengate1148} & Terminal path without a committed debit (M1), with a measured instance & That $V(r) > N(r)$ was observed and quantified by the maintainers, who report 254{,}347 completion tokens delivered and never billed, and that it was repairable once identified & Representativeness of the instance, or that the system exhibits it now \\
+CLIProxyAPI & Issue \#2179, closed \citep{cliproxy2179} & Usage record absent at the accounting transition despite delivered value & That usage-record loss also occurs on successful responses, not just aborts, broadening where the event can be missed & Root-cause parity with our taxonomy; the fix is not analysed here \\
 new-api & Issue \#5235 \citep{newapi5235} & Refund of pre-consumed quota when the final usage record never arrives (M1) & That reserve-and-refund handling of disconnects is a real design point, not a constructed one & That the refund path is exploitable as reported \\
-Aperture & Merged pull request \#247 \citep{aperture247} & Guard against an encoding-induced silent zero-debit (M2 direction) & That server-side authority over the billed quantity is treated as a defect class worth shipping a mitigation for & That the mitigation is complete or that the prior behaviour was exploited \\
+Aperture & Merged pull request \#247 \citep{aperture247} & Guard against an encoding-induced silent zero-debit (M2 direction) & That server-side authority over billed quantity is treated as a defect worth a shipped mitigation & That the mitigation is complete or that the prior behaviour was exploited \\
 \bottomrule
 \end{tabular}}
 \end{table*}
@@ -516,12 +503,11 @@ implemented requires concurrency; M1 and M2 per-request leakage does not.
 
 \section{Architectural Taxonomy}
 \label{sec:taxonomy}
-The three dimensions are experimentally distinguishable rather than merely conceptual. B0
-is a non-atomic authorize-then-decrement on shared credit state; it is a known baseline,
-used to validate the measurement rig and to supply a generic reference point. M1 is
-lifecycle-sensitive: it concerns which terminal paths reach a committed accounting event.
-M2 is authority- and pricing-sensitive: it concerns which representation of usage the
-billing function actually reads.
+The three dimensions just distinguished architecturally are also experimentally
+distinguishable, not merely conceptual: B0 is a non-atomic authorize-then-decrement on
+shared credit state, a known baseline used to validate the measurement rig and supply a
+generic reference point, while M1 and M2 remain the lifecycle- and authority-sensitive
+dimensions of Section~\ref{sec:statemodel}.
 
 \subsection{On LLM specificity}
 We do not claim these mechanisms are possible only in LLM systems. Streaming responses,
@@ -532,17 +518,16 @@ authorization time; multi-category token vectors; tokenizer- and provider-depend
 semantics; pricing functions defined over those categories; and asynchronous settlement.
 It is the combination we systematize, not the individual pieces.
 
-The three dimensions therefore generalize to different degrees, and we state the
-difference rather than blur it. B0 is fully generic: it is a shared-counter race that
-behaves the same in any metered service, and the revised condition we arrive at in
-Section~\ref{sec:b0revised}, that authorization be atomically coupled to economic
-commitment on the authorizing path, is a statement about distributed accounting state
-with no reference to inference at all. M1 generalizes to any service that delivers value
-progressively over a long-running request, streamed media and long-running batch jobs
-included, and is interesting exactly where a terminal path can bypass the accounting
-event. M2 is the narrowest: it needs a billed quantity that is runtime-produced,
-multi-category, and priced by a category-sensitive function, which is currently most
-visible in LLM APIs but is not unique to them.
+The three dimensions generalize to different degrees, stated rather than blurred. B0 is
+fully generic: a shared-counter race that behaves the same in any metered service, and
+the revised condition of Section~\ref{sec:b0revised} -- that authorization be atomically
+coupled to economic commitment on the authorizing path -- is a statement about
+distributed accounting state with no reference to inference at all. M1 generalizes to any
+service that delivers value progressively over a long-running request, streamed media and
+batch jobs included, and is interesting exactly where a terminal path can bypass the
+accounting event. M2 is the narrowest: it needs a billed quantity that is
+runtime-produced, multi-category, and priced by a category-sensitive function, currently
+most visible in LLM APIs but not unique to them.
 
 The boundary studied here is the usage-metering and accounting subsystem of a
 network-accessible serving system: an authorization path, a settlement path, and an
@@ -554,10 +539,9 @@ language model itself.
 
 \section{System and Experimental Methodology}
 \label{sec:method}
-The experiments validate the architectural behavior and the engineering claims of the
-preceding sections; they are not a user study, an industrial evaluation, or a field
-deployment, and the study deliberately trades realism for control and precision
-\citep{abc}. The testbed is a FastAPI gateway over PostgreSQL 16 in READ COMMITTED and Redis 7,
+The experiments validate the architectural behavior and engineering claims of the
+preceding sections -- not a user study, industrial evaluation, or field deployment -- and
+the study deliberately trades realism for control and precision \citep{abc}. The testbed is a FastAPI gateway over PostgreSQL 16 in READ COMMITTED and Redis 7,
 running under Docker Compose on one commodity host with 16 logical CPUs and 16\,GB of
 RAM. Money is exact decimal throughout. Five M1 architectures and six M2 architectures
 sit behind common interfaces, so experiments compare semantics rather than unrelated
@@ -578,9 +562,9 @@ cannot masquerade as vulnerability.
 Every summarizer recomputes each record's leak from primitives, checks invariant-flag
 consistency, and verifies ledger conservation $\sum_r N(r) = B_{\mathrm{init}} -
 B_{\mathrm{final}}$ without trusting the application's own bookkeeping. A violation fails
-the build. The gates are validated adversarially rather than assumed: corrupting a leak
-value, a debit, a served flag, a balance, or an invariant flag, and deleting a ledger row,
-must each be detected, and all twelve injections were. The metamorphic suite also caught
+the build. The gates are validated adversarially, not assumed: corrupting a leak value,
+debit, served flag, balance, or invariant flag, and deleting a ledger row, must each be
+detected -- and all twelve injections were. The metamorphic suite also caught
 one of our own unjustified assumptions. We had asserted that leakage efficiency is
 invariant across price tiers; it is, but only under uniform scaling, not under a
 structural change to the price ratios. We corrected the property rather than suppress the
@@ -592,10 +576,10 @@ gateway, and the two agree on all cross-validated cells (42 M2, 16 M1, 2 B0). A 
 audit re-derives every reported quantity from raw data using code that imports nothing
 from the project, and reports zero discrepancies across 4{,}800 M2 records, 2{,}400 M1
 records, and 420 B0 trials. The independent checker initially reported three
-disagreements. They were definitional rather than defects: the checker aggregated
-under-payment only, while the gateway aggregates the signed billing delta, and under
-flat-total pricing an honest client is systematically overcharged, so the two aggregates
-legitimately differ. Both are now reported, and the security property uses under-payment.
+disagreements. They were definitional, not defects: the checker aggregated under-payment
+only, the gateway the signed billing delta, and under flat-total pricing an honest client
+is systematically overcharged, so the two aggregates legitimately differ. Both are now
+reported, and the security property uses under-payment.
 
 \subsection{Statistics}
 All statistics come from a standalone script using SciPy \citep{scipy} and statsmodels
@@ -608,21 +592,21 @@ guidance for the statistical analysis of randomized experiments in software engi
 \citep{arcuri}.
 
 \subsection{Reproducibility}
-The artifact is archived with a DOI, and the raw data and reproduction scripts are
-released with it. Repeatability of computer-systems research is known to be weak
+The artifact is archived with a DOI, with raw data and reproduction scripts released
+alongside it. Repeatability of computer-systems research is known to be weak
 \citep{collberg}, and repeatability, reproducibility, and corroboration are distinct
-goals \citep{feitelson}; we address the first two by releasing the code and raw data, and
-we do not claim the third. The release is consistent in spirit with the FAIR principles
-for research data \citep{fair}.
+goals \citep{feitelson}; we address the first two by releasing code and raw data, not the
+third. The release is consistent in spirit with the FAIR principles for research data
+\citep{fair}.
 
 \section{Formal Verification}
 \label{sec:formal}
-Measurement shows that a defect occurs on the schedules our harness produced. It cannot
-show that a defended architecture is safe on schedules it did not produce. We therefore
-encode the lifecycle of Section~\ref{sec:statemodel} in TLA+ \citep{tla} and check it
-exhaustively with TLC 2.19 \citep{tlc}. In software-verification terms, the specification
-is an executable architectural model against which the safety properties of each
-architecture configuration are checked; it verifies the model, not the implementation.
+Measurement shows a defect occurs on the schedules our harness produced; it cannot show a
+defended architecture is safe on schedules it did not produce. We therefore encode the
+lifecycle of Section~\ref{sec:statemodel} in TLA+ \citep{tla} and check it exhaustively
+with TLC 2.19 \citep{tlc}. In software-verification terms, the specification is an
+executable architectural model against which each configuration's safety properties are
+checked; it verifies the model, not the implementation.
 
 \subsection{Model}
 One specification covers all three dimensions, with each dimension as a Boolean constant,
@@ -996,13 +980,13 @@ pattern in a different system does not by itself establish the condition there.}
 \toprule
 Mech. & Failure mode & Property at risk & Model-level condition & Implementation pattern \\
 \midrule
-B0 & Authorization reads credit state that does not yet reflect prior commitments &
+B0 & Authorization reads credit state not yet reflecting prior commitments &
 Ledger conservation, solvency &
 Authorization atomically coupled to economic commitment on the authorizing path &
 Conditional \texttt{UPDATE ... WHERE balance >= cost} evaluated on the request path, not
 deferred to a later worker \\
-M1 & A terminal path leaves the lifecycle without a committed debit, or refunds more
-than the unconsumed reservation &
+M1 & A terminal path leaves the lifecycle without a committed debit, or over-refunds the
+unconsumed reservation &
 Accounting integrity; solvency separately &
 Terminal-path totality plus refund boundedness (Eq.~\ref{eq:refund}); reservation for
 solvency &
@@ -1028,9 +1012,9 @@ reconciliation recovers any event the queue fails to deliver \\
 
 \subsection{What the strongest M2 defense costs}
 We measure the M2 recount at three levels because they answer different questions,
-and we report the noise band alongside the measured ratios, in line with standard concerns about
-benchmarking rigor \citep{kalibera} and about measurement bias from innocuous setup
-choices \citep{mytkowicz}.
+reporting the noise band alongside the measured ratios per standard concerns about
+benchmarking rigor \citep{kalibera} and measurement bias from innocuous setup choices
+\citep{mytkowicz}.
 
 First, the standalone tokenizer (Figure~\ref{fig:toklat}). Cost is linear in input
 length (log--log slope 0.999 to 1.14 with $R^2 \ge 0.998$), so it budgets as tokens
@@ -1074,12 +1058,12 @@ network is involved.}
 \section{Cross-Architecture and Asynchronous Validation}
 \label{sec:generality}
 A measurement study on one deployment invites the objection that its conclusions are
-artifacts of that deployment. We repeated the experiments while changing only the
-deployment, the storage architecture, or the inference data plane; the attack harness,
-the architectures under test, and the integrity gates are identical across all runs.
-Each varied dimension (execution topology, accounting backend, inference data plane, and
-settlement architecture) tests whether an observed behavior belongs to the architecture
-or to one implementation of it.
+deployment artifacts. We repeated the experiments while changing only the deployment, the
+storage architecture, or the inference data plane; the attack harness, the architectures
+under test, and the integrity gates stay identical across all runs. Each varied dimension
+(execution topology, accounting backend, inference data plane, settlement architecture)
+tests whether an observed behavior belongs to the architecture or to one implementation
+of it.
 
 \subsection{Execution topologies and accounting backends}
 Three topologies: a single uvicorn worker with no proxy, as control; nginx over four
@@ -1364,11 +1348,11 @@ Opus 5.5   & 4 & 0.20 & 20 & 0.05 \\
 \end{tabular}}
 \end{table}
 
-We deliberately stop short of a revenue-impact model. Estimating aggregate exposure
-would require assuming an attacker population and a request volume, and the resulting
-figure would be an invention dressed as a measurement. What the analysis does support is
-a design rule: the pricing basis determines the attack surface, so it should be chosen
-with that in mind rather than for billing convenience alone.
+We deliberately stop short of a revenue-impact model: estimating aggregate exposure would
+require assuming an attacker population and request volume, and the result would be
+invention dressed as measurement. What the analysis supports is a design rule: the
+pricing basis determines the attack surface and should be chosen with that in mind, not
+for billing convenience alone.
 
 \section{Discussion}
 \label{sec:discussion}
@@ -1378,14 +1362,13 @@ whenever the check is separated from the commitment, while M1 and M2 are per-req
 properties with no concurrency dependence in the tested design
 (Sections~\ref{sec:taxonomy} and~\ref{sec:results}).
 
-The practical consequences are three. First, an operator cannot use traffic level as a
-proxy for exposure; two of the three dimensions do not scale with load at all, and the
-third fails under sequential arrivals if settlement lags. Second, integrity and solvency
-need different controls, and a system with only one of them will look correct in
-whichever dimension it happens to be measured. Third, in the evaluated architectures a
-correct recount did not prevent leakage unless it was authoritative for billing. The
-defenses themselves are ordinary; the contribution is knowing which one is load-bearing,
-and what it costs.
+The practical consequences are three: an operator cannot use traffic level as a proxy for
+exposure, since two of the three dimensions do not scale with load at all and the third
+fails under sequential arrivals if settlement lags; integrity and solvency need different
+controls, so a system with only one will look correct in whichever dimension it is
+measured; and in the evaluated architectures a correct recount did not prevent leakage
+unless authoritative for billing. The defenses themselves are ordinary; the contribution
+is knowing which one is load-bearing, and what it costs.
 
 \paragraph{Engineering implications}
 Within the tested and modeled conditions, the results place each control at a specific
@@ -1394,10 +1377,9 @@ commitment it depends on, not on a deferred worker, because an atomic decrement 
 lands after the next authorization has read the balance provides nothing. The billing
 input belongs to state outside attacker control, so the recount that feeds billing must be
 authoritative rather than merely computed. Every terminal path of the request lifecycle
-must reach a durable accounting event, which in our implementation required a
-cancellation-shielded settlement task for M1 and, for the asynchronous family's queued
-event itself, the transactional outbox of Section~\ref{sec:outboxdurability}. The
-implementation patterns we built are not
+must reach a durable accounting event -- a cancellation-shielded settlement task for M1,
+and the transactional outbox of Section~\ref{sec:outboxdurability} for the asynchronous
+family's queued event. The implementation patterns we built are not
 equivalent to the model-level conditions: satisfying a pattern in another system does not
 by itself establish the condition there, which is why Table~\ref{tab:practical} keeps them
 apart. These are implications for engineering metered services under the stated
@@ -1405,14 +1387,14 @@ accounting model, demonstrated on LLM inference, not claims about deployed syste
 not test.
 
 \paragraph{Relation to known weakness classes}
-This is the objection we consider most likely, which is why we state it ourselves: the
-individual mechanisms have precedents in isolation (Sections~\ref{sec:related}
-and~\ref{sec:deployed}), B0 is a known race presented as a baseline rather than a
-contribution, and we claim no novelty at the primitive level.
+This is the objection we consider most likely, so we state it ourselves: the individual
+mechanisms have precedents in isolation (Sections~\ref{sec:related}
+and~\ref{sec:deployed}), B0 is a known race presented as a baseline, not a contribution,
+and we claim no novelty at the primitive level.
 
-What the paper adds beyond these individually known primitives is the unification stated
-in the contributions list (Section~\ref{sec:intro}), plus two things that do not follow
-from a primitive-level description alone: the M1 ablation shows, by exhaustive model
+Beyond these known primitives, the paper adds the unification stated in the contributions
+list (Section~\ref{sec:intro}), plus two things no primitive-level description predicts:
+the M1 ablation shows, by exhaustive model
 checking rather than by example, that solvency and accounting integrity are orthogonal
 and need different primitives, which ``there is a streaming bug'' does not predict; and
 the M2 ablation shows an architecture that recounts usage correctly can still leak if
