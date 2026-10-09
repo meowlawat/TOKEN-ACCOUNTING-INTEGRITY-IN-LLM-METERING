@@ -537,9 +537,7 @@ exit path.
 
 This predicts the empirical result of Section~\ref{sec:results}: the baseline B0
 manifestation we implemented is created by concurrency, while M1 and M2 per-request
-leakage is invariant to it in the tested design. Section~\ref{sec:generality}
-shows the B0 baseline's concurrency dependence was a property of that one trigger, not
-of the underlying failure condition.
+leakage is invariant to it in the tested design.
 
 \section{Architectural Taxonomy}
 \label{sec:taxonomy}
@@ -572,18 +570,12 @@ multi-category, and priced by a category-sensitive function, which is currently 
 visible in LLM APIs but is not unique to them.
 
 The boundary studied here is the usage-metering and accounting subsystem of a
-network-accessible serving system: the components that authorize, meter, and commit a
-charge for work requested by a remote client. It consists of an authorization path, a
-settlement path, and an accounting event lifecycle, with state ownership divided among
-the gateway, the accounting store, and, in the asynchronous family, an event pipeline,
-and with a data-authority decision at ACCOUNTED about which representation of usage the
-billing function reads. The integrity property studied here, $V(r) \le N(r)$, is the
-condition this paper checks on that subsystem within the stated accounting model. The
-properties that make the LLM instance of it distinctive (progressive value delivery,
-usage unknown at authorization time, and a multi-category billed quantity produced at
-runtime by the model) are properties of the serving system's request lifecycle rather
-than of the language model itself. We do not study the behavior, robustness, or output
-safety of the language model.
+network-accessible serving system: an authorization path, a settlement path, and an
+accounting event lifecycle, with state ownership divided among the gateway, the
+accounting store, and, in the asynchronous family, an event pipeline, and a
+data-authority decision at ACCOUNTED about which representation of usage the billing
+function reads. We do not study the behavior, robustness, or output safety of the
+language model itself.
 
 \section{System and Experimental Methodology}
 \label{sec:method}
