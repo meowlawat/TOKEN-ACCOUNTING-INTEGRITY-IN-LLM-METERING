@@ -100,21 +100,33 @@ def tokenizer_outputs(raw: dict) -> None:
 
     # --- Figures ---
     FIG.mkdir(parents=True, exist_ok=True)
-    fig, axes = plt.subplots(1, len(workloads), figsize=(4.2 * len(workloads), 3.6), sharey=True)
-    axes = [axes] if len(workloads) == 1 else list(axes)
-    for ax, wl in zip(axes, workloads):
+    # 2x2 grid, not the original 1xN strip: at N=4 workloads, a single row forced into
+    # one manuscript column (figure, not figure*) rendered as an unreadable sliver.
+    # Same data, same per-panel plotting logic; only the subplot geometry changed.
+    assert len(workloads) == 4, "2x2 layout assumes exactly 4 workloads; update if this changes"
+    fig, axes = plt.subplots(2, 2, figsize=(8.4, 7.2), sharex=True, sharey=True)
+    axes = axes.flatten()
+    legend_handles: dict[str, object] = {}
+    for idx, (ax, wl) in enumerate(zip(axes, workloads)):
         for i, en in enumerate(engines):
             pts = sorted([(r["target_tokens"], r["p50_ms"]) for r in rows
                           if r["engine"] == en and r["workload"] == wl])
             if pts:
-                ax.plot([p[0] for p in pts], [p[1] for p in pts], marker="o", ms=3.5,
-                        lw=1.6, color=PAL[i % len(PAL)], label=en)
+                line, = ax.plot([p[0] for p in pts], [p[1] for p in pts], marker="o",
+                                 ms=4.5, lw=1.8, color=PAL[i % len(PAL)], label=en)
+                legend_handles.setdefault(en, line)
         ax.set_xscale("log", base=2); ax.set_yscale("log")
-        ax.set_title(wl); ax.set_xlabel("input length (tokens)")
-    axes[0].set_ylabel("p50 encode latency (ms)")
-    axes[-1].legend(fontsize=6.5, frameon=False)
-    fig.suptitle("Standalone tokenizer recount latency (NOT gateway throughput)", fontsize=10)
-    fig.savefig(FIG / "tokenizer_latency.png"); plt.close(fig)
+        ax.set_title(wl, fontsize=10)
+        if idx >= 2:
+            ax.set_xlabel("input length (tokens)")
+        if idx % 2 == 0:
+            ax.set_ylabel("p50 encode latency (ms)")
+    ordered_handles = [legend_handles[en] for en in engines if en in legend_handles]
+    fig.legend(handles=ordered_handles, loc="upper center", bbox_to_anchor=(0.5, 1.06),
+               ncol=3, fontsize=8.5, frameon=False)
+    fig.suptitle("Standalone tokenizer recount latency (NOT gateway throughput)",
+                 fontsize=11, y=1.14)
+    fig.savefig(FIG / "tokenizer_latency.png", bbox_inches="tight"); plt.close(fig)
 
     fig, axes = plt.subplots(1, len(workloads), figsize=(4.2 * len(workloads), 3.6), sharey=True)
     axes = [axes] if len(workloads) == 1 else list(axes)

@@ -1008,10 +1008,7 @@ hard termination of the queue process; duplicate delivery) and not against arbit
 distributed failure or a host restart.
 
 \subsection{Practical guidance}
-Table~\ref{tab:practical} condenses the analysis into what an operator can act on,
-keeping the model-level condition separate from the implementation pattern that satisfies
-it. The patterns are the ones we implemented and measured; they are not claims of
-production safety under conditions we did not test.
+Table~\ref{tab:practical} condenses the analysis into what an operator can act on.
 
 \begin{table*}[t]
 \caption{Practical defense summary. The model-level condition is what the accounting
@@ -1089,11 +1086,13 @@ configuration.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{Figure_6.png}
-\caption{Standalone tokenizer recount latency (p50, log--log axes) by engine, workload,
-and input length, over 100 cells whose token lengths were verified exactly. Cost is
-linear in input length, so recount budgets as tokens times a per-token constant. This is
-a tokenizer microbenchmark, not a gateway throughput result: no request path, database,
-or network is involved.}
+\caption{Standalone tokenizer recount latency (p50, log--log axes) by engine and input
+length, across four text workloads (natural prose, source code, JSON, and
+high-entropy/random text), over 100 cells whose token lengths were verified exactly.
+Cost is linear in input length within every workload, so recount budgets as tokens times
+a per-token constant; the workload shifts the constant, not the linear shape. This is a
+tokenizer microbenchmark, not a gateway throughput result: no request path, database, or
+network is involved.}
 \label{fig:toklat}
 \end{figure}
 
@@ -1157,20 +1156,15 @@ in total; the per-cell comparison against the deterministic corpus is in the rel
 artifact. The architectural conclusion is generator-independent; the per-manipulation
 magnitudes are not.
 
-\subsection{The provider's own number is not reproducible}
-One property of real serving appeared that the deterministic generator cannot exhibit.
-The server reports a prefix-cache split, and because cached input is priced an order of
-magnitude below uncached input, the honest charge for a byte-identical request depends on
-server cache state. Repeating identical requests, the reported split moved (24 then 52
-of 53 prompt tokens in one instance), and the authoritative cost moved with it by 22 to
-27\%, reaching 32\% at the extreme, on all three prompts tested.
-
-This sharpens the threat model: the provider's own authoritative number is not
-reproducible across calls, so a client cannot verify its own bill even in principle, and
-a client that over-declares cached tokens has genuine plausible deniability because the
-true value legitimately varies. This is one stack with one prefix-cache implementation,
-not generalized to hosted APIs, but it is the kind of accounting nondeterminism that
-separates LLM metering from a fixed-price call.
+Real serving also exhibits a property the deterministic generator cannot: the server reports
+a prefix-cache split, and because cached input is priced an order of magnitude below
+uncached input, the honest charge for a byte-identical request depends on server cache
+state. Repeating identical requests, the reported split moved (24 then 52 of 53 prompt
+tokens in one instance) and the authoritative cost moved with it by 22 to 27\%, reaching
+32\% at the extreme, on all three prompts tested. This sharpens the threat model -- a
+client cannot verify its own bill even in principle, and over-declaring cached tokens
+carries genuine plausible deniability since the true value legitimately varies -- though
+it is one stack with one prefix-cache implementation, not generalized to hosted APIs.
 
 \subsection{Asynchronous accounting}
 \label{sec:async}
