@@ -71,6 +71,7 @@ integrity
 \end{frontmatter}
 
 \section{Introduction}
+\label{sec:intro}
 Metered computational services sell work whose quantity is not known when the work is
 authorized. A client asks for computation, the service performs and delivers it, and only
 afterwards does the system learn what to charge. Between those two moments the service
@@ -994,14 +995,11 @@ $P(U_{\mathrm{decl}})$ satisfies ``the server recounts'' while violating (M2-a),
 leaks $P(U_{\mathrm{true}}) - P(T(U_{\mathrm{true}}))$.
 
 \paragraph{B0, synchronization}
-The condition we originally stated was that the check $\mathrm{balance} \ge
-\mathrm{cost}$ and the decrement occur as one operation, atomic with respect to competing
-transactions. The asynchronous experiment in Section~\ref{sec:generality} showed that
-this is not enough, because it says nothing about \emph{where} in the pipeline the atomic
-operation sits. The corrected condition is (B0-a): the authorization decision must be
-atomically coupled to the economic commitment on the path that authorizes service.
-Concurrency is one way to break that coupling; delayed settlement is another, and the
-second requires no concurrency at all.
+(B0-a): the authorization decision must be atomically coupled to the economic commitment
+on the path that authorizes service (Section~\ref{sec:statemodel}) -- a condition about
+\emph{where} in the pipeline the atomic operation sits, not merely that one exists.
+Concurrency is one way to break that coupling; delayed settlement
+(Section~\ref{sec:generality}) is another, requiring no concurrency at all.
 
 \paragraph{Implementation-specific caveats}
 The model says ``committed and durable''; our implementation achieves it with a
@@ -1371,16 +1369,14 @@ input, output, cached, and reasoning categories sits between the two, and its ex
 set is determined by which categories carry distinct prices.
 
 Two kinds of price change must be distinguished. Uniform scaling of every price by a
-constant leaves leakage efficiency unchanged, which is why we use efficiency as the
-headline metric and label absolute dollars as scenario values. Structural repricing
-(changing the ratios between categories, or moving between category-additive and
-flat-total bases) changes which transformations are profitable, and can change them
-qualitatively. The real-stack experiment demonstrates the second case directly: on a
-token mix with no reasoning tokens, three flat-total cells reverse sign, because the
-pricing basis overcharges by more than the manipulation evades. The full price-tier
-sensitivity table is in the released artifact; its summary is that efficiency is
-identical across a uniform 10$\times$ scaling and moves only when the ratio between
-categories changes.
+constant leaves leakage efficiency unchanged (confirmed across a $10\times$ scaling in
+the full price-tier sensitivity table, released in the artifact), which is why we use
+efficiency as the headline metric and label absolute dollars as scenario values.
+Structural repricing -- changing the ratios between categories, or moving between
+category-additive and flat-total bases -- changes which transformations are profitable,
+and can change them qualitatively: the real-stack experiment demonstrates this directly,
+where three flat-total cells reverse sign on a token mix with no reasoning tokens because
+the pricing basis overcharges by more than the manipulation evades.
 
 The pricing tiers used in our experiments are synthetic, so it is worth recording that
 category-differentiated pricing with a wide ratio between categories is current
@@ -1450,23 +1446,19 @@ accounting model, demonstrated on LLM inference, not claims about deployed syste
 not test.
 
 \paragraph{Relation to known weakness classes}
-This is the objection we consider most likely, which is why we state it ourselves. It is
-partly correct. B0 is a known generic race and is presented as a baseline, not a
-contribution. The mechanisms behind M1 and M2 are individually known: trusting
-client-supplied values is CWE-807 \citep{cwe807}, and disconnect-related accounting gaps
-appear in a deployed gateway issue \citep{newapi5235} and in the mitigation shipped by a
-metered-token proxy \citep{aperture247}. We claim no novelty at the primitive level.
+This is the objection we consider most likely, which is why we state it ourselves: the
+individual mechanisms have precedents in isolation (Section~\ref{sec:intro}), B0 is a
+known race presented as a baseline rather than a contribution, and we claim no novelty at
+the primitive level.
 
-What the paper adds is fourfold. A unified accounting model in which
-otherwise-unrelated failures are the same integrity property violated at different
-points of one lifecycle. A taxonomy separating synchronization, lifecycle commitment, and
-usage authority as experimentally distinguishable dimensions. An M1 ablation, confirmed
-by exhaustive model checking, showing that solvency and accounting integrity are
-orthogonal and need different primitives, which does not follow from ``there is a
-streaming bug''. And an M2 ablation isolating computation from authority, where an
-architecture that recounts correctly still leaks. We do not assert that practitioners
-believed a recount was sufficient; we show experimentally that in the evaluated
-architectures it was not.
+What the paper adds beyond these individually known primitives is the unification stated
+in the contributions list (Section~\ref{sec:intro}), plus two things that do not follow
+from a primitive-level description alone: the M1 ablation shows, by exhaustive model
+checking rather than by example, that solvency and accounting integrity are orthogonal
+and need different primitives, which ``there is a streaming bug'' does not predict; and
+the M2 ablation shows an architecture that recounts usage correctly can still leak if
+billing is not authoritative. We do not assert practitioners believed a recount was
+sufficient; we show experimentally that in the evaluated architectures it was not.
 
 \section{Threats to Validity}
 \label{sec:limits}
@@ -1490,15 +1482,13 @@ experimenter-assigned labels rather than measuring evidence, so we make no detec
 claim.
 
 \paragraph{Formal}
-The primary specification (Section~\ref{sec:formal}) is finite (two to three concurrent
-requests, two value chunks, unit pricing), and only safety properties are checked. No
-liveness property and no parameterized or inductive result is claimed. There is no
-refinement proof from specification to implementation. That specification assumes
-strongly consistent accounting state and does not cover the asynchronous family. A
-second, separate specification (Section~\ref{sec:asyncformal}) covers the
-asynchronous-settlement mechanism itself, but it is an untimed, causal-ordering
-abstraction: it has no notion of milliseconds, network behavior, or database semantics,
-and is checked at two finite $(N,k)$ points, not for arbitrary request counts. Neither
+Evidence labels, proof scope, and what neither specification claims are stated in
+Section~\ref{sec:formal} and apply here without repetition. The primary specification is
+finite (two to three concurrent requests, two value chunks, unit pricing) and assumes
+strongly consistent accounting state, so it does not cover the asynchronous family. The
+second specification (Section~\ref{sec:asyncformal}) covers the asynchronous-settlement
+mechanism as an untimed, causal-ordering abstraction, with no notion of milliseconds,
+network behavior, or database semantics, checked at two finite $(N,k)$ points. Neither
 specification models multi-category pricing or tokenizer disagreement.
 
 \paragraph{External}
@@ -1520,21 +1510,16 @@ deployed and open-source infrastructure, not a claim about any named system's cu
 state.
 
 \paragraph{Distribution}
-This limitation deserves its own heading because the paper's central systems claim
-concerns settlement that is separated from authorization, and separation in the topology
-experiments of Section~\ref{sec:generality} (execution topologies, accounting backends)
-is temporal, not physical: those topologies ran on a single host under Docker Compose and
-communicated over loopback. The asynchronous settlement family, by contrast, was
+Separation in the topology experiments of Section~\ref{sec:generality} (execution
+topologies, accounting backends) is temporal, not physical: those topologies ran on a
+single host under Docker Compose over loopback. The asynchronous settlement family was
 additionally run with the accounting store, Redis, and the settlement worker on a second
 machine reached over the real internet (Section~\ref{sec:netsep}), and the condition
-persisted there. This narrows but does not remove the limitation: we tested one
-cloud-region pair of hosts, not a characterization of $D$ against network partition,
-clock skew, or cross-machine queueing behavior in general, and we did not test a VM or
-host restart, a wide-area or multi-region topology, or a production deployment. The
-two-machine result establishes that the condition is not an artifact of loopback
-communication specifically; it does not establish what $D$ is, or how it behaves, in any
-deployment topology beyond the one tested. No production deployment or field evaluation
-was performed.
+persisted there, establishing that it is not an artifact of loopback communication
+specifically. This narrows but does not remove the limitation: we tested one cloud-region
+host pair, not network partition, clock skew, or cross-machine queueing behavior in
+general, and we did not test a VM or host restart, a wide-area or multi-region topology,
+or a production deployment.
 
 \section{Responsible Disclosure and Ethics}
 This work produced no new vulnerability findings against any third-party, live, or
