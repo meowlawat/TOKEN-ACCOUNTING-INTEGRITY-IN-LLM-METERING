@@ -166,6 +166,7 @@ three rows; this paper studies the fourth.}
 \label{tab:quadrant}
 \centering
 \resizebox{\linewidth}{!}{%
+\renewcommand{\arraystretch}{0.92}%
 \begin{tabular}{llll}
 \toprule
 Adversary & Goal & Representative work & Studied here \\
@@ -358,12 +359,13 @@ systems is exploitable; none was tested. Pages reviewed 23 September 2026.}
 \label{tab:deployed}
 \centering
 \resizebox{\linewidth}{!}{%
+\renewcommand{\arraystretch}{0.92}%
 \begin{tabular}{lp{2.9cm}p{3.4cm}p{5.6cm}p{4.0cm}}
 \toprule
 System & Public report & Ingredient & What it establishes & What it does not establish \\
 \midrule
 LiteLLM & Issue \#14457, open \citep{litellm14457} & Terminal path without a committed accounting event (M1) & That an independently developed gateway loses usage tracking when a client disconnects before the provider's final usage chunk & Exploitability, financial impact, or behaviour after the review date \\
-OpenGateLLM & Issue \#1148, fixed \citep{opengate1148} & Terminal path without a committed debit (M1), with a measured instance & That $V(r) > N(r)$ was observed and quantified by the maintainers, who report 254{,}347 completion tokens delivered and never billed, and that it was repairable once identified & Representativeness of the instance, or that the system exhibits it now \\
+OpenGateLLM & Issue \#1148, fixed \citep{opengate1148} & Terminal path without a committed debit (M1), measured & That $V(r) > N(r)$ was observed and quantified by the maintainers: 254{,}347 completion tokens delivered and never billed, repairable once identified & Representativeness of the instance, or that the system exhibits it now \\
 CLIProxyAPI & Issue \#2179, closed \citep{cliproxy2179} & Usage record absent at the accounting transition despite delivered value & That usage-record loss also occurs on successful responses, not just aborts, broadening where the event can be missed & Root-cause parity with our taxonomy; the fix is not analysed here \\
 new-api & Issue \#5235 \citep{newapi5235} & Refund of pre-consumed quota when the final usage record never arrives (M1) & That reserve-and-refund handling of disconnects is a real design point, not a constructed one & That the refund path is exploitable as reported \\
 Aperture & Merged pull request \#247 \citep{aperture247} & Guard against an encoding-induced silent zero-debit (M2 direction) & That server-side authority over billed quantity is treated as a defect worth a shipped mitigation & That the mitigation is complete or that the prior behaviour was exploited \\
@@ -477,6 +479,7 @@ implementation-specific; the general condition (final column of Table~\ref{tab:p
 is what actually matters and is not concurrency-specific for any of the three.}
 \label{tab:structural}
 \resizebox{\linewidth}{!}{%
+\renewcommand{\arraystretch}{0.92}%
 \begin{tabular}{llll}
 \toprule
 Mechanism & Defective element & Baseline trigger (this implementation) & Closed by \\
@@ -631,8 +634,8 @@ Each invariant is checked in its own TLC run. TLC halts at the first violation i
 so checking jointly would hide the fact that an M2 architecture breaks two of them. The
 result is a full configuration $\times$ invariant matrix (Table~\ref{tab:formalmatrix}):
 ten configurations and four invariants give 40 independent runs over 27{,}526 distinct
-states. Every expected outcome is declared in the checking script before the run, and the
-script exits non-zero on any disagreement. All 40 matched, with no disagreements. Runs
+states. Every expected outcome is declared in the checking script before the run, which exits
+non-zero on any disagreement; all 40 matched. Runs
 use a single worker deliberately: with parallel workers, a run that halts at a
 counterexample explores a nondeterministic number of states, and the totals drifted
 between runs.
@@ -643,6 +646,7 @@ between runs.
 invariants. All 40 outcomes matched the expectation declared before the run.}
 \label{tab:formalmatrix}
 \resizebox{\linewidth}{!}{%
+\renewcommand{\arraystretch}{0.92}%
 \begin{tabular}{lllll}
 \toprule
 Configuration & Accounting integrity & Solvency & Ledger conservation & Refund bounded \\
@@ -679,9 +683,9 @@ we happened to build.
 
 For M2, the client-authoritative architecture violates accounting integrity and also the
 refund bound: with a reservation in place, under-billing surfaces as an over-refund. That
-the same defect appears in two independent invariants is a consequence of the model
-rather than something we set out to show, and it became visible only because the
-invariants are checked separately. Enabling server authority restores all four invariants
+the same defect appears in two independent invariants is a consequence of the model, not
+something we set out to show, visible only because the invariants are checked
+separately. Enabling server authority restores all four invariants
 against the same lying client; the declared value simply stops being read.
 
 The three defenses also compose. With contention, aborts, and a lying client all enabled,
@@ -694,13 +698,13 @@ argued} means stated over the accounting model and reasoned about by hand.
 \emph{Empirically verified} means measured and independently recomputed. Nothing weaker
 than the first is ever described as proved.
 
-Nothing here shows that a production implementation is safe. The model abstracts away
-the database, the network, partial failure, asynchronous reconciliation, multi-category
-pricing, and tokenizer disagreement. It is finite, at two to three requests with unit
-pricing. Only safety properties are checked; no liveness property is verified. \textbf{We
+Nothing here shows a production implementation is safe: the model abstracts away the
+database, network, partial failure, asynchronous reconciliation, multi-category pricing,
+and tokenizer disagreement, and is finite, at two to three requests with unit pricing;
+only safety properties are checked, not liveness. \textbf{We
 do not provide a mechanized refinement proof from the abstract specification to the
-implementation.} The correspondence between the two is an argument supported by
-case-by-case agreement between formal and empirical outcomes, and we do not claim more.
+implementation}; the correspondence between the two is an argument supported by
+case-by-case agreement between formal and empirical outcomes, not more.
 
 \subsection{Validating the specification}
 Declaring expectations before running earned its keep immediately. Our first
@@ -708,9 +712,8 @@ specification treated a reservation as a hold and set the committed debit equal 
 charge at settlement, so $N = D - F$ fell below the delivered value and TLC rejected the
 safe configurations. The model was wrong, not the paper: in a reserve-and-reconcile
 architecture the reservation \emph{is} the committed debit, and the refund returns its
-unused part. Correcting the settlement semantics made the safe configurations verify. We
-record the failure because a formal model that is edited until it agrees with the paper
-is worth nothing.
+unused part. Correcting the settlement semantics made the safe configurations verify; we record the
+failure because a formal model edited until it agrees with the paper is worth nothing.
 
 \subsection{A second model: the asynchronous-settlement race}
 \label{sec:asyncformal}
@@ -734,13 +737,13 @@ exhaustively at both points (re-checked in isolation, 91{,}921 states generated,
 distinct, no violation). In the atomic configuration all three invariants hold at both
 points.
 
-This is a useful contrast with Table~\ref{tab:formalmatrix}, not a repetition of it: the
+This contrasts usefully with Table~\ref{tab:formalmatrix} rather than repeating it: the
 synchronous model's vulnerable B0 configuration violates \textsc{LedgerConservation} and
 holds \textsc{Solvency}, the signature of a lost update; this model's vulnerable
 configuration violates \textsc{Solvency} and holds \textsc{LedgerConservation}, the
 signature of an admission race with no lost write at all. Two mechanistically distinct
-races leave different invariant fingerprints, which is itself a form of cross-check
-between the two specifications rather than noise to explain away.
+races leave different invariant fingerprints, itself a cross-check between the two
+specifications rather than noise to explain away.
 
 The same evidence labels and limits apply as in Section~\ref{sec:formal}'s own account of
 itself: this is \emph{model-checked}, exhaustively, at two finite $(N,k)$ points, over an
@@ -767,10 +770,9 @@ Section~\ref{sec:generality} revises the conclusion drawn from it.
 \centering
 \includegraphics[width=\linewidth]{Figure_2.png}
 \caption{B0 baseline: mean leakage per trial against concurrency, 30 repetitions per
-cell, deterministic generator, growing linearly at 0.099 per additional concurrent
-request ($R^2 = 1.0000$). Section~\ref{sec:b0revised} shows concurrency is not the
-essential ingredient: delayed settlement reproduces over-serving with strictly
-sequential arrivals.}
+cell, deterministic generator (linear fit in text). Section~\ref{sec:b0revised} shows
+concurrency is not the essential ingredient: delayed settlement reproduces over-serving
+with strictly sequential arrivals.}
 \label{fig:b0}
 \end{figure}
 
@@ -844,11 +846,10 @@ structural reason the model predicts it.
 
 \subsection{M2: usage authority}
 \label{sec:m2}
-The M2 result is best read as a chain. True usage is produced by the model; usage
-computation turns it into a vector; that vector is stored; a billing authority decides
-which representation to price; and a debit follows. A system can compute and store the
-correct usage while still billing from a different, attacker-influenced representation,
-and nothing in the chain flags the discrepancy.
+The M2 result is best read as a chain: true usage is produced by the model, turned into a
+vector, stored, priced by a billing authority's choice of representation, and debited --
+yet a system can compute and store correct usage while billing from a different,
+attacker-influenced representation, with nothing in the chain flagging the discrepancy.
 
 That is not hypothetical. The client-logged architecture performs an accurate
 server-side recount, records it alongside the declared vector, and bills the declared
@@ -976,17 +977,18 @@ pattern in a different system does not by itself establish the condition there.}
 \label{tab:practical}
 \centering
 \resizebox{\linewidth}{!}{%
+\renewcommand{\arraystretch}{0.92}%
 \begin{tabular}{lp{3.6cm}p{2.1cm}p{4.3cm}p{5.0cm}}
 \toprule
 Mech. & Failure mode & Property at risk & Model-level condition & Implementation pattern \\
 \midrule
-B0 & Authorization reads credit state not yet reflecting prior commitments &
+B0 & Authorization reads credit state before prior commitments land &
 Ledger conservation, solvency &
 Authorization atomically coupled to economic commitment on the authorizing path &
 Conditional \texttt{UPDATE ... WHERE balance >= cost} evaluated on the request path, not
 deferred to a later worker \\
-M1 & A terminal path leaves the lifecycle without a committed debit, or over-refunds the
-unconsumed reservation &
+M1 & A terminal path exits without a committed debit, or over-refunds the unconsumed
+reservation &
 Accounting integrity; solvency separately &
 Terminal-path totality plus refund boundedness (Eq.~\ref{eq:refund}); reservation for
 solvency &
@@ -1036,11 +1038,10 @@ which is what the cost model predicts. Measured throughput ratios scatter around
 signs that flip across workloads, inside a $\pm$10\% noise band that is itself some
 700$\times$ larger than the effect.
 
-The apparent expense in the second case is an artifact of a generator that costs
-nothing: when generation is free, tokenization is the entire request. We report all
-three rather than the most convenient one, and we do not claim the recount is free. It is
-a real, predictable cost that is small relative to real inference in the tested
-configuration.
+The apparent expense in the second case is an artifact of a free generator: when
+generation costs nothing, tokenization is the entire request. We report all three rather
+than the most convenient one -- the recount is not free, but a real, predictable cost
+small relative to real inference in the tested configuration.
 
 \begin{figure}[t]
 \centering
@@ -1167,8 +1168,7 @@ two-request budget at $D = 500$\,ms, with the balance driven negative
 \begin{table}[t]
 \centering
 \caption{B0 under deferred settlement with strictly sequential arrivals 20\,ms apart, a
-two-request budget. No two requests are ever in flight together; over-serving here is
-not a concurrency race.}
+two-request budget.}
 \label{tab:asyncb0}
 \begin{tabular}{lc}
 \toprule
@@ -1383,8 +1383,8 @@ family's queued event. The implementation patterns we built are not
 equivalent to the model-level conditions: satisfying a pattern in another system does not
 by itself establish the condition there, which is why Table~\ref{tab:practical} keeps them
 apart. These are implications for engineering metered services under the stated
-accounting model, demonstrated on LLM inference, not claims about deployed systems we did
-not test.
+accounting model, demonstrated on LLM inference; Section~\ref{sec:limits} states the
+scope precisely.
 
 \paragraph{Relation to known weakness classes}
 This is the objection we consider most likely, so we state it ourselves: the individual
@@ -1409,22 +1409,21 @@ degree of physical distribution actually exercised.
 
 \paragraph{Internal}
 A single uvicorn worker in the base configuration makes gateway recount numbers an upper
-bound. The host is shared and Docker scheduling is not controlled. Local loopback adds a
-roughly 45\,ms floor per request on this configuration, which makes the gateway ratios
-conservative for small inputs. Leakage that depends on delivered tokens is sensitive to
+bound; the host is shared and Docker scheduling is not controlled. Local loopback adds a
+roughly 45\,ms floor per request, making the gateway ratios conservative for small
+inputs. Leakage that depends on delivered tokens is sensitive to
 disconnect timing at high concurrency: the within-cell standard deviation of delivered
 tokens is exactly zero at concurrency 20 or below and about 0.011 at 50 and 100.
 
 \paragraph{Construct}
-The B0 debit path is a frozen module predating the pluggable accounting backends and
-does not reference them, so backend parity covers M1 and M2 only and B0's storage
-independence is untested. Our detectability instrumentation restates
+The B0 debit path is a frozen module predating the pluggable accounting backends, so
+backend parity covers M1 and M2 only and B0's storage independence is untested. Our detectability instrumentation restates
 experimenter-assigned labels rather than measuring evidence, so we make no detectability
 claim.
 
 \paragraph{Formal}
 Evidence labels, proof scope, and what neither specification claims are stated in
-Section~\ref{sec:formal} and apply here without repetition. The primary specification is
+Section~\ref{sec:formal} and apply here. The primary specification is
 finite (two to three concurrent requests, two value chunks, unit pricing) and assumes
 strongly consistent accounting state, so it does not cover the asynchronous family. The
 second specification (Section~\ref{sec:asyncformal}) covers the asynchronous-settlement
@@ -1433,20 +1432,18 @@ network behavior, or database semantics, checked at two finite $(N,k)$ points. N
 specification models multi-category pricing or tokenizer disagreement.
 
 \paragraph{External}
-One serving stack, one small model on CPU, one prompt family. This establishes that the
-architectural conclusions are not artifacts of our own generator; it does not establish
-behavior on commercial providers, and the cache-split nondeterminism is a property of
-this stack's prefix cache rather than a claim about hosted APIs. The generator-dependent
-cells we report bound how far per-manipulation magnitudes travel. Reconciliation delays
-are injected rather than observed in production, so the asynchronous result is
-conditional and stated as such: if settlement lags authorization by more than the
-inter-arrival time, atomicity on the settlement path does not prevent over-serving.
-Pricing tiers are synthetic. More broadly, the experiments establish that the modeled
-accounting failures are realizable under the specified service architectures and
-workloads; they do not establish that any particular commercial provider implements
-these architectures, that the mechanisms are prevalent across deployed LLM services, or
-that a specific provider is vulnerable. Public issue and pull-request evidence cited in
-this paper shows only that related accounting and settlement behaviors are reported in
+One serving stack, one small model on CPU, one prompt family: this shows the
+architectural conclusions are not artifacts of our own generator, but not behavior on
+commercial providers -- the cache-split nondeterminism is a property of this stack's
+prefix cache, not a claim about hosted APIs. The generator-dependent cells bound how far
+per-manipulation magnitudes travel. Reconciliation delays are injected, not observed in
+production, so the asynchronous result is conditional: if settlement lags authorization by
+more than the inter-arrival time, atomicity on the settlement path does not prevent
+over-serving. Pricing tiers are synthetic. More broadly, the experiments show the modeled
+accounting failures are realizable under the specified architectures and workloads; they
+do not show any particular commercial provider implements them, that they are prevalent
+across deployed LLM services, or that a specific provider is vulnerable. Public issue and
+pull-request evidence cited here shows only that related behaviors are reported in
 deployed and open-source infrastructure, not a claim about any named system's current
 state.
 
@@ -1454,44 +1451,42 @@ state.
 Separation in the topology experiments of Section~\ref{sec:generality} (execution
 topologies, accounting backends) is temporal, not physical: those topologies ran on a
 single host under Docker Compose over loopback. The asynchronous settlement family was
-additionally run with the accounting store, Redis, and the settlement worker on a second
-machine reached over the real internet (Section~\ref{sec:netsep}), and the condition
-persisted there, establishing that it is not an artifact of loopback communication
-specifically. This narrows but does not remove the limitation: we tested one cloud-region
+also run with the accounting store, Redis, and settlement worker on a second machine
+reached over the real internet (Section~\ref{sec:netsep}); the condition persisted there,
+so it is not an artifact of loopback communication specifically. This narrows but does
+not remove the limitation: we tested one cloud-region
 host pair, not network partition, clock skew, or cross-machine queueing behavior in
 general, and we did not test a VM or host restart, a wide-area or multi-region topology,
 or a production deployment.
 
 \section{Responsible Disclosure and Ethics}
 This work produced no new vulnerability findings against any third-party, live, or
-production system. All experiments ran against the local testbed shipped with the
+production system: all experiments ran against the local testbed shipped with the
 released artifact, whose harness defaults to \texttt{localhost} and contains no
-third-party endpoints. No credentials, real user data, or production billing APIs were
-used. The public artifacts cited as prior evidence in Section~\ref{sec:deployed} were
-public, and in two cases already fixed, before this work; they are reports written by
-those projects' own maintainers and users, not findings of ours, and we reviewed only
-their published issue and pull-request pages. Every attack in the artifact is paired with a defense, and the testbed
-is released so that operators can measure their own gateways.
+third-party endpoints, and no credentials, real user data, or production billing APIs
+were used. The public artifacts cited as prior evidence in Section~\ref{sec:deployed}
+were public, and in two cases already fixed, before this work; they are reports by those
+projects' own maintainers and users, not findings of ours, and we reviewed only their
+published issue and pull-request pages. Every attack in the artifact is paired with a
+defense, and the testbed is released so operators can measure their own gateways.
 
 \section{Conclusion}
 This paper is an evidence-backed study of accounting integrity in metered computational
-services, carried out on LLM inference serving as the concrete workload. Client-side
-under-payment is best modeled as
-one accounting boundary with three placements: synchronization, commitment timing, and
-usage authority.
-Localizing each to a state transition predicts, and our measurements confirm, that
-integrity and solvency are closed by different primitives and that a server-side recount
-must be authoritative rather than merely computed. Exhaustive model checking establishes
+services, using LLM inference serving as the concrete workload. Client-side under-payment
+is best modeled as one accounting boundary with three placements: synchronization,
+commitment timing, and usage authority. Localizing each to a state transition predicts,
+and our measurements confirm, that integrity and solvency are closed by different
+primitives and a server-side recount must be authoritative, not merely computed.
+Exhaustive model checking establishes
 the M1 orthogonality over all four combinations rather than the two we implemented, and
 the same checking refuted our first specification before it confirmed the corrected one.
 
-The result we did not expect concerns the baseline. B0 began, in this implementation, as
-a concurrency race, and the asynchronous experiment showed that concurrency was
-incidental to the underlying failure: what matters is whether authorization is
-atomically coupled to economic commitment on the path that authorizes service. Delayed
-settlement breaks that coupling with no concurrency whatsoever. The corrected condition
-is more general than the one we started with, and it is the form an operator should test
-against. In the tested configuration the strongest M2 defense costs a small and
+The result we did not expect concerns the baseline: B0 began, in this implementation, as
+a concurrency race, but the asynchronous experiment showed concurrency was incidental to
+the underlying failure -- what matters is whether authorization is atomically coupled to
+economic commitment on the path that authorizes service. Delayed settlement breaks that
+coupling with no concurrency whatsoever. The corrected condition is more general than the
+one we started with, and is the form an operator should test against. In the tested configuration the strongest M2 defense costs a small and
 predictable fraction of real inference time; B0's atomic decrement and M1's
 reserve-reconcile path are not characterized by this same cost measurement.
 
