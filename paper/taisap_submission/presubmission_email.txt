@@ -1,0 +1,25 @@
+[DRAFT ONLY -- NOT SENT. Address to journals@acm.org or the TAISAP editorial contact once confirmed; do not send without reviewing verification_log.md items #7-#10 first, since the submission portal and exact scope-confirmation contact were not independently page-verified this pass.]
+
+Subject: Pre-submission scope question -- AI-serving billing/metering security
+
+Dear Editors,
+
+I am preparing a submission to TAISAP titled "Accounting Integrity in Metered
+LLM-Serving Infrastructure: Verified Conditions Against Client-Side Under-Payment."
+
+Abstract: Metered AI-inference services are deployed systems in which computational
+value is streamed to the client before the charge is settled, usage is produced at
+runtime, and settlement is often asynchronous. We study the integrity of that boundary
+against an authenticated client that seeks to pay less than it owes for inference it
+received, modeling the lifecycle with a single integrity property, verified exhaustively
+in TLA+/TLC and validated empirically across multiple serving architectures, including a
+real LLM-serving stack. We find that correct usage computation does not imply correct
+billing, and report the defenses that close the resulting leaks and their cost.
+
+One question before I submit: is the security of the usage-metering and billing path in
+AI-serving infrastructure -- a technical vulnerability of a deployed AI system, not a
+model-level attack -- within TAISAP's scope?
+
+Thank you for your time.
+
+Hardik
