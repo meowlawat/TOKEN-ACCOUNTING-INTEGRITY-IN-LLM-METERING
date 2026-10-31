@@ -1,5 +1,12 @@
-[DRAFT ONLY -- NOT SENT. Address to journals@acm.org or the TAISAP editorial contact once confirmed; do not send without reviewing verification_log.md items #7-#10 first, since the submission portal and exact scope-confirmation contact were not independently page-verified this pass.]
+[DRAFT ONLY -- NOT SENT. Address: taisap-admin@acm.org -- confirmed as TAISAP's own
+contact address from the author guidelines page (user-retrieved 2026-11-01), not a
+placeholder. That page states this address is for "assistance and questions regarding
+the journal editorial review process and paper assignment to an issue" -- a pre-submission
+scope question is a reasonable use, but it is not explicitly described as a scope-triage
+inbox, so there is some chance the real answer is "submit it and let the Associate Editor
+make the scope call," which is also a legitimate response if you get it.]
 
+To: taisap-admin@acm.org
 Subject: Pre-submission scope question -- AI-serving billing/metering security
 
 Dear Editors,
