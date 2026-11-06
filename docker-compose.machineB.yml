@@ -5,12 +5,9 @@
 # (app/accounting/worker_main.py, from Phase 3). No gateway/FastAPI app runs here --
 # that stays on Host A, which is the point of the experiment.
 #
-# Postgres and Redis publish on all host interfaces (not 127.0.0.1-only) because Host A
-# must reach them over the real network; the actual access restriction is the Azure NSG
-# rule created by provision-two-machine.ps1, which allows 5432/6379 inbound ONLY from
-# Host A's (the administrator's) detected public IP /32 -- never 0.0.0.0/0. This file
-# does not, by itself, make these ports internet-reachable; the NSG is the enforcement
-# point, and this compose file assumes it is in place.
+# Postgres and Redis require explicit credentials and an explicit bind address. For an
+# Internet-routed host, bind to a private/tunnel interface and retain an NSG allowlist;
+# an allowlist alone does not provide transport encryption.
 #
 # Usage (on Host B, after scripts/azure/deploy-machine-b.sh has copied this + app/):
 #   docker compose -f docker-compose.machineB.yml up -d --build
@@ -18,25 +15,28 @@ services:
   db:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: metering
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
       POSTGRES_DB: metering
     ports:
-      - "5432:5432"
+      - "${HOSTB_BIND_IP:?set a private or tunnel bind address}:5432:5432"
     volumes:
       - pgdata_hostb:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d metering"]
+      test: ["CMD-SHELL", "pg_isready -U metering -d metering"]
       interval: 3s
       timeout: 3s
       retries: 30
 
   redis:
     image: redis:7-alpine
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?set REDIS_PASSWORD}
+    command: ["sh", "-c", "exec redis-server --appendonly yes --requirepass \"$$REDIS_PASSWORD\""]
     ports:
-      - "6379:6379"
+      - "${HOSTB_BIND_IP:?set a private or tunnel bind address}:6379:6379"
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD-SHELL", "REDISCLI_AUTH=$$REDIS_PASSWORD redis-cli ping"]
       interval: 3s
       timeout: 3s
       retries: 30
@@ -49,8 +49,8 @@ services:
       redis:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/metering
-      REDIS_URL: redis://redis:6379/0
+      DATABASE_URL: postgresql+asyncpg://metering:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@db:5432/metering
+      REDIS_URL: redis://:${REDIS_PASSWORD:?set REDIS_PASSWORD}@redis:6379/0
     command: python -m app.accounting.worker_main --poll-ms 2.0 --stats-every 50 --instrument
     restart: unless-stopped
 

@@ -110,7 +110,8 @@ async def _on_applied_factory():
     """Tier-1 mechanism instrumentation (opt-in via --instrument): persist the worker-side
     T6 (event popped off the queue, due-check passed) and T7 (debit durably applied) wall-
     clock timestamps into the SAME MRecord row the gateway already wrote at request time,
-    keyed by request_id, merged into `extra` (never overwriting the gateway's own fields).
+    keyed by the tenant-scoped `(account_id, request_id)` pair, merged into `extra`
+    (never overwriting the gateway's own fields).
     This is a read-modify-write, not a DB-side JSON merge operator, so it is agnostic to
     whichever JSON column type SQLAlchemy mapped `extra` to. Never raises past drain()'s
     own try/except around the hook -- a missing row (e.g. an M1 event, which this worker
@@ -120,20 +121,19 @@ async def _on_applied_factory():
     worker_host = socket.gethostname()
 
     async def on_applied(ev: aw.UsageEvent, popped_ns: int, applied_ns: int) -> None:
-        # The gateway emits the event to Redis BEFORE committing the MRecord row
-        # (pre-existing code, async_routes.py::async_b0_complete -- not something this
-        # instrumentation changed). Under concurrent load this ordering, combined with
-        # DB-connection-pool contention across the gateway's two sessions per request plus
-        # the worker's own session, can make the row genuinely not-yet-visible for a few
-        # tens of milliseconds after the event becomes due. Confirmed empirically: this is
-        # nondeterministic (observed in some runs, not others, at identical D=50ms).
+        # The durable outbox and MRecord are committed before Redis emission. Under
+        # concurrent load, DB-connection-pool contention can still delay visibility to
+        # this independent worker for a few tens of milliseconds.
         # Bounded retry so instrumentation does not silently lose data points to this
         # timing variance -- never affects the already-completed debit, which has nothing
         # to do with this lookup.
         for attempt in range(6):
             async with app_db.SessionLocal() as s:
                 rec = (await s.execute(
-                    select(MRecord).where(MRecord.request_id == ev.request_id)
+                    select(MRecord).where(
+                        MRecord.request_id == ev.request_id,
+                        MRecord.account_id == ev.account_id,
+                    )
                 )).scalars().first()
                 if rec is not None:
                     rec.extra = {

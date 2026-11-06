@@ -4,25 +4,28 @@ services:
   db:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: metering
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
       POSTGRES_DB: metering
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d metering"]
+      test: ["CMD-SHELL", "pg_isready -U metering -d metering"]
       interval: 3s
       timeout: 3s
       retries: 30
 
   redis:
     image: redis:7-alpine
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}
+    command: ["sh", "-c", "exec redis-server --appendonly yes --requirepass \"$$REDIS_PASSWORD\""]
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD-SHELL", "REDISCLI_AUTH=$$REDIS_PASSWORD redis-cli ping"]
       interval: 3s
       timeout: 3s
       retries: 30
@@ -36,10 +39,10 @@ services:
         condition: service_healthy
     environment:
       # Async SQLAlchemy URL (note the +asyncpg driver).
-      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/metering
-      REDIS_URL: redis://redis:6379/0
+      DATABASE_URL: postgresql+asyncpg://metering:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@db:5432/metering
+      REDIS_URL: redis://:${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}@redis:6379/0
       # Default flaw-class posture. Flip per-class at runtime via POST /admin/config.
-      CLASS6_CREDIT_RACE: vulnerable
+      CLASS6_CREDIT_RACE: ${CLASS6_CREDIT_RACE:-hardened}
       # Pre-populated tokenizer caches (mounted below) so the container never needs
       # network access to run the real-tokenizer recount benchmark.
       TIKTOKEN_CACHE_DIR: /tokcache/tiktoken
@@ -53,7 +56,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     volumes:
       - ./tokenizer_cache:/tokcache:ro
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000

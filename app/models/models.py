@@ -130,7 +130,8 @@ class UsageRecord(Base):
     trial_id: Mapped[str | None] = mapped_column(
         ForeignKey("trials.id", ondelete="CASCADE"), index=True, nullable=True
     )
-    # Idempotency handle (also the join key to client-side timing).
+    # Correlation handle (also the join key to client-side timing). This is not a
+    # public API idempotency key: callers must use a fresh value for each request.
     request_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
     posture: Mapped[str | None] = mapped_column(String(16), nullable=True)
     concurrency: Mapped[int | None] = mapped_column(Integer, nullable=True)
