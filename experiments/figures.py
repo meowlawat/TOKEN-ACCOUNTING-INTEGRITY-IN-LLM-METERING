@@ -1,11 +1,13 @@
 """Generate publication figures from processed summaries. No hand-drawn charts.
 
-Reads the latest processed M1/M2 summaries and the B0 class-6 summary, writing PNGs
-to results/figures/. Run after the summarizers.
+Reads explicitly selected M1/M2 and B0 summaries when provided, writing PNGs to
+the requested output directory. The legacy no-argument mode retains latest-file
+selection for interactive use.
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 
@@ -59,6 +61,16 @@ def disp(name: str) -> str:
 def _latest(pattern: str, folder: Path) -> Path | None:
     c = sorted(folder.glob(pattern))
     return max(c, key=lambda p: p.stat().st_mtime) if c else None
+
+
+def _select(explicit: Path | None, pattern: str, folder: Path) -> Path | None:
+    """Use a named evidence file, falling back to legacy latest-file selection."""
+    if explicit is None:
+        return _latest(pattern, folder)
+    selected = explicit.resolve()
+    if not selected.is_file():
+        raise FileNotFoundError(f"evidence file does not exist: {selected}")
+    return selected
 
 
 def _load(p: Path) -> dict:
@@ -228,20 +240,32 @@ def fig_defense_summary(m1: dict, m2: dict) -> None:
     plt.close(fig)
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
+    global FIG
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--m1", type=Path, help="exact M1 processed summary")
+    parser.add_argument("--m2", type=Path, help="exact M2 processed summary")
+    parser.add_argument("--b0", type=Path, help="exact B0 class-6 summary")
+    parser.add_argument("--output", type=Path, default=FIG, help="figure output directory")
+    args = parser.parse_args(argv)
+    FIG = args.output.resolve()
     FIG.mkdir(parents=True, exist_ok=True)
-    m1p = _latest("m1_*.summary.json", PROC)
-    m2p = _latest("m2_*.summary.json", PROC)
-    b0p = _latest("class6_*.summary.json", ROOT / "results")
+    m1p = _select(args.m1, "m1_*.summary.json", PROC)
+    m2p = _select(args.m2, "m2_*.summary.json", PROC)
+    b0p = _select(args.b0, "class6_*.summary.json", ROOT / "results")
     made = []
     if m1p:
         m1 = _load(m1p)
         fig_m1_abort_curve(m1); made.append("fig_m1_abort_curve.png")
-        fig_m1_concurrency(m1); made.append("fig_m1_concurrency.png (if multi-concurrency)")
+        fig_m1_concurrency(m1)
+        if (FIG / "fig_m1_concurrency.png").is_file():
+            made.append("fig_m1_concurrency.png")
     if m2p:
         m2 = _load(m2p)
         fig_m2_efficiency_heatmap(m2); made.append("fig_m2_efficiency_heatmap.png")
-        fig_m2_concurrency(m2); made.append("fig_m2_concurrency.png (if multi-concurrency)")
+        fig_m2_concurrency(m2)
+        if (FIG / "fig_m2_concurrency.png").is_file():
+            made.append("fig_m2_concurrency.png")
     if b0p:
         b0 = _load(b0p); fig_b0_concurrency(b0); made.append("fig_b0_concurrency.png")
     if m1p and m2p:

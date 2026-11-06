@@ -1,0 +1,36 @@
+{
+  "experiment_id": "E2",
+  "hypothesis": "Independent repricing preserves non-positive leakage for server-authoritative billing and positive leakage depends on a pricing field changed by the manipulation.",
+  "metrics": [
+    "raw_record_count",
+    "repriced_record_basis_cells",
+    "server_authoritative_positive_leak_cells",
+    "pricing_field_dependency_violations",
+    "arithmetic_mismatches"
+  ],
+  "sample_size": "3,120 frozen M2 records repriced under three locked bases, producing 9,360 record-basis cells",
+  "execution_status": "EXECUTED",
+  "command": [
+    "python",
+    "audit/taisap_upgrade/scripts/audit_raw_results.py",
+    "--repo",
+    ".",
+    "--output",
+    "audit/taisap_upgrade/results"
+  ],
+  "started_at": "2026-11-06T14:49:03.7806039Z",
+  "finished_at": "2026-11-06T14:49:04.0821501Z",
+  "git_commit": "6a18796",
+  "environment": {
+    "os": "Windows 11 AMD64",
+    "python": "3.13.5",
+    "network_required": false
+  },
+  "artifacts": [
+    "audit/taisap_upgrade/results/independent_audit.json",
+    "audit/taisap_upgrade/scripts/audit_raw_results.py",
+    "audit/taisap_upgrade/tests/test_empirical_auditor.py"
+  ],
+  "exit_code": 0,
+  "notes": "Zero arithmetic mismatches, duplicate request IDs, missing required fields, server-authoritative positive-leak cells, and pricing-field dependency violations. Input hashes are embedded in the result artifact."
+}

@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import jsonschema
+
 
 REPO = Path(__file__).resolve().parents[3]
 ROOT = REPO / "audit" / "taisap_upgrade"
@@ -30,3 +32,12 @@ def test_experiment_manifest_schema_is_valid_and_requires_status() -> None:
     statuses = schema["properties"]["execution_status"]["enum"]
     assert statuses == ["PROPOSED_ONLY", "EXECUTED", "FAILED", "HUMAN_APPROVAL_REQUIRED"]
     assert {"hypothesis", "metrics", "sample_size", "artifacts"} <= set(schema["required"])
+
+
+def test_all_experiment_manifests_validate() -> None:
+    schema = json.loads((ROOT / "protocols" / "experiment_manifest.schema.json").read_text(encoding="utf-8"))
+    manifests = [ROOT / "formal_runs" / "E1_manifest.json"]
+    manifests.extend(ROOT.glob("protocols/E[2-4]_manifest.json"))
+    assert len(manifests) == 4
+    for path in manifests:
+        jsonschema.validate(json.loads(path.read_text(encoding="utf-8")), schema)

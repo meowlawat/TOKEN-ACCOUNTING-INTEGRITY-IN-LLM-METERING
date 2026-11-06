@@ -1,0 +1,28 @@
+{
+  "experiment_id": "E4",
+  "hypothesis": "An authorized independent two-machine replication exhibits delay-linked over-serving under deferred settlement while strict serialization serves exactly the budget.",
+  "metrics": [
+    "achieved_interarrival_gap",
+    "authorization_timestamp",
+    "settlement_timestamp",
+    "served_count",
+    "settled_count",
+    "overserved_count",
+    "ledger_conservation"
+  ],
+  "sample_size": "Proposed 40 cells across five delays, vulnerable repetitions, and strict-serialization controls",
+  "execution_status": "HUMAN_APPROVAL_REQUIRED",
+  "command": null,
+  "started_at": null,
+  "finished_at": null,
+  "git_commit": "6a18796",
+  "environment": {
+    "second_host": "not provisioned or contacted",
+    "cloud_charges_authorized": false
+  },
+  "artifacts": [
+    "audit/taisap_upgrade/02_preregistered_extension_plan.md"
+  ],
+  "exit_code": null,
+  "notes": "Not executed because the protocol requires an independently provisioned host and may incur cost. No external system was contacted."
+}
