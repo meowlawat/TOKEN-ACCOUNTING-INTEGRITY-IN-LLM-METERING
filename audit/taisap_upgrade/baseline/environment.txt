@@ -1,0 +1,8 @@
+BRANCH_POINT=95103f1faafa62d926a1350295551f91d57e0f2f
+CURRENT_HEAD=95103f1faafa62d926a1350295551f91d57e0f2f
+CURRENT_BRANCH=research/taisap-scientific-upgrade-2026
+WORKTREE_STATUS=M paper/main_taisap.tex |  M paper/main_taisap_anon.tex | ?? AGENTS.md | ?? audit/taisap_upgrade/ | ?? docs/
+PYTHON=3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]
+PYTHON_EXECUTABLE=E:\python\python.exe
+PLATFORM=Windows-11-10.0.26300-SP0
+MACHINE=AMD64
