@@ -1,0 +1,39 @@
+{
+  "experiment_id": "E1",
+  "hypothesis": "Atomic admission preserves solvency while vulnerable pre-settlement admissions expose an over-serving trace at every preregistered N greater than k point.",
+  "metrics": [
+    "exit_code",
+    "states_generated",
+    "distinct_states",
+    "invariant_outcome",
+    "counterexample_transcript",
+    "spec_and_config_sha256"
+  ],
+  "sample_size": "12 configurations and 36 independent invariant checks",
+  "execution_status": "EXECUTED",
+  "command": [
+    "python",
+    "audit/taisap_upgrade/scripts/run_async_formal_extension.py",
+    "--repo",
+    ".",
+    "--output",
+    "audit/taisap_upgrade/formal_runs"
+  ],
+  "started_at": "2026-11-06T14:39:34Z",
+  "finished_at": "2026-11-06T14:40:05Z",
+  "git_commit": "6114e20",
+  "environment": {
+    "os": "Windows 11 AMD64",
+    "tlc": "2.19",
+    "workers": 1,
+    "note": "Exact executable and artifact hashes are in async_extension_results.json"
+  },
+  "artifacts": [
+    "audit/taisap_upgrade/formal_runs/async_extension_results.json",
+    "audit/taisap_upgrade/formal_runs/configs",
+    "audit/taisap_upgrade/formal_runs/logs",
+    "audit/taisap_upgrade/03_formal_review.md"
+  ],
+  "exit_code": 0,
+  "notes": "36 of 36 outcomes matched; no error or unexpected cell. Times are run-window records; exact per-cell commands and hashes are authoritative."
+}
