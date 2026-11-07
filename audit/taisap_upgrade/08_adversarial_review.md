@@ -26,7 +26,7 @@ Two independent read-only reviews were performed after the submission package co
 
 These are administrative and require author action, not further autonomous research work:
 
-1. Natasha Kaila's ORCID must be supplied if required by the venue.
+1. Natasha Kaila's supplied ORCID is now recorded as `0009-0006-4252-9705`.
 2. All authors must confirm author order, manuscript contents, and exclusive submission.
 3. Current TAISAP policy must be rechecked immediately before any submission.
 

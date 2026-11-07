@@ -8,8 +8,8 @@ package. No venue submission, upload, or external contact was performed.
 - `submission_package/named/`: named upgrade source, bibliography, BBL, PDF, and figure assets.
 - `submission_package/anonymous/`: double-anonymous source, bibliography, BBL, PDF, and figure assets.
 - Both PDFs were rebuilt with Tectonic from the selected upgrade source and have 33 pages.
-- The named source contains the verified Hardik ORCID `0009-0001-1642-6669` and six ACM
-  figure-description blocks. The second author's ORCID was not supplied and was not invented.
+- The named source contains the verified Hardik ORCID `0009-0001-1642-6669`, Natasha Kaila's
+  supplied ORCID `0009-0006-4252-9705`, and six ACM figure-description blocks.
 - The bibliography resolves to 87 entries with no `[?]` or `(?)` markers in either PDF.
 
 ## Anonymity checks
@@ -27,11 +27,9 @@ figures. Historical `paper/taisap_submission/` artifacts were not overwritten.
 
 ## Remaining blockers
 
-1. **REQUIRES AUTHOR ACTION — Natasha ORCID:** obtain and confirm the second author's ORCID
-   if the selected venue requires it; no value is present in the supplied project evidence.
-2. **REQUIRES AUTHOR ACTION — exclusivity/coauthor confirmation:** confirm all authors approve
+1. **REQUIRES AUTHOR ACTION — exclusivity/coauthor confirmation:** confirm all authors approve
    the author order, manuscript contents, and exclusive submission to the selected venue.
-3. **REQUIRES AUTHOR ACTION — final venue policy check:** recheck current TAISAP metadata,
+2. **REQUIRES AUTHOR ACTION — final venue policy check:** recheck current TAISAP metadata,
    anonymity, artifact, and ORCID requirements immediately before any submission. This report
    does not authorize submission.
 

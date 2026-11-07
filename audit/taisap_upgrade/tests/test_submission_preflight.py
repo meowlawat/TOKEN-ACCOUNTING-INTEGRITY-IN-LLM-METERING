@@ -27,6 +27,7 @@ def test_pdfs_have_expected_pages_and_no_missing_citations():
 def test_named_source_has_verified_orcid_and_accessible_figures():
     source = (PACKAGE / "named" / "main_taisap_upgrade.tex").read_text(encoding="utf-8")
     assert r"\orcid{0009-0001-1642-6669}" in source
+    assert r"\orcid{0009-0006-4252-9705}" in source
     assert source.count(r"\Description[") >= 6
     assert (PACKAGE / "named" / "references_taisap.bib").exists()
     assert (PACKAGE / "named" / "main_taisap_upgrade.bbl").exists()
