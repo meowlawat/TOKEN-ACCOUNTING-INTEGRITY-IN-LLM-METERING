@@ -55,34 +55,33 @@ Evidence for Client-Side Under-Payment
 HARDIK∗, Department of Computer Science and Data Analytics, Indian Institute of Technology Patna,
 India and Vivekananda Institute of Professional Studies – Technical Campus, India
 NATASHA KAILA, Vivekananda Institute of Professional Studies – Technical Campus, India
-Metered AI-inference services are deployed systems in which computational value is streamed to the client before the
-charge is settled, usage is produced at runtime, and settlement is often asynchronous – placing the usage-metering
-and billing boundary inside the security perimeter of the AI-serving infrastructure itself, not outside it. We study
-the integrity of that boundary against an authenticated client that seeks to pay less than it owes for inference it
-received. Modeling a metered request as a lifecycle with a single integrity property, 𝑉 (𝑟 ) ≤ 𝑁 (𝑟 ), we localize failures
-to three architectural placements: state synchronization (B0), commitment timing (M1), and usage authority (M2).
-We apply bounded exhaustive model checking in TLA+/TLC across ten conﬁgurations and four invariants, and
-validate the model predictions on a testbed spanning three execution topologies, three accounting families including
-an asynchronous event pipeline, and a third-party serving stack. Three results follow. Reservation and abort-safe
-ﬁnalization are orthogonal security properties: each secures only one of solvency and accounting integrity, and only
-their conjunction secures both. Correct usage computation does not imply correct billing: an architecture that
-recounts usage accurately but bills the client-declared value leaks 58.3% of delivered value in a controlled setting and
-69.0% against a real serving stack, while server-authoritative billing eliminates the leak. Asynchronous settlement
-reproduces over-serving under strictly sequential arrivals with no concurrency at all, showing that the synchronization
-condition concerns not concurrency but whether authorization is atomically coupled to economic commitment on
-the authorizing path; this persists under a network-separated two-machine deployment, while a settlement-conﬁrmed
-serialization control shows none. We state model-level security conditions separately from the implementation patterns
-that satisfy them, report that the strongest defense against usage-authority manipulation costs under 0.1% of end-
-to-end time with real inference, and delimit the formal model, extended with a second, causal-ordering speciﬁcation
-of the asynchronous settlement mechanism. The contribution is a systematic security analysis of deployed AI-serving
-infrastructure: B0 is a known baseline, and M1/M2 systematize, formalize, and measure mechanisms with prior
-individual precedent.
+Metered AI-inference services deliver computational value before usage settlement, often through asynchronous billing
+paths. This creates an accounting-integrity boundary inside the serving infrastructure. We study that boundary
+against an authenticated client seeking to underpay for inference already received. Modeling each request with the
+integrity property 𝑉 (𝑟 ) ≤ 𝑁 (𝑟 ), we localize failures to three architectural placements: state synchronization (B0),
+commitment timing (M1), and usage authority (M2). We apply bounded exhaustive model checking with TLA+/TLC
+across ten conﬁgurations and four invariants, then test the resulting predictions across three execution topologies,
+three accounting families, an asynchronous event pipeline, and a third-party serving stack. Reservation and abort-safe
+ﬁnalization prove orthogonal: each protects only one of solvency and accounting integrity, whereas their conjunction
+protects both. Accurate usage computation likewise does not guarantee accurate billing. An architecture that recounts
+usage but bills a client-declared value leaks 58.3% of delivered value in the controlled testbed and 69.0% against the
+real serving stack; server-authoritative billing eliminates the observed leak. Asynchronous settlement also reproduces
+over-serving under strictly sequential arrivals, demonstrating that the necessary synchronization condition is atomic
+coupling of authorization to economic commitment, rather than concurrency itself. This result persists in a network-
+separated deployment, while a settlement-conﬁrmed serialization control shows no over-serving. We distinguish model-
+level security conditions from the implementation patterns that satisfy them, measure the strongest usage-authority
+defense at under 0.1% of end-to-end inference time, and state the bounded scope of the asynchronous formal extension.
+Across the evaluated architectures, safe enforcement requires a committed, non-refunded, server-authoritative debit
+for delivered inference. The contribution is a systematic security analysis of deployed AI-serving infrastructure: B0 is
+a known baseline, while M1 and M2 systematize, formalize, and measure mechanisms with prior individual precedent.
 CCS Concepts: • Security and privacy → Systems security; Formal methods and theory of security; Distributed
 systems security; Economics of security and privacy.
+Additional Key Words and Phrases: LLM serving infrastructure, AI-system security, usage metering, distributed
+accounting, asynchronous settlement, formal veriﬁcation, TLA+, cloud billing integrity
 ∗Corresponding author.
 Authors’ addresses: Hardik, Department of Computer Science and Data Analytics, Indian Institute of Technology Patna,
 India and Vivekananda Institute of Professional Studies – Technical Campus, New Delhi, India, hardik_24a12res263@iitp.ac.in ;
-Natasha Kaila, Vivekananda Institute of Professional Studies – Technical Campus, New Delhi, India, 09617711924_aids@vipstc.
+Natasha Kaila , Vivekananda Institute of Professional Studies – Technical Campus, New Delhi, India, 09617711924_aids@vipstc.
 edu.in.
 Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee
 provided that copies are not made or distributed for proﬁt or commercial advantage and that copies bear this notice and
@@ -91,7 +90,8 @@ Abstracting with credit is permitted. To copy otherwise, or republish, to post o
 prior speciﬁc permission and/or a fee. Request permissions from permissions@acm.org.
 © 2026 Association for Computing Machinery.
 Manuscript submitted to ACM
-Manuscript submitted to ACM 1\n53
+Manuscript submitted to ACM 1
+53
 54
 55
 56
@@ -144,8 +144,6 @@ Manuscript submitted to ACM 1\n53
 103
 104
 2 Hardik and Natasha Kaila
-Additional Key Words and Phrases: LLM serving infrastructure, AI-system security, usage metering, distributed
-accounting, asynchronous settlement, formal veriﬁcation, TLA+, cloud billing integrity
 ACM Reference Format:
 Hardik and Natasha Kaila. 2026. Accounting Integrity in Metered LLM-Serving Infrastructure: Bounded Evidence
 for Client-Side Under-Payment. 1, 1 (November 2026), 33 pages. https://doi.org/10.1145/nnnnnnn.nnnnnnn
@@ -184,7 +182,9 @@ that uniﬁcation, veriﬁcation, and empirical validation is the contribution o
 presented as a known baseline and M1 and M2 as systematization and measurement contributions.
 These failures are usually discussed as unrelated bugs in unrelated systems; placed on one request lifecycle,
 they are the same integrity property violated at three points, which yields three things no bug report does:
-Manuscript submitted to ACM\n105
+defenses separate into properties that do not substitute for one another, the exploitable attack set becomes
+Manuscript submitted to ACM
+105
 106
 107
 108
@@ -244,7 +244,6 @@ Provider Over-charge an honest client CoIn [ 72]; Invisible Tokens [ 73]; Token 
 Third party Inﬂate a victim’s bill Denial-of-Wallet [21, 40]; OW ASP LLM10 [59]; LLMjacking [ 74] no
 Intermediary Misroute or forge provenance AEX [ 30]; gateway-path provenance [ 77] no
 Client Under-pay for received inference — yes
-defenses separate into properties that do not substitute for one another, the exploitable attack set becomes
 a function of the pricing basis rather than attacker ingenuity, and the conditions under which each defense
 suﬃces can be stated and checked.
 The setting throughout is a network-accessible LLM serving system reached over a metered API, where
@@ -278,7 +277,8 @@ separated deployment, with fail-closed integrity gates and independent recomputa
 performance cost (Sections 9 and 11), kept explicitly separate, together with public evidence (Sec-
 tion 3.5) that the same architectural ingredient appears in independently developed, deployed me-
 tering gateways.
-Manuscript submitted to ACM\n157
+Manuscript submitted to ACM
+157
 158
 159
 160
@@ -367,7 +367,8 @@ analysis. We separate them:
 • Accounting integrity, 𝑉 (𝑟 ) ≤ 𝑁 (𝑟 ): the client is never net-charged less than the value it received.
 • Solvency: a request is served only when the system holds enough committed or reserved capacity
 to cover it under its own policy.
-Manuscript submitted to ACM\n209
+Manuscript submitted to ACM
+209
 210
 211
 212
@@ -458,7 +459,8 @@ the fail-closed recount path in Section 8 follows the second. Attestation and pr
 gateway path, not the endpoint: Guan [ 30] provide multi-hop attestation for LLM APIs, and Wang and
 Tian [77] address forged routing claims with evidence-bound provenance, assuming a dishonest intermediary
 rather than endpoint.
-Manuscript submitted to ACM\n261
+Manuscript submitted to ACM
+261
 262
 263
 264
@@ -548,7 +550,8 @@ without an oracle, as our price-scaling invariance check does; the oracle proble
 every reported quantity independently rather than trust the system’s own bookkeeping. Fault injection is
 established practice: chaos engineering perturbs running systems [ 10], lineage-driven injection guides fault
 selection [ 3], and Elle checks recorded histories for isolation anomalies [ 42]; our nine lifecycle failures are
-Manuscript submitted to ACM\n313
+Manuscript submitted to ACM
+313
 314
 315
 316
@@ -684,7 +687,8 @@ establish that no such work exists.
 3.7 Scope and novelty
 This paper is not a model-level attack: it does not target the weights, outputs, or training data of the
 language model, and no manipulation in our harness depends on prompting, jailbreaking, or extracting
-Manuscript submitted to ACM\n365
+Manuscript submitted to ACM
+365
 366
 367
 368
@@ -774,7 +778,8 @@ implementation bugs. Table 3 summarizes where each mechanism sits and what close
 4.1 Formal model
 For a request 𝑟 let 𝑈true (𝑟 ) be the usage actually produced, 𝑈bill (𝑟 ) the usage billed, and 𝑃 (·) the exact-
 decimal pricing function, so that 𝐶 (𝑟 ) = 𝑃 (𝑈true (𝑟 )) is the true cost. 𝑉 (𝑟 ), Res(𝑟 ), 𝐷 (𝑟 ), 𝐹 (𝑟 ), and 𝑁 (𝑟 ) =
-Manuscript submitted to ACM\n417
+Manuscript submitted to ACM
+417
 418
 419
 420
@@ -868,7 +873,8 @@ because diﬀerent steps of the lifecycle own them, reservation before execution
 path.
 Section 8 conﬁrms this prediction empirically: the B0 manifestation we implemented requires concurrency;
 M1 and M2 per-request leakage does not.
-Manuscript submitted to ACM\n469
+Manuscript submitted to ACM
+469
 470
 471
 472
@@ -958,7 +964,8 @@ path, and Section 10 replaces the generator entirely with third-party serving co
 Pricing is category-wise over three tiers. Leakage eﬃciency, the fraction of true value evaded, is the head-
 line metric because it is invariant under uniform price scaling; absolute dollar ﬁgures are labeled as scenario
 values. The sweeps are: B0 concurrency {1, 2, 5, 10, 20, 30, 50} with 30 repetitions; M1 across architecture, abort
-Manuscript submitted to ACM\n521
+Manuscript submitted to ACM
+521
 522
 523
 524
@@ -1049,7 +1056,8 @@ or required-ﬁeld discrepancies. Its preregistered E2 extension repriced 3,120 
 pricing bases (9,360 record–basis cells): server-authoritative architectures had zero positive-leak cells and
 zero pricing-ﬁeld dependency violations. The maximum stored real-inference recount fraction independently
 recomputed to 0.023693%.
-Manuscript submitted to ACM\n573
+Manuscript submitted to ACM
+573
 574
 575
 576
@@ -1142,7 +1150,8 @@ distinct states. Every expected outcome is declared in the checking script befor
 zero on any disagreement; all 40 matched. Runs use a single worker deliberately: with parallel workers, a
 run that halts at a counterexample explores a nondeterministic number of states, and the totals drifted
 between runs.
-Manuscript submitted to ACM\n625
+Manuscript submitted to ACM
+625
 626
 627
 628
@@ -1233,7 +1242,8 @@ the delivered value and TLC rejected the safe conﬁgurations. The model was wro
 reserve-and-reconcile architecture the reservation is the committed debit, and the refund returns its unused
 part. Correcting the settlement semantics made the safe conﬁgurations verify; we record the failure because
 a formal model edited until it agrees with the paper is worth nothing.
-Manuscript submitted to ACM\n677
+Manuscript submitted to ACM
+677
 678
 679
 680
@@ -1323,7 +1333,8 @@ validates the rig and supplies the contrast used below. Section 10 revises the c
 8.2 M1: commitment timing
 Leakage tracks the value delivered before the missing commit. It rises monotonically with abort position
 and collapses to zero at completion, when the debit ﬁnally ﬁres: per request, $0.0045 at roughly one token
-Manuscript submitted to ACM\n729
+Manuscript submitted to ACM
+729
 730
 731
 732
@@ -1394,7 +1405,8 @@ places, with request-level attack success exactly 1.000 for vulnerable and 0.000
 ure 4). The honest-client control leaked nothing anywhere. We do not claim invariance as a proven property
 of all systems under all loads; this is the measured behavior of the tested architecture, and Section 12 gives
 the structural reason the model predicts it.
-Manuscript submitted to ACM\n781
+Manuscript submitted to ACM
+781
 782
 783
 784
@@ -1464,7 +1476,8 @@ correct usage while billing from a diﬀerent, attacker-inﬂuenced representati
 That is not hypothetical. The client-logged architecture performs an accurate server-side recount, records
 it alongside the declared vector, and bills the declared number. Against 90% output under-reporting it leaks
 58.3% of delivered value in the controlled setting, and 69.0% against the real serving stack of Section 10. The
-Manuscript submitted to ACM\n833
+Manuscript submitted to ACM
+833
 834
 835
 836
@@ -1539,7 +1552,8 @@ Beyond the scripted attacks we inject nine lifecycle failures: disconnect at �
 stream, settle-window race, missing, delayed, and duplicated usage metadata, and a recount-engine failure.
 Every invariant violation falls on a vulnerable architecture, the hardened architectures survive all of them,
 and a recount-engine failure is fail-closed: the request is rejected and nothing is served or billed.
-Manuscript submitted to ACM\n885
+Manuscript submitted to ACM
+885
 886
 887
 888
@@ -1613,7 +1627,8 @@ to rescue the metric.
 9 DEFENSES AND SUFFICIENCY CONDITIONS
 The ablation shows which primitive is load-bearing empirically. Here we state, per mechanism, conditions
 suﬃcient within the accounting model to guarantee Equation ( 1). These are model-level arguments, not
-Manuscript submitted to ACM\n937
+Manuscript submitted to ACM
+937
 938
 939
 940
@@ -1704,7 +1719,8 @@ First, the standalone tokenizer (Figure 6). Cost is linear in input length (log�
 with 𝑅2 ≥ 0.998), so it budgets as tokens times a per-token constant, roughly 0.7 𝜇s/token for tiktoken and
 2.5 𝜇s/token for SentencePiece. At 16,384 tokens the engines span 10.1 to 41.8 ms, a 2.9 to 3.6 × implemen-
 tation eﬀect, and at ﬁxed token count the workload alone changes cost by up to 3.4 ×.
-Manuscript submitted to ACM\n989
+Manuscript submitted to ACM
+989
 990
 991
 992
@@ -1840,7 +1856,8 @@ data plane; the attack harness, the architectures under test, and the integrity 
 all runs. Each varied dimension (execution topology, accounting backend, inference data plane, settlement
 architecture) tests whether an observed behavior belongs to the architecture or to one implementation of
 it.
-Manuscript submitted to ACM\n1041
+Manuscript submitted to ACM
+1041
 1042
 1043
 1044
@@ -1903,7 +1920,8 @@ is involved.
 Three topologies: a single uvicorn worker with no proxy, as control; nginx over four uvicorn workers, giving
 four independent event loops sharing one PostgreSQL and one Redis; and an nginx load balancer over two
 gateway containers. Across 96 accounting cells there were no mismatches against the control. Two genuine
-Manuscript submitted to ACM\n1093
+Manuscript submitted to ACM
+1093
 1094
 1095
 1096
@@ -1996,7 +2014,8 @@ reaching 32% at the extreme, on all three prompts tested. This sharpens the thre
 verify its own bill even in principle, and over-declaring cached tokens carries genuine plausible deniability
 since the true value legitimately varies – though it is one stack with one preﬁx-cache implementation, not
 generalized to hosted APIs.
-Manuscript submitted to ACM\n1145
+Manuscript submitted to ACM
+1145
 1146
 1147
 1148
@@ -2087,7 +2106,8 @@ because the debits for earlier requests are still in the queue. An atomic guarde
 defense, provides nothing if it lands after the next authorization has already read the balance. Concurrency
 was never the essential ingredient; it was one way of separating the check from the commitment. Delayed
 settlement is another, and it needs no concurrency at all.
-Manuscript submitted to ACM\n1197
+Manuscript submitted to ACM
+1197
 1198
 1199
 1200
@@ -2177,7 +2197,8 @@ the same two-machine topology, strict serialization produced zero over-serving i
 cells ( 𝐷 ∈ { 0, 500, 2000, 10000} ms, 3 repetitions each; served equaled the budget exactly in all twelve).
 This is evidence for one tested topology, one cloud region, and one host pair, not a characterization of
 networked deployments in general; Section 13 states the remaining scope precisely.
-Manuscript submitted to ACM\n1249
+Manuscript submitted to ACM
+1249
 1250
 1251
 1252
@@ -2271,7 +2292,8 @@ That has an immediate structural consequence. Under category-additive pricing, �
 𝑖 𝑝𝑖𝑢𝑖 , a manip-
 ulation pays oﬀ if and only if it reduces a category the function actually reads. Declaring a total inconsistent
 with the subtotals is therefore inert, measured at 0.000, because category pricing never reads the declared
-Manuscript submitted to ACM\n1301
+Manuscript submitted to ACM
+1301
 1302
 1303
 1304
@@ -2359,7 +2381,8 @@ The practical consequences are three: an operator cannot use traﬃc level as a 
 two of the three dimensions do not scale with load at all and the third fails under sequential arrivals if
 settlement lags; integrity and solvency need diﬀerent controls, so a system with only one will look correct
 in whichever dimension it is measured; and in the evaluated architectures a correct recount did not prevent
-Manuscript submitted to ACM\n1353
+Manuscript submitted to ACM
+1353
 1354
 1355
 1356
@@ -2449,7 +2472,8 @@ restates experimenter-assigned labels rather than measuring evidence, so we make
 Formal. Evidence labels, proof scope, and what neither speciﬁcation claims are stated in Section 7 and
 apply here. The primary speciﬁcation is ﬁnite (two to three concurrent requests, two value chunks, unit
 pricing) and assumes strongly consistent accounting state, so it does not cover the asynchronous family.
-Manuscript submitted to ACM\n1405
+Manuscript submitted to ACM
+1405
 1406
 1407
 1408
@@ -2540,7 +2564,8 @@ paired with a defense, and the testbed is released so operators can measure thei
 15 CONCLUSION
 This paper is an evidence-backed security study of accounting integrity in metered AI-serving infrastructure,
 using LLM inference serving as the concrete deployed-system workload. Client-side under-payment is best
-Manuscript submitted to ACM\n1457
+Manuscript submitted to ACM
+1457
 1458
 1459
 1460
@@ -2630,7 +2655,8 @@ them; v1.0.1 diﬀers from v1.0.0 only in how the B0 condition is stated and in 
 complete artifact (source code, experiment scripts, both TLA+ speciﬁcations, raw and processed results,
 ﬁgures, tables, and reproduction scripts) corresponding to this version is archived in Zenodo under the
 concept DOI 10.5281/zenodo.22085827, which always resolves to the most recent archived version, and
-Manuscript submitted to ACM\n1509
+Manuscript submitted to ACM
+1509
 1510
 1511
 1512
@@ -2735,7 +2761,8 @@ temporal logic speciﬁcations. ACM Transactions on Programming Languages and Sy
 serverless architectures. arXiv:2508.19284.
 [22] B. Efron. 1979. Bootstrap methods: another look at the jackknife. The Annals of Statistics 7, 1–26. https://doi.org/10.121
 4/aos/1176344552.
-Manuscript submitted to ACM\n1561
+Manuscript submitted to ACM
+1561
 1562
 1563
 1564
@@ -2845,7 +2872,8 @@ Wesley, Boston.
 145/1538788.1538814.
 [51] Y. Leviathan, M. Kalman, and Y. Matias. 2022. Fast inference from transformers via speculative decoding.
 arXiv:2211.17192.
-Manuscript submitted to ACM\n1613
+Manuscript submitted to ACM
+1613
 1614
 1615
 1616
@@ -2954,7 +2982,8 @@ based web stores, in: 2011 IEEE Symposium on Security and Privacy, pp. 465–480
 Proceedings of the 2017 ACM International Conference on Management of Data, pp. 5–20. https://doi.org/10.1145/3035918.
 3064037.
 [80] WHATWG. n.d.. Server-sent events. HTML Living Standard. https://html.spec.whatwg.org/multipage/server-sent-events.html .
-Manuscript submitted to ACM\n1665
+Manuscript submitted to ACM
+1665
 1666
 1667
 1668

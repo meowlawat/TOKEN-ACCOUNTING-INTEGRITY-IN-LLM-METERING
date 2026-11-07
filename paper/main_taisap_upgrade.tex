@@ -46,28 +46,31 @@ Bounded Evidence for Client-Side Under-Payment}
 \email{09617711924_aids@vipstc.edu.in}
 
 \begin{abstract}
-Metered AI-inference services stream computational value before usage settlement, often
-through asynchronous billing paths. We study this boundary against an authenticated client
-that seeks to underpay for inference received. Modeling a request with the integrity
-property $V(r) \le N(r)$, we localize failures to state synchronization (B0), commitment
-timing (M1), and usage authority (M2). We apply bounded exhaustive model checking with
-TLA+/TLC
-across ten configurations and four invariants, then test the predictions across three
-execution topologies, three accounting families, an asynchronous event pipeline, and a
-third-party serving stack. Reservation and abort-safe finalization are orthogonal:
-each protects only one of solvency and accounting integrity, while their conjunction
-protects both. Accurate usage computation also does not imply accurate billing: billing a
+Metered AI-inference services deliver computational value before usage settlement, often
+through asynchronous billing paths. This creates an accounting-integrity boundary inside
+the serving infrastructure. We study that boundary against an authenticated client seeking
+to underpay for inference already received. Modeling each request with the integrity
+property $V(r) \le N(r)$, we localize failures to three architectural placements: state
+synchronization (B0), commitment timing (M1), and usage authority (M2). We apply
+bounded exhaustive model checking with TLA+/TLC across ten configurations and four invariants, then
+test the resulting predictions across three execution topologies, three accounting
+families, an asynchronous event pipeline, and a third-party serving stack. Reservation and
+abort-safe finalization prove orthogonal: each protects only one of solvency and accounting
+integrity, whereas their conjunction protects both. Accurate usage computation likewise
+does not guarantee accurate billing. An architecture that recounts usage but bills a
 client-declared value leaks 58.3\% of delivered value in the controlled testbed and 69.0\%
-against the real serving stack, whereas server-authoritative billing eliminates the leak.
-Asynchronous settlement reproduces over-serving under strictly sequential arrivals, showing
-that the relevant condition is atomic coupling of authorization to economic commitment,
-not concurrency; the result persists in a network-separated deployment, while a
-settlement-confirmed serialization control shows none. We separate model-level conditions
-from implementation patterns, measure the strongest usage-authority defense at under 0.1\%
-of end-to-end inference time, and state the limits of the asynchronous extension. The
-contribution is a systematic security analysis of deployed AI-serving infrastructure: B0
-is a known baseline, while M1 and M2 systematize, formalize, and measure mechanisms with
-prior individual precedent.
+against the real serving stack; server-authoritative billing eliminates the observed leak.
+Asynchronous settlement also reproduces over-serving under strictly sequential arrivals,
+demonstrating that the necessary synchronization condition is atomic coupling of
+authorization to economic commitment, rather than concurrency itself. This result persists
+in a network-separated deployment, while a settlement-confirmed serialization control shows
+no over-serving. We distinguish model-level security conditions from the implementation
+patterns that satisfy them, measure the strongest usage-authority defense at under 0.1\% of
+end-to-end inference time, and state the bounded scope of the asynchronous formal extension.
+Across the evaluated architectures, safe enforcement requires a committed, non-refunded,
+server-authoritative debit for delivered inference. The contribution is a systematic
+security analysis of deployed AI-serving infrastructure: B0 is a known baseline, while M1
+and M2 systematize, formalize, and measure mechanisms with prior individual precedent.
 \end{abstract}
 
 \begin{CCSXML}

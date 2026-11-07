@@ -14,7 +14,8 @@ Two independent read-only reviews were performed after the submission package co
 
 ## Compliance/reproducibility review
 
-- Named and anonymous PDFs each have 33 pages and 87 bibliography entries.
+- The rebuilt named PDF has 33 pages and the anonymous PDF has 32 pages; both contain 87
+  bibliography entries.
 - Neither PDF contains `[?]` or `(?)` citation markers.
 - The anonymous source/PDF contain no author names, affiliations, emails, ORCID, GitHub
   identifiers, or Zenodo identifiers.

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import re
 from pathlib import Path
 
 
@@ -21,6 +22,15 @@ def test_selected_intellectual_spine_and_bounded_formal_language() -> None:
     assert "six preregistered $(N,k)$ points" in text
     assert "verify the lifecycle exhaustively" not in text
     assert "verified conditions" not in text.lower()
+
+
+def test_abstract_uses_available_space_without_exceeding_venue_limit() -> None:
+    match = re.search(r"\\begin\{abstract\}(.*?)\\end\{abstract\}", manuscript(), re.DOTALL)
+    assert match is not None
+    abstract = re.sub(r"\\[A-Za-z]+(?:\[[^]]*\])?", " ", match.group(1))
+    abstract = re.sub(r"[{}$%]", " ", abstract)
+    words = re.findall(r"\b[\w'-]+\b", abstract)
+    assert 280 <= len(words) < 300
 
 
 def test_closest_provider_side_work_is_cited_and_contrasted() -> None:

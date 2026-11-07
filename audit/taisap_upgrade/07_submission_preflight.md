@@ -7,7 +7,8 @@ package. No venue submission, upload, or external contact was performed.
 
 - `submission_package/named/`: named upgrade source, bibliography, BBL, PDF, and figure assets.
 - `submission_package/anonymous/`: double-anonymous source, bibliography, BBL, PDF, and figure assets.
-- Both PDFs were rebuilt with Tectonic from the selected upgrade source and have 33 pages.
+- Both PDFs were rebuilt with Tectonic from the selected upgrade source; the named PDF has
+  33 pages and the anonymous PDF has 32 pages because its identity metadata is suppressed.
 - The named source contains the verified Hardik ORCID `0009-0001-1642-6669`, Natasha Kaila's
   supplied ORCID `0009-0006-4252-9705`, and six ACM figure-description blocks.
 - The bibliography resolves to 87 entries with no `[?]` or `(?)` markers in either PDF.
@@ -40,4 +41,5 @@ python -m pytest -q audit/taisap_upgrade/tests/test_submission_preflight.py
 python -c "from pypdf import PdfReader; print(len(PdfReader('audit/taisap_upgrade/submission_package/named/main_taisap_upgrade.pdf').pages)); print(len(PdfReader('audit/taisap_upgrade/submission_package/anonymous/main_taisap_upgrade_anon.pdf').pages))"
 ```
 
-Expected result: all preflight tests pass; both PDFs report 33 pages.
+Expected result: all preflight tests pass; the named PDF reports 33 pages and the anonymous
+PDF reports 32 pages.

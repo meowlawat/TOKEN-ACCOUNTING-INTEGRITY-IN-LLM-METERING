@@ -59,3 +59,9 @@ including PDF, log, BBL, BLG, AUX, and extracted text scan, are retained under
 The source-level regression suite contains five focused tests covering the title/spine,
 bounded formal language, PTIA contrast, scope/unexecuted protocols, headline numbers, and
 claim-ledger statuses. The baseline inventory tests also pass against the updated ledger.
+
+## Post-preflight abstract revision
+
+The abstract was revised after the submission preflight to use the venue allowance without
+exceeding it. The active named and anonymous sources now contain the same 281-word abstract.
+An automated regression test requires an abstract length from 280 through 299 words.
