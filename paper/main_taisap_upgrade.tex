@@ -23,6 +23,7 @@ Bounded Evidence for Client-Side Under-Payment}
 
 \author{Hardik}
 \authornote{Corresponding author.}
+\orcid{0009-0001-1642-6669}
 \affiliation{%
   \institution{Department of Computer Science and Data Analytics, Indian Institute of
   Technology Patna}
@@ -517,6 +518,12 @@ Table~\ref{tab:structural} summarizes where each mechanism sits and what closes 
 (STREAMING); economic commitment is final only at RECONCILED. The interval between them
 is the exposure window that M1 exploits. B0 corrupts the AUTHORIZED $\rightarrow$
 RESERVED transition (non-atomic); M2 corrupts the data used at ACCOUNTED.}
+\Description[State diagram of a metered request lifecycle]{A left-to-right state diagram
+starts at CREATED and proceeds through AUTHORIZED, optionally RESERVED, EXECUTING, and
+STREAMING. STREAMING branches to COMPLETED or ABORTED; both normally lead to ACCOUNTED and
+then RECONCILED. A dashed red path shows the M1 failure, in which an aborted request exits
+to REFUNDED without a committed charge. Shading marks states where value has been delivered
+and darker shading marks economic commitment.}
 \label{fig:statemachine}
 \end{figure}
 
@@ -872,6 +879,11 @@ Section~\ref{sec:generality} revises the conclusion drawn from it.
 cell, deterministic generator (linear fit in text). Section~\ref{sec:b0revised} shows
 concurrency is not the essential ingredient: delayed settlement reproduces over-serving
 with strictly sequential arrivals.}
+\Description[Leakage rises with concurrency only in the vulnerable B0 implementation]{A
+line chart compares vulnerable and hardened B0 implementations at concurrency levels from
+1 to 50. The vulnerable line starts at zero for one request and rises approximately
+linearly to 4.851 dollars at concurrency 50. The hardened line remains at zero for every
+concurrency level.}
 \label{fig:b0}
 \end{figure}
 
@@ -893,6 +905,12 @@ deterministic generator, concurrency 1, medium price tier, 20 requests per cell.
 Vulnerable architectures peak just before the commit would have fired and collapse to
 \$0 at completion; safe architectures stay at \$0 throughout. Error bars are within-cell
 standard deviations, zero at this concurrency.}
+\Description[Leakage depends on abort position for vulnerable M1 architectures]{A line
+chart compares four settlement architectures as a stream progresses from zero to full
+delivery. The debit-after-completion and reserve-then-refund-on-abort lines overlap,
+rising from about 0.0045 dollars near the start to 0.096 dollars at 90 percent delivery,
+then dropping to zero at completion. The debit-before-execution and
+reserve-and-reconcile lines remain at zero throughout.}
 \label{fig:m1}
 \end{figure}
 
@@ -930,6 +948,12 @@ Yes & integrity only & both \\
 against concurrency (1 to 100, log scale, volume fixed at 20 requests/cell). Both are
 invariant across the range, the empirical basis for treating commitment timing as
 per-request rather than contention-driven.}
+\Description[M1 leakage and attack success are invariant to concurrency]{Two side-by-side
+line charts use a logarithmic concurrency axis from 1 to 100. In the left chart, the two
+vulnerable settlement architectures overlap at about 0.0528 dollars of leakage per
+request while both safe architectures remain at zero. In the right chart, the vulnerable
+architectures overlap at attack success rate 1.0 while the safe architectures remain at
+zero. All lines are horizontal across the concurrency range.}
 \label{fig:m1conc}
 \end{figure}
 
@@ -985,6 +1009,12 @@ manipulation (columns), deterministic generator, medium tier, concurrency 1, 100
 requests/cell. Server-authoritative rows are uniformly zero. The exploitable set differs
 between category-additive and flat-total pricing, the empirical form of
 Equation~(\ref{eq:m2}).}
+\Description[M2 leakage-efficiency heat map by architecture and manipulation]{A six-row
+by eight-column heat map compares billing architectures with declared-usage
+manipulations. Client-authoritative rows contain nonzero cells, including 0.58 for
+90-percent output under-reporting in the client and client-logged rows and 0.74 for an
+inconsistent total in the client-total row. The upstream, server-recount, and
+hybrid-reconcile rows are zero for all eight manipulations.}
 \label{fig:m2}
 \end{figure}
 
@@ -1152,6 +1182,12 @@ Cost is linear in input length within every workload, so recount budgets as toke
 a per-token constant; the workload shifts the constant, not the linear shape. This is a
 tokenizer microbenchmark, not a gateway throughput result: no request path, database, or
 network is involved.}
+\Description[Tokenizer recount latency grows linearly with token count]{Four log-log line
+charts show natural-language, source-code, JSON, and high-entropy workloads. Each chart
+compares five tokenizer engines from 256 to 32768 input tokens. Every engine forms an
+approximately straight rising line, indicating linear scaling with token count. The
+SentencePiece Llama engine is consistently the slowest; the two tiktoken engines are
+generally fastest, while workload changes the vertical spacing between engines.}
 \label{fig:toklat}
 \end{figure}
 
