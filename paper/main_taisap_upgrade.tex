@@ -46,36 +46,28 @@ Bounded Evidence for Client-Side Under-Payment}
 \email{09617711924_aids@vipstc.edu.in}
 
 \begin{abstract}
-Metered AI-inference services are deployed systems in which computational value is
-streamed to the client before the charge is settled, usage is produced at runtime, and
-settlement is often asynchronous -- placing the usage-metering and billing boundary
-inside the security perimeter of the AI-serving infrastructure itself, not outside it.
-We study the integrity of that boundary against an authenticated client that seeks to
-pay less than it owes for inference it received. Modeling a metered request as a
-lifecycle with a single integrity property, $V(r) \le N(r)$, we localize failures to
-three architectural placements: state synchronization (B0), commitment timing (M1), and
-usage authority (M2). We apply bounded exhaustive model checking in TLA+/TLC across ten
-configurations and four invariants, and validate the model predictions on a testbed spanning three
-execution topologies, three accounting families including an asynchronous event
-pipeline, and a third-party serving stack. Three results follow. Reservation and
-abort-safe finalization are orthogonal security properties: each secures only one of
-solvency and accounting integrity, and only their conjunction secures both. Correct
-usage computation does not imply correct billing: an architecture that recounts usage
-accurately but bills the client-declared value leaks 58.3\% of delivered value in a
-controlled setting and 69.0\% against a real serving stack, while server-authoritative
-billing eliminates the leak. Asynchronous settlement reproduces over-serving under
-strictly sequential arrivals with no concurrency at all, showing that the
-synchronization condition concerns not concurrency but whether authorization is
-atomically coupled to economic commitment on the authorizing path; this persists under a
-network-separated two-machine deployment, while a settlement-confirmed serialization
-control shows none. We state model-level security conditions separately from the
-implementation patterns that satisfy them, report that the strongest defense against
-usage-authority manipulation costs under 0.1\% of end-to-end time with real inference,
-and delimit the formal model, extended with a second, causal-ordering specification of
-the asynchronous settlement mechanism. The contribution is a systematic security
-analysis of deployed AI-serving infrastructure: B0 is a
-known baseline, and M1/M2 systematize, formalize, and measure mechanisms with prior
-individual precedent.
+Metered AI-inference services stream computational value before usage settlement, often
+through asynchronous billing paths. We study this boundary against an authenticated client
+that seeks to underpay for inference received. Modeling a request with the integrity
+property $V(r) \le N(r)$, we localize failures to state synchronization (B0), commitment
+timing (M1), and usage authority (M2). We apply bounded exhaustive model checking with
+TLA+/TLC
+across ten configurations and four invariants, then test the predictions across three
+execution topologies, three accounting families, an asynchronous event pipeline, and a
+third-party serving stack. Reservation and abort-safe finalization are orthogonal:
+each protects only one of solvency and accounting integrity, while their conjunction
+protects both. Accurate usage computation also does not imply accurate billing: billing a
+client-declared value leaks 58.3\% of delivered value in the controlled testbed and 69.0\%
+against the real serving stack, whereas server-authoritative billing eliminates the leak.
+Asynchronous settlement reproduces over-serving under strictly sequential arrivals, showing
+that the relevant condition is atomic coupling of authorization to economic commitment,
+not concurrency; the result persists in a network-separated deployment, while a
+settlement-confirmed serialization control shows none. We separate model-level conditions
+from implementation patterns, measure the strongest usage-authority defense at under 0.1\%
+of end-to-end inference time, and state the limits of the asynchronous extension. The
+contribution is a systematic security analysis of deployed AI-serving infrastructure: B0
+is a known baseline, while M1 and M2 systematize, formalize, and measure mechanisms with
+prior individual precedent.
 \end{abstract}
 
 \begin{CCSXML}
