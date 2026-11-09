@@ -1,0 +1,97 @@
+{
+  "manifest": {
+    "run_batch_id": "C1_sequential_20261007T211603Z",
+    "git_commit": "a6039c26ba09cc8ca88f061f63ed64d9d14b4568",
+    "git_dirty": true,
+    "started_at_utc": "2026-10-07T21:16:03.395377+00:00",
+    "host_a_identifier": "DESKTOP-8B2NBHS",
+    "host_a_platform": "Windows-11-10.0.26300-SP0",
+    "python_version": "3.13.5",
+    "condition": "C1",
+    "arrival": "sequential",
+    "endpoint": "/async/b0/complete",
+    "base_url": "http://localhost:8000",
+    "delays_ms": [
+      50.0
+    ],
+    "repetitions_requested": 3,
+    "b0_interarrival_ms": 20.0,
+    "b0_requests": 6,
+    "b0_budget_units": 2,
+    "requests_is_default": true,
+    "budget_is_default": true,
+    "price_tier": "medium",
+    "fault": "duplicate_event",
+    "config_hash": "714f0226c564ee77",
+    "notes": "Test E: duplicate event delivery with outbox-aware idempotency",
+    "finished_at_utc": "2026-10-07T21:16:07.247579+00:00",
+    "cells_total": 3,
+    "cells_valid": 3,
+    "cells_invalid": 0
+  },
+  "cells": [
+    {
+      "run_id": "C1_sequential_20261007T211603Z_D50_rep0",
+      "delay_ms": 50.0,
+      "arrival": "sequential",
+      "rep": 0,
+      "seed": 1337,
+      "fault": "duplicate_event",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.081000",
+      "issued": 6,
+      "served": 2,
+      "affordable": 2,
+      "over_served": 0,
+      "final_balance": "0.000000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_sequential_20261007T211603Z_D50_rep1",
+      "delay_ms": 50.0,
+      "arrival": "sequential",
+      "rep": 1,
+      "seed": 1338,
+      "fault": "duplicate_event",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.094500",
+      "issued": 6,
+      "served": 2,
+      "affordable": 2,
+      "over_served": 0,
+      "final_balance": "0.000000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_sequential_20261007T211603Z_D50_rep2",
+      "delay_ms": 50.0,
+      "arrival": "sequential",
+      "rep": 2,
+      "seed": 1339,
+      "fault": "duplicate_event",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.102000",
+      "issued": 6,
+      "served": 2,
+      "affordable": 2,
+      "over_served": 0,
+      "final_balance": "0.000000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    }
+  ]
+}

@@ -14,6 +14,7 @@ from __future__ import annotations
 
 from decimal import Decimal
 
+from sqlalchemy import func, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from . import backends
@@ -84,3 +85,39 @@ async def credit(session: AsyncSession, account_id: int, amount: Decimal) -> Dec
 async def set_balance(session: AsyncSession, account_id: int, amount: Decimal) -> None:
     """Experiment setup: force an exact balance under the active backend."""
     await backends.set_balance(session, account_id, amount, await active_backend())
+
+
+# --------------------------------------------------------------------------- #
+# Transactional-outbox settlement (DURABILITY_HARDENING_AUDIT.md)
+# --------------------------------------------------------------------------- #
+async def claim_and_debit_outbox(session: AsyncSession, event_id: str, account_id: int,
+                                 amount: Decimal) -> bool:
+    """Atomically claim an `OutboxEvent` row and apply its debit, in ONE transaction.
+
+    Returns True if THIS call actually claimed and applied the debit; False if the row
+    was already claimed (by the Redis-driven path or a concurrent reconcile pass) -- the
+    at-least-once-delivery, harmless-duplicate case, not an error.
+
+    Deliberately does NOT call `session.commit()` -- the caller commits once, after this
+    returns, so the outbox-status flip and the balance decrement are the SAME database
+    transaction: either both land, or (on a crash before commit) neither does, and the row
+    is retried later by whichever path reaches it next. This is the specific property that
+    closes the "worker crashed between claiming and settling" gap identified in
+    DURABILITY_HARDENING_AUDIT.md -- there is no intermediate state where the claim
+    succeeded but the debit did not, or vice versa, because they are not two commits.
+
+    Imports `OutboxEvent` locally to avoid a module-level circular import (models.py does
+    not import ledger.py, but keeping this import inside the function makes that
+    non-dependency explicit rather than incidental).
+    """
+    from ..models.models import OutboxEvent
+
+    claimed = (await session.execute(
+        update(OutboxEvent)
+        .where(OutboxEvent.event_id == event_id, OutboxEvent.status == "pending")
+        .values(status="applied", applied_at=func.now())
+    )).rowcount
+    if not claimed:
+        return False
+    await debit_unchecked(session, account_id, amount)
+    return True

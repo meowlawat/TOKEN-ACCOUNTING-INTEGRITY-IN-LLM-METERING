@@ -23,6 +23,7 @@ from decimal import Decimal
 
 from sqlalchemy import (
     JSON,
+    BigInteger,
     Boolean,
     DateTime,
     Float,
@@ -129,7 +130,8 @@ class UsageRecord(Base):
     trial_id: Mapped[str | None] = mapped_column(
         ForeignKey("trials.id", ondelete="CASCADE"), index=True, nullable=True
     )
-    # Idempotency handle (also the join key to client-side timing).
+    # Correlation handle (also the join key to client-side timing). This is not a
+    # public API idempotency key: callers must use a fresh value for each request.
     request_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
     posture: Mapped[str | None] = mapped_column(String(16), nullable=True)
     concurrency: Mapped[int | None] = mapped_column(Integer, nullable=True)
@@ -225,6 +227,43 @@ class MRecord(Base):
     manipulation: Mapped[str | None] = mapped_column(String(32), nullable=True)
 
     extra: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+
+class OutboxEvent(Base):
+    """Durable source of truth for a pending B0-async settlement (transactional outbox).
+
+    Added after a direct SIGKILL test of the Redis container showed a queued,
+    not-yet-due settlement event is permanently lost on a hard crash of the queue itself
+    (DURABILITY_HARDENING_AUDIT.md) -- Redis's default persistence does not snapshot on
+    every write. This row is written in the SAME transaction as the gateway's own audit
+    record (`MRecord`), BEFORE the event is handed to Redis at all, so a crash at any
+    point after this commits still leaves a durable, recoverable record of the pending
+    debit -- Redis becomes a fast-path hint, not the sole source of truth.
+
+    `status` transitions exactly once, 'pending' -> 'applied', and the transition is
+    always performed in the SAME database transaction as the actual balance decrement
+    (see `app/accounting/async_worker.py::reconcile_outbox` and
+    `app/accounting/worker_main.py::_apply_debit_factory`'s outbox-aware branch) -- never
+    as two separate commits -- specifically so a crash between "claimed" and "debited"
+    cannot happen: either both happen together, or neither does, and the row is retried.
+    """
+
+    __tablename__ = "outbox_events"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    event_id: Mapped[str] = mapped_column(String(64), unique=True, index=True, nullable=False)
+    request_id: Mapped[str] = mapped_column(String(64), nullable=False)
+    account_id: Mapped[int] = mapped_column(
+        ForeignKey("accounts.id", ondelete="CASCADE"), index=True, nullable=False
+    )
+    amount: Mapped[Decimal] = mapped_column(Money, nullable=False)
+    created_ns: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    deliver_after_ns: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    status: Mapped[str] = mapped_column(String(16), nullable=False, default="pending", index=True)
+    applied_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

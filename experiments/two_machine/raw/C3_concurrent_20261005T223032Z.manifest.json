@@ -1,0 +1,28 @@
+{
+  "run_batch_id": "C3_concurrent_20261005T223032Z",
+  "git_commit": "6fbca90f7102aca564baac3c1fb3fa7b5c30f008",
+  "git_dirty": true,
+  "started_at_utc": "2026-10-05T22:30:32.326842+00:00",
+  "host_a_identifier": "DESKTOP-8B2NBHS",
+  "host_a_platform": "Windows-11-10.0.26300-SP0",
+  "python_version": "3.13.5",
+  "condition": "C3",
+  "arrival": "concurrent",
+  "endpoint": "/async/b0/complete-atomic",
+  "base_url": "http://localhost:8000",
+  "delays_ms": [
+    0.0,
+    500.0
+  ],
+  "repetitions_requested": 3,
+  "b0_interarrival_ms": 20.0,
+  "b0_requests": 6,
+  "b0_budget_units": 2,
+  "fault": "none",
+  "config_hash": "071cb333df6ce770",
+  "notes": "harness validation: atomic + concurrent",
+  "finished_at_utc": "2026-10-05T22:30:41.805449+00:00",
+  "cells_total": 6,
+  "cells_valid": 6,
+  "cells_invalid": 0
+}

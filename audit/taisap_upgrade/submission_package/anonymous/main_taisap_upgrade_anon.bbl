@@ -1,0 +1,1000 @@
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{87}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{}, \showDOI{}, and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showDOI}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showDOI #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showDOI      \undefined \def \showDOI       #1{#1}\fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[Adya et~al\mbox{.}(2000)]%
+        {adya}
+\bibfield{author}{\bibinfo{person}{A. Adya}, \bibinfo{person}{B. Liskov}, {and}
+  \bibinfo{person}{P. O'Neil}.} \bibinfo{year}{2000}\natexlab{}.
+\newblock \bibinfo{title}{Generalized isolation level definitions, in:
+  Proceedings of 16th International Conference on Data Engineering (Cat.
+  No.00CB37073), pp.~67--78. \url{https://doi.org/10.1109/ICDE.2000.839388}.}
+\newblock
+\newblock
+
+
+\bibitem[Agrawal et~al\mbox{.}(2024)]%
+        {sarathi}
+\bibfield{author}{\bibinfo{person}{A. Agrawal}, \bibinfo{person}{N. Kedia},
+  \bibinfo{person}{A. Panwar}, \bibinfo{person}{J. Mohan}, {et~al\mbox{.}}}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \bibinfo{title}{Taming throughput-latency tradeoff in LLM inference
+  with Sarathi-Serve. arXiv:2403.02310.}
+\newblock
+\newblock
+
+
+\bibitem[Alvaro et~al\mbox{.}(2015)]%
+        {lineage}
+\bibfield{author}{\bibinfo{person}{P. Alvaro}, \bibinfo{person}{J. Rosen},
+  {and} \bibinfo{person}{J.M. Hellerstein}.} \bibinfo{year}{2015}\natexlab{}.
+\newblock \bibinfo{title}{Lineage-driven fault injection, in: Proceedings of
+  the 2015 ACM SIGMOD International Conference on Management of Data,
+  pp.~331--346. \url{https://doi.org/10.1145/2723372.2723711}.}
+\newblock
+\newblock
+
+
+\bibitem[{Anthropic}(2026)]%
+        {anthropicpricing}
+\bibfield{author}{\bibinfo{person}{{Anthropic}}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{Pricing. \url{https://claude.com/pricing}. Accessed
+  23 September 2026.}
+\newblock
+\newblock
+
+
+\bibitem[Arcuri and Briand(2014)]%
+        {arcuri}
+\bibfield{author}{\bibinfo{person}{A. Arcuri} {and} \bibinfo{person}{L.
+  Briand}.} \bibinfo{year}{2014}\natexlab{}.
+\newblock \bibinfo{title}{A hitchhiker's guide to statistical tests for
+  assessing randomized algorithms in software engineering. Software Testing,
+  Verification and Reliability 24, 219--250.
+  \url{https://doi.org/10.1002/stvr.1486}.}
+\newblock
+\newblock
+
+
+\bibitem[Armbrust et~al\mbox{.}(2010)]%
+        {armbrust}
+\bibfield{author}{\bibinfo{person}{M. Armbrust}, \bibinfo{person}{A. Fox},
+  \bibinfo{person}{R. Griffith}, \bibinfo{person}{A.D. Joseph},
+  {et~al\mbox{.}}} \bibinfo{year}{2010}\natexlab{}.
+\newblock \bibinfo{title}{A view of cloud computing. Communications of the ACM
+  53, 50--58. \url{https://doi.org/10.1145/1721654.1721672}.}
+\newblock
+\newblock
+
+
+\bibitem[Artola~Velasco et~al\mbox{.}(2025)]%
+        {auditingpaypertoken}
+\bibfield{author}{\bibinfo{person}{Ander Artola~Velasco},
+  \bibinfo{person}{Stratis Tsirtsis}, {and} \bibinfo{person}{Manuel
+  Gomez-Rodriguez}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{Auditing Pay-Per-Token in Large Language Models.
+  arXiv:2510.05181.}
+\newblock \bibinfo{howpublished}{\url{https://arxiv.org/abs/2510.05181}}.
+\newblock
+
+
+\bibitem[Bailis et~al\mbox{.}(2014)]%
+        {bailis}
+\bibfield{author}{\bibinfo{person}{P. Bailis}, \bibinfo{person}{A. Fekete},
+  \bibinfo{person}{M.J. Franklin}, \bibinfo{person}{A. Ghodsi},
+  {et~al\mbox{.}}} \bibinfo{year}{2014}\natexlab{}.
+\newblock \bibinfo{title}{Coordination avoidance in database systems.
+  Proceedings of the VLDB Endowment 8, 185--196.
+  \url{https://doi.org/10.14778/2735508.2735509}.}
+\newblock
+\newblock
+
+
+\bibitem[Barr et~al\mbox{.}(2015)]%
+        {oracle}
+\bibfield{author}{\bibinfo{person}{E.T. Barr}, \bibinfo{person}{M. Harman},
+  \bibinfo{person}{P. McMinn}, \bibinfo{person}{M. Shahbaz}, {et~al\mbox{.}}}
+  \bibinfo{year}{2015}\natexlab{}.
+\newblock \bibinfo{title}{The oracle problem in software testing: a survey.
+  IEEE Transactions on Software Engineering 41, 507--525.
+  \url{https://doi.org/10.1109/TSE.2014.2372785}.}
+\newblock
+\newblock
+
+
+\bibitem[Basiri et~al\mbox{.}(2016)]%
+        {chaos}
+\bibfield{author}{\bibinfo{person}{A. Basiri}, \bibinfo{person}{N. Behnam},
+  \bibinfo{person}{R. de Rooij}, \bibinfo{person}{L. Hochstein},
+  {et~al\mbox{.}}} \bibinfo{year}{2016}\natexlab{}.
+\newblock \bibinfo{title}{Chaos engineering. IEEE Software 33, 35--41.
+  \url{https://doi.org/10.1109/MS.2016.60}.}
+\newblock
+\newblock
+
+
+\bibitem[Bass et~al\mbox{.}(2021)]%
+        {bass}
+\bibfield{author}{\bibinfo{person}{L. Bass}, \bibinfo{person}{P. Clements},
+  {and} \bibinfo{person}{R. Kazman}.} \bibinfo{year}{2021}\natexlab{}.
+\newblock \bibinfo{title}{Software Architecture in Practice. Fourth edition,
+  Addison-Wesley, Boston.}
+\newblock
+\newblock
+
+
+\bibitem[Ben~Allal et~al\mbox{.}(2025)]%
+        {smollm2}
+\bibfield{author}{\bibinfo{person}{L. Ben~Allal}, \bibinfo{person}{A. Lozhkov},
+  \bibinfo{person}{E. Bakouch}, \bibinfo{person}{G. Mart\'{i}n~Bl\'{a}zquez},
+  {et~al\mbox{.}}} \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{SmolLM2: When smol goes big --- Data-centric training
+  of a small language model. arXiv:2502.02737.}
+\newblock
+\newblock
+
+
+\bibitem[Berenson et~al\mbox{.}(1995)]%
+        {berenson}
+\bibfield{author}{\bibinfo{person}{H. Berenson}, \bibinfo{person}{P.
+  Bernstein}, \bibinfo{person}{J. Gray}, \bibinfo{person}{J. Melton},
+  {et~al\mbox{.}}} \bibinfo{year}{1995}\natexlab{}.
+\newblock \bibinfo{title}{A critique of ANSI SQL isolation levels, in:
+  Proceedings of the 1995 ACM SIGMOD international conference on Management of
+  data - SIGMOD '95, pp.~1--10. \url{https://doi.org/10.1145/223784.223785}.}
+\newblock
+\newblock
+
+
+\bibitem[{BerriAI}(2025)]%
+        {litellm14457}
+\bibfield{author}{\bibinfo{person}{{BerriAI}}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{Usage data lost when streaming responses are
+  terminated early by client disconnect. LiteLLM issue \#14457 (open).
+  \url{https://github.com/BerriAI/litellm/issues/14457}. Accessed 23 September
+  2026.}
+\newblock
+\newblock
+
+
+\bibitem[Bornholt et~al\mbox{.}(2021)]%
+        {s3lightweight}
+\bibfield{author}{\bibinfo{person}{J. Bornholt}, \bibinfo{person}{R. Joshi},
+  \bibinfo{person}{V. Astrauskas}, \bibinfo{person}{B. Cully}, {et~al\mbox{.}}}
+  \bibinfo{year}{2021}\natexlab{}.
+\newblock \bibinfo{title}{Using lightweight formal methods to validate a
+  key-value storage node in Amazon S3, in: Proceedings of the ACM SIGOPS 28th
+  Symposium on Operating Systems Principles, pp.~836--850.
+  \url{https://doi.org/10.1145/3477132.3483540}.}
+\newblock
+\newblock
+
+
+\bibitem[Chen et~al\mbox{.}(2026)]%
+        {ptia}
+\bibfield{author}{\bibinfo{person}{Leilei Chen}, \bibinfo{person}{Lan Zhang},
+  \bibinfo{person}{Chen Tang}, \bibinfo{person}{Pengcheng Sun},
+  \bibinfo{person}{Jiewei Lai}, \bibinfo{person}{Yixiao Huang},
+  \bibinfo{person}{Zhaopeng Zhang}, {and} \bibinfo{person}{Xinpeng Shen}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{The More It Says, the More You Pay: A Black-Box Audit
+  of Provider-Side Token Inflation in LLM Services. arXiv:2609.20370.}
+\newblock \bibinfo{howpublished}{\url{https://arxiv.org/abs/2609.20370}}.
+\newblock
+
+
+\bibitem[Chen et~al\mbox{.}(2018)]%
+        {metamorphic18}
+\bibfield{author}{\bibinfo{person}{T.Y. Chen}, \bibinfo{person}{F.-C. Kuo},
+  \bibinfo{person}{H. Liu}, \bibinfo{person}{P.-L. Poon}, {et~al\mbox{.}}}
+  \bibinfo{year}{2018}\natexlab{}.
+\newblock \bibinfo{title}{Metamorphic testing: a review of challenges and
+  opportunities. ACM Computing Surveys 51, 1--27.
+  \url{https://doi.org/10.1145/3143561}.}
+\newblock
+\newblock
+
+
+\bibitem[Claessen and Hughes(2000)]%
+        {quickcheck}
+\bibfield{author}{\bibinfo{person}{K. Claessen} {and} \bibinfo{person}{J.
+  Hughes}.} \bibinfo{year}{2000}\natexlab{}.
+\newblock \bibinfo{title}{QuickCheck: a lightweight tool for random testing of
+  Haskell programs, in: Proceedings of the fifth ACM SIGPLAN international
+  conference on Functional programming, pp.~268--279.
+  \url{https://doi.org/10.1145/351240.351266}.}
+\newblock
+\newblock
+
+
+\bibitem[Clarke et~al\mbox{.}(1986)]%
+        {clarke}
+\bibfield{author}{\bibinfo{person}{E.M. Clarke}, \bibinfo{person}{E.A.
+  Emerson}, {and} \bibinfo{person}{A.P. Sistla}.}
+  \bibinfo{year}{1986}\natexlab{}.
+\newblock \bibinfo{title}{Automatic verification of finite-state concurrent
+  systems using temporal logic specifications. ACM Transactions on Programming
+  Languages and Systems 8, 244--263. \url{https://doi.org/10.1145/5397.5399}.}
+\newblock
+\newblock
+
+
+\bibitem[Collberg and Proebsting(2016)]%
+        {collberg}
+\bibfield{author}{\bibinfo{person}{C. Collberg} {and} \bibinfo{person}{T.A.
+  Proebsting}.} \bibinfo{year}{2016}\natexlab{}.
+\newblock \bibinfo{title}{Repeatability in computer systems research.
+  Communications of the ACM 59, 62--69. \url{https://doi.org/10.1145/2812803}.}
+\newblock
+\newblock
+
+
+\bibitem[Dorsett et~al\mbox{.}(2025)]%
+        {dowreview}
+\bibfield{author}{\bibinfo{person}{M. Dorsett}, \bibinfo{person}{S. Mann},
+  \bibinfo{person}{J. Chowdhury}, {and} \bibinfo{person}{A. Mahmood}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{A comprehensive review of denial of wallet attacks in
+  serverless architectures. arXiv:2508.19284.}
+\newblock
+\newblock
+
+
+\bibitem[Efron(1979)]%
+        {efron}
+\bibfield{author}{\bibinfo{person}{B. Efron}.} \bibinfo{year}{1979}\natexlab{}.
+\newblock \bibinfo{title}{Bootstrap methods: another look at the jackknife. The
+  Annals of Statistics 7, 1--26. \url{https://doi.org/10.1214/aos/1176344552}.}
+\newblock
+\newblock
+
+
+\bibitem[{Etalab}(2026)]%
+        {opengate1148}
+\bibfield{author}{\bibinfo{person}{{Etalab}}.} \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{An interrupted streamed chat completion is neither
+  billed nor released. OpenGateLLM issue \#1148 (fixed).
+  \url{https://github.com/etalab-ia/OpenGateLLM/issues/1148}. Accessed 23
+  September 2026.}
+\newblock
+\newblock
+
+
+\bibitem[Feitelson(2015)]%
+        {feitelson}
+\bibfield{author}{\bibinfo{person}{D.G. Feitelson}.}
+  \bibinfo{year}{2015}\natexlab{}.
+\newblock \bibinfo{title}{From repeatability to reproducibility and
+  corroboration. ACM SIGOPS Operating Systems Review 49, 3--11.
+  \url{https://doi.org/10.1145/2723872.2723875}.}
+\newblock
+\newblock
+
+
+\bibitem[Fielding et~al\mbox{.}(2022)]%
+        {rfc9110}
+\bibfield{author}{\bibinfo{person}{R. Fielding}, \bibinfo{person}{M.
+  Nottingham}, {and} \bibinfo{person}{J. Reschke}.}
+  \bibinfo{year}{2022}\natexlab{}.
+\newblock \bibinfo{title}{HTTP semantics. RFC~9110, IETF.}
+\newblock
+\newblock
+
+
+\bibitem[Fonseca et~al\mbox{.}(2017)]%
+        {fonseca}
+\bibfield{author}{\bibinfo{person}{P. Fonseca}, \bibinfo{person}{K. Zhang},
+  \bibinfo{person}{X. Wang}, {and} \bibinfo{person}{A. Krishnamurthy}.}
+  \bibinfo{year}{2017}\natexlab{}.
+\newblock \bibinfo{title}{An empirical study on the correctness of formally
+  verified distributed systems, in: Proceedings of the Twelfth European
+  Conference on Computer Systems, pp.~328--343.
+  \url{https://doi.org/10.1145/3064176.3064183}.}
+\newblock
+\newblock
+
+
+\bibitem[Garcia-Molina and Salem(1987)]%
+        {sagas}
+\bibfield{author}{\bibinfo{person}{H. Garcia-Molina} {and} \bibinfo{person}{K.
+  Salem}.} \bibinfo{year}{1987}\natexlab{}.
+\newblock \bibinfo{title}{Sagas, in: Proceedings of the 1987 ACM SIGMOD
+  international conference on Management of data - SIGMOD '87, pp.~249--259.
+  \url{https://doi.org/10.1145/38713.38742}.}
+\newblock
+\newblock
+
+
+\bibitem[Gerganov et~al\mbox{.}(nd)]%
+        {llamacpp}
+\bibfield{author}{\bibinfo{person}{G. Gerganov} {et~al\mbox{.}}}
+  \bibinfo{year}{n.d.}\natexlab{}.
+\newblock \bibinfo{title}{llama.cpp: LLM inference in C/C++ [Software].
+  \url{https://github.com/ggml-org/llama.cpp}.}
+\newblock
+\newblock
+
+
+\bibitem[Gleirscher and Marmsoler(2020)]%
+        {gleirscher}
+\bibfield{author}{\bibinfo{person}{M. Gleirscher} {and} \bibinfo{person}{D.
+  Marmsoler}.} \bibinfo{year}{2020}\natexlab{}.
+\newblock \bibinfo{title}{Formal methods in dependable systems engineering: a
+  survey of professionals from Europe and North America. Empirical Software
+  Engineering 25, 4473--4546.
+  \url{https://doi.org/10.1007/s10664-020-09836-5}.}
+\newblock
+\newblock
+
+
+\bibitem[Guan(2026)]%
+        {aex}
+\bibfield{author}{\bibinfo{person}{Y. Guan}.} \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{AEX: Non-intrusive multi-hop attestation and
+  provenance for LLM APIs. arXiv:2603.14283.}
+\newblock
+\newblock
+
+
+\bibitem[Gunawi et~al\mbox{.}(2016)]%
+        {gunawi}
+\bibfield{author}{\bibinfo{person}{H.S. Gunawi}, \bibinfo{person}{M. Hao},
+  \bibinfo{person}{R.O. Suminto}, \bibinfo{person}{A. Laksono},
+  {et~al\mbox{.}}} \bibinfo{year}{2016}\natexlab{}.
+\newblock \bibinfo{title}{Why does the cloud stop computing? Lessons from
+  hundreds of service outages, in: Proceedings of the Seventh ACM Symposium on
+  Cloud Computing, pp.~1--16. \url{https://doi.org/10.1145/2987550.2987583}.}
+\newblock
+\newblock
+
+
+\bibitem[Hawblitzel et~al\mbox{.}(2015)]%
+        {ironfleet}
+\bibfield{author}{\bibinfo{person}{C. Hawblitzel}, \bibinfo{person}{J. Howell},
+  \bibinfo{person}{M. Kapritsos}, \bibinfo{person}{J.R. Lorch},
+  {et~al\mbox{.}}} \bibinfo{year}{2015}\natexlab{}.
+\newblock \bibinfo{title}{IronFleet: proving practical distributed systems
+  correct, in: Proceedings of the 25th Symposium on Operating Systems
+  Principles, pp.~1--17. \url{https://doi.org/10.1145/2815400.2815428}.}
+\newblock
+\newblock
+
+
+\bibitem[Helland(2012)]%
+        {helland12}
+\bibfield{author}{\bibinfo{person}{P. Helland}.}
+  \bibinfo{year}{2012}\natexlab{}.
+\newblock \bibinfo{title}{Idempotence is not a medical condition: an essential
+  property for reliable systems. Queue 10, 30--46.
+  \url{https://doi.org/10.1145/2181796.2187821}.}
+\newblock
+\newblock
+
+
+\bibitem[Herlihy and Wing(1990)]%
+        {linearizability}
+\bibfield{author}{\bibinfo{person}{M.P. Herlihy} {and} \bibinfo{person}{J.M.
+  Wing}.} \bibinfo{year}{1990}\natexlab{}.
+\newblock \bibinfo{title}{Linearizability: a correctness condition for
+  concurrent objects. ACM Transactions on Programming Languages and Systems 12,
+  463--492. \url{https://doi.org/10.1145/78969.78972}.}
+\newblock
+\newblock
+
+
+\bibitem[Holzmann(1997)]%
+        {spin}
+\bibfield{author}{\bibinfo{person}{G. Holzmann}.}
+  \bibinfo{year}{1997}\natexlab{}.
+\newblock \bibinfo{title}{The model checker SPIN. IEEE Transactions on Software
+  Engineering 23, 279--295. \url{https://doi.org/10.1109/32.588521}.}
+\newblock
+\newblock
+
+
+\bibitem[Hoque et~al\mbox{.}(2026)]%
+        {tokeninflation}
+\bibfield{author}{\bibinfo{person}{S. Hoque}, \bibinfo{person}{J. Zhang},
+  \bibinfo{person}{J. Sun}, {and} \bibinfo{person}{F. Suya}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{Token inflation: How dishonest providers can
+  overcharge for large language model usage. arXiv:2605.30040.}
+\newblock
+\newblock
+
+
+\bibitem[Hou et~al\mbox{.}(2025)]%
+        {unveilinglandscape}
+\bibfield{author}{\bibinfo{person}{X. Hou}, \bibinfo{person}{J. Han},
+  \bibinfo{person}{Y. Zhao}, {and} \bibinfo{person}{H. Wang}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{Unveiling the landscape of LLM deployment in the
+  wild: an empirical study. arXiv:2505.02502.}
+\newblock
+\newblock
+
+
+\bibitem[Jackson(2002)]%
+        {alloy}
+\bibfield{author}{\bibinfo{person}{D. Jackson}.}
+  \bibinfo{year}{2002}\natexlab{}.
+\newblock \bibinfo{title}{Alloy: a lightweight object modelling notation. ACM
+  Transactions on Software Engineering and Methodology 11, 256--290.
+  \url{https://doi.org/10.1145/505145.505149}.}
+\newblock
+\newblock
+
+
+\bibitem[Kalibera and Jones(2013)]%
+        {kalibera}
+\bibfield{author}{\bibinfo{person}{T. Kalibera} {and} \bibinfo{person}{R.
+  Jones}.} \bibinfo{year}{2013}\natexlab{}.
+\newblock \bibinfo{title}{Rigorous benchmarking in reasonable time, in:
+  Proceedings of the 2013 international symposium on memory management,
+  pp.~63--74. \url{https://doi.org/10.1145/2464157.2464160}.}
+\newblock
+\newblock
+
+
+\bibitem[Kelly et~al\mbox{.}(2021)]%
+        {dow}
+\bibfield{author}{\bibinfo{person}{D. Kelly}, \bibinfo{person}{F.G. Glavin},
+  {and} \bibinfo{person}{E. Barrett}.} \bibinfo{year}{2021}\natexlab{}.
+\newblock \bibinfo{title}{Denial of wallet --- Defining a looming threat to
+  serverless computing. arXiv:2104.08031.}
+\newblock
+\newblock
+
+
+\bibitem[Kettle(2023)]%
+        {kettle}
+\bibfield{author}{\bibinfo{person}{J. Kettle}.}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \bibinfo{title}{Smashing the state machine: The true potential of web
+  race conditions. PortSwigger Research.
+  \url{https://portswigger.net/research/smashing-the-state-machine}.}
+\newblock
+\newblock
+
+
+\bibitem[Kingsbury and Alvaro(2020)]%
+        {elle}
+\bibfield{author}{\bibinfo{person}{K. Kingsbury} {and} \bibinfo{person}{P.
+  Alvaro}.} \bibinfo{year}{2020}\natexlab{}.
+\newblock \bibinfo{title}{Elle: inferring isolation anomalies from experimental
+  observations. Proceedings of the VLDB Endowment 14, 268--280.
+  \url{https://doi.org/10.14778/3430915.3430918}.}
+\newblock
+\newblock
+
+
+\bibitem[Klein et~al\mbox{.}(2009)]%
+        {sel4}
+\bibfield{author}{\bibinfo{person}{G. Klein}, \bibinfo{person}{K. Elphinstone},
+  \bibinfo{person}{G. Heiser}, \bibinfo{person}{J. Andronick}, {et~al\mbox{.}}}
+  \bibinfo{year}{2009}\natexlab{}.
+\newblock \bibinfo{title}{seL4: formal verification of an OS kernel, in:
+  Proceedings of the ACM SIGOPS 22nd symposium on Operating systems principles,
+  pp.~207--220. \url{https://doi.org/10.1145/1629575.1629596}.}
+\newblock
+\newblock
+
+
+\bibitem[Kleppmann(2017)]%
+        {kleppmann}
+\bibfield{author}{\bibinfo{person}{M. Kleppmann}.}
+  \bibinfo{year}{2017}\natexlab{}.
+\newblock \bibinfo{title}{Designing Data-Intensive Applications. O'Reilly
+  Media, Sebastopol.}
+\newblock
+\newblock
+
+
+\bibitem[Kudo and Richardson(2018)]%
+        {sentencepiece}
+\bibfield{author}{\bibinfo{person}{T. Kudo} {and} \bibinfo{person}{J.
+  Richardson}.} \bibinfo{year}{2018}\natexlab{}.
+\newblock \bibinfo{title}{SentencePiece: A simple and language independent
+  subword tokenizer and detokenizer for neural text processing.
+  arXiv:1808.06226.}
+\newblock
+\newblock
+
+
+\bibitem[Kwon et~al\mbox{.}(2023)]%
+        {vllm}
+\bibfield{author}{\bibinfo{person}{W. Kwon}, \bibinfo{person}{Z. Li},
+  \bibinfo{person}{S. Zhuang}, \bibinfo{person}{Y. Sheng}, {et~al\mbox{.}}}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \bibinfo{title}{Efficient memory management for large language model
+  serving with PagedAttention, in: Proceedings of the 29th Symposium on
+  Operating Systems Principles (SOSP), pp.~611--626.}
+\newblock
+\newblock
+
+
+\bibitem[Lamport(1994)]%
+        {tla}
+\bibfield{author}{\bibinfo{person}{L. Lamport}.}
+  \bibinfo{year}{1994}\natexlab{}.
+\newblock \bibinfo{title}{The temporal logic of actions. ACM Transactions on
+  Programming Languages and Systems 16, 872--923.}
+\newblock
+\newblock
+
+
+\bibitem[Lamport(2002)]%
+        {lamportspec}
+\bibfield{author}{\bibinfo{person}{L. Lamport}.}
+  \bibinfo{year}{2002}\natexlab{}.
+\newblock \bibinfo{title}{Specifying Systems: The TLA+ Language and Tools for
+  Hardware and Software Engineers. Addison-Wesley, Boston.}
+\newblock
+\newblock
+
+
+\bibitem[Lamport(2015)]%
+        {blueprints}
+\bibfield{author}{\bibinfo{person}{L. Lamport}.}
+  \bibinfo{year}{2015}\natexlab{}.
+\newblock \bibinfo{title}{Who builds a house without drawing blueprints?.
+  Communications of the ACM 58, 38--41. \url{https://doi.org/10.1145/2736348}.}
+\newblock
+\newblock
+
+
+\bibitem[Leroy(2009)]%
+        {compcert}
+\bibfield{author}{\bibinfo{person}{X. Leroy}.} \bibinfo{year}{2009}\natexlab{}.
+\newblock \bibinfo{title}{Formal verification of a realistic compiler.
+  Communications of the ACM 52, 107--115.
+  \url{https://doi.org/10.1145/1538788.1538814}.}
+\newblock
+\newblock
+
+
+\bibitem[Leviathan et~al\mbox{.}(2022)]%
+        {leviathan}
+\bibfield{author}{\bibinfo{person}{Y. Leviathan}, \bibinfo{person}{M. Kalman},
+  {and} \bibinfo{person}{Y. Matias}.} \bibinfo{year}{2022}\natexlab{}.
+\newblock \bibinfo{title}{Fast inference from transformers via speculative
+  decoding. arXiv:2211.17192.}
+\newblock
+\newblock
+
+
+\bibitem[{Lightning Labs}(2026)]%
+        {aperture247}
+\bibfield{author}{\bibinfo{person}{{Lightning Labs}}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{pricesrpc+proxy: Metered draw-down of prepaid L402
+  tokens, with a reference pricer daemon. Aperture pull request \#247 (merged).
+  \url{https://github.com/lightninglabs/aperture/pull/247}.}
+\newblock
+\newblock
+
+
+\bibitem[Lin et~al\mbox{.}(2025)]%
+        {serverlesscosts}
+\bibfield{author}{\bibinfo{person}{C. Lin}, \bibinfo{person}{Y. Ma}, {and}
+  \bibinfo{person}{M. Shahrad}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{Demystifying serverless costs on public platforms:
+  bridging billing, architecture, and OS scheduling. arXiv:2506.01283.}
+\newblock
+\newblock
+
+
+\bibitem[{MITRE}(nd)]%
+        {cwe807}
+\bibfield{author}{\bibinfo{person}{{MITRE}}.} \bibinfo{year}{n.d.}\natexlab{}.
+\newblock \bibinfo{title}{CWE-807: Reliance on untrusted inputs in a security
+  decision. Common Weakness Enumeration, version 4.20.
+  \url{https://cwe.mitre.org/data/definitions/807.html}.}
+\newblock
+\newblock
+
+
+\bibitem[Mytkowicz et~al\mbox{.}(2009)]%
+        {mytkowicz}
+\bibfield{author}{\bibinfo{person}{T. Mytkowicz}, \bibinfo{person}{A. Diwan},
+  \bibinfo{person}{M. Hauswirth}, {and} \bibinfo{person}{P.F. Sweeney}.}
+  \bibinfo{year}{2009}\natexlab{}.
+\newblock \bibinfo{title}{Producing wrong data without doing anything obviously
+  wrong!, in: Proceedings of the 14th international conference on Architectural
+  support for programming languages and operating systems, pp.~265--276.
+  \url{https://doi.org/10.1145/1508244.1508275}.}
+\newblock
+\newblock
+
+
+\bibitem[Newcombe et~al\mbox{.}(2015)]%
+        {awsformal}
+\bibfield{author}{\bibinfo{person}{C. Newcombe}, \bibinfo{person}{T. Rath},
+  \bibinfo{person}{F. Zhang}, \bibinfo{person}{B. Munteanu},
+  \bibinfo{person}{M. Brooker}, {and} \bibinfo{person}{M. Deardeuff}.}
+  \bibinfo{year}{2015}\natexlab{}.
+\newblock \bibinfo{title}{How Amazon Web Services uses formal methods.
+  Communications of the ACM 58, 66--73.}
+\newblock
+\newblock
+
+
+\bibitem[O'Neil(1986)]%
+        {escrow}
+\bibfield{author}{\bibinfo{person}{P.E. O'Neil}.}
+  \bibinfo{year}{1986}\natexlab{}.
+\newblock \bibinfo{title}{The escrow transactional method. ACM Transactions on
+  Database Systems 11, 405--430.}
+\newblock
+\newblock
+
+
+\bibitem[{OpenAI}(nd)]%
+        {tiktoken}
+\bibfield{author}{\bibinfo{person}{{OpenAI}}.} \bibinfo{year}{n.d.}\natexlab{}.
+\newblock \bibinfo{title}{tiktoken: A fast BPE tokeniser for use with OpenAI's
+  models [Software]. \url{https://github.com/openai/tiktoken}.}
+\newblock
+\newblock
+
+
+\bibitem[{OWASP GenAI Security Project}(2025)]%
+        {owasp}
+\bibfield{author}{\bibinfo{person}{{OWASP GenAI Security Project}}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{LLM10:2025 unbounded consumption. OWASP Top 10 for
+  LLM Applications.
+  \url{https://genai.owasp.org/llmrisk/llm102025-unbounded-consumption/}.}
+\newblock
+\newblock
+
+
+\bibitem[Petrov et~al\mbox{.}(2023)]%
+        {petrov}
+\bibfield{author}{\bibinfo{person}{A. Petrov}, \bibinfo{person}{E. La~Malfa},
+  \bibinfo{person}{P.H.S. Torr}, {and} \bibinfo{person}{A. Bibi}.}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \bibinfo{title}{Language model tokenizers introduce unfairness
+  between languages. arXiv:2305.15425.}
+\newblock
+\newblock
+
+
+\bibitem[{QuantumNous}(2026)]%
+        {newapi5235}
+\bibfield{author}{\bibinfo{person}{{QuantumNous}}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{Streaming responses requests may refund all
+  pre-consumed quota when final usage is missing after client disconnect.
+  new-api issue \#5235.
+  \url{https://github.com/QuantumNous/new-api/issues/5235}.}
+\newblock
+\newblock
+
+
+\bibitem[{Router-for-me}(2026)]%
+        {cliproxy2179}
+\bibfield{author}{\bibinfo{person}{{Router-for-me}}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{/v1/responses streaming occasionally finishes with
+  HTTP 200 but no usage returned, causing downstream billing to be 0.
+  CLIProxyAPI issue \#2179 (closed).
+  \url{https://github.com/router-for-me/CLIProxyAPI/issues/2179}. Accessed 23
+  September 2026.}
+\newblock
+\newblock
+
+
+\bibitem[Runeson and H\"{o}st(2009)]%
+        {runeson}
+\bibfield{author}{\bibinfo{person}{P. Runeson} {and} \bibinfo{person}{M.
+  H\"{o}st}.} \bibinfo{year}{2009}\natexlab{}.
+\newblock \bibinfo{title}{Guidelines for conducting and reporting case study
+  research in software engineering. Empirical Software Engineering 14,
+  131--164. \url{https://doi.org/10.1007/s10664-008-9102-8}.}
+\newblock
+\newblock
+
+
+\bibitem[Saltzer and Schroeder(1975)]%
+        {saltzer}
+\bibfield{author}{\bibinfo{person}{J. Saltzer} {and} \bibinfo{person}{M.
+  Schroeder}.} \bibinfo{year}{1975}\natexlab{}.
+\newblock \bibinfo{title}{The protection of information in computer systems.
+  Proceedings of the IEEE 63, 1278--1308.
+  \url{https://doi.org/10.1109/PROC.1975.9939}.}
+\newblock
+\newblock
+
+
+\bibitem[Seabold and Perktold(2010)]%
+        {statsmodels}
+\bibfield{author}{\bibinfo{person}{S. Seabold} {and} \bibinfo{person}{J.
+  Perktold}.} \bibinfo{year}{2010}\natexlab{}.
+\newblock \bibinfo{title}{Statsmodels: econometric and statistical modeling
+  with Python, in: Proceedings of the Python in Science Conference, pp.~92--96.
+  \url{https://doi.org/10.25080/Majora-92bf1922-011}.}
+\newblock
+\newblock
+
+
+\bibitem[Segura et~al\mbox{.}(2016)]%
+        {segura}
+\bibfield{author}{\bibinfo{person}{S. Segura}, \bibinfo{person}{G. Fraser},
+  \bibinfo{person}{A.B. Sanchez}, {and} \bibinfo{person}{A. Ruiz-Cortes}.}
+  \bibinfo{year}{2016}\natexlab{}.
+\newblock \bibinfo{title}{A survey on metamorphic testing. IEEE Transactions on
+  Software Engineering 42, 805--824.
+  \url{https://doi.org/10.1109/TSE.2016.2532875}.}
+\newblock
+\newblock
+
+
+\bibitem[Sennrich et~al\mbox{.}(2015)]%
+        {bpe}
+\bibfield{author}{\bibinfo{person}{R. Sennrich}, \bibinfo{person}{B. Haddow},
+  {and} \bibinfo{person}{A. Birch}.} \bibinfo{year}{2015}\natexlab{}.
+\newblock \bibinfo{title}{Neural machine translation of rare words with subword
+  units. arXiv:1508.07909.}
+\newblock
+\newblock
+
+
+\bibitem[Shi et~al\mbox{.}(2026)]%
+        {gift}
+\bibfield{author}{\bibinfo{person}{J. Shi}, \bibinfo{person}{X. Wang},
+  \bibinfo{person}{C. Tan}, {and} \bibinfo{person}{J. Gu}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{Here is a GIFT: enforcing user data isolation in LLM
+  serving via GPU information flow tracking. arXiv:2608.25431.}
+\newblock
+\newblock
+
+
+\bibitem[Shumailov et~al\mbox{.}(2020)]%
+        {sponge}
+\bibfield{author}{\bibinfo{person}{I. Shumailov}, \bibinfo{person}{Y. Zhao},
+  \bibinfo{person}{D. Bates}, \bibinfo{person}{N. Papernot},
+  \bibinfo{person}{R. Mullins}, {and} \bibinfo{person}{R. Anderson}.}
+  \bibinfo{year}{2020}\natexlab{}.
+\newblock \bibinfo{title}{Sponge examples: Energy-latency attacks on neural
+  networks. arXiv:2006.03463.}
+\newblock
+\newblock
+
+
+\bibitem[Spearman(1904)]%
+        {spearman}
+\bibfield{author}{\bibinfo{person}{C. Spearman}.}
+  \bibinfo{year}{1904}\natexlab{}.
+\newblock \bibinfo{title}{The proof and measurement of association between two
+  things. The American Journal of Psychology 15, 72--101.
+  \url{https://doi.org/10.2307/1412159}.}
+\newblock
+\newblock
+
+
+\bibitem[Stol and Fitzgerald(2018)]%
+        {abc}
+\bibfield{author}{\bibinfo{person}{K.-J. Stol} {and} \bibinfo{person}{B.
+  Fitzgerald}.} \bibinfo{year}{2018}\natexlab{}.
+\newblock \bibinfo{title}{The ABC of software engineering research. ACM
+  Transactions on Software Engineering and Methodology 27, 1--51.
+  \url{https://doi.org/10.1145/3241743}.}
+\newblock
+\newblock
+
+
+\bibitem[Sun et~al\mbox{.}(2025a)]%
+        {coin}
+\bibfield{author}{\bibinfo{person}{G. Sun}, \bibinfo{person}{Z. Wang},
+  \bibinfo{person}{B. Tian}, \bibinfo{person}{M. Liu}, {et~al\mbox{.}}}
+  \bibinfo{year}{2025}\natexlab{a}.
+\newblock \bibinfo{title}{CoIn: Counting the invisible reasoning tokens in
+  commercial opaque LLM APIs. arXiv:2505.13778.}
+\newblock
+\newblock
+
+
+\bibitem[Sun et~al\mbox{.}(2025b)]%
+        {invisible}
+\bibfield{author}{\bibinfo{person}{G. Sun}, \bibinfo{person}{Z. Wang},
+  \bibinfo{person}{X. Zhao}, \bibinfo{person}{B. Tian}, {et~al\mbox{.}}}
+  \bibinfo{year}{2025}\natexlab{b}.
+\newblock \bibinfo{title}{Invisible tokens, visible bills: The urgent need to
+  audit hidden operations in opaque LLM services. arXiv:2505.18471.}
+\newblock
+\newblock
+
+
+\bibitem[{Sysdig Threat Research Team}(2024)]%
+        {llmjacking}
+\bibfield{author}{\bibinfo{person}{{Sysdig Threat Research Team}}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \bibinfo{title}{LLMjacking: Stolen cloud credentials used in new AI
+  attack. Sysdig.
+  \url{https://www.sysdig.com/blog/llmjacking-stolen-cloud-credentials-used-in-new-ai-attack}.}
+\newblock
+\newblock
+
+
+\bibitem[Virtanen et~al\mbox{.}(2020)]%
+        {scipy}
+\bibfield{author}{\bibinfo{person}{P. Virtanen}, \bibinfo{person}{R. Gommers},
+  \bibinfo{person}{T.E. Oliphant}, \bibinfo{person}{M. Haberland},
+  {et~al\mbox{.}}} \bibinfo{year}{2020}\natexlab{}.
+\newblock \bibinfo{title}{SciPy 1.0: fundamental algorithms for scientific
+  computing in Python. Nature Methods 17, 261--272.
+  \url{https://doi.org/10.1038/s41592-019-0686-2}.}
+\newblock
+\newblock
+
+
+\bibitem[Vogels(2009)]%
+        {vogels}
+\bibfield{author}{\bibinfo{person}{W. Vogels}.}
+  \bibinfo{year}{2009}\natexlab{}.
+\newblock \bibinfo{title}{Eventually consistent. Communications of the ACM 52,
+  40--44. \url{https://doi.org/10.1145/1435417.1435432}.}
+\newblock
+\newblock
+
+
+\bibitem[Wang and Tian(2026)]%
+        {gwprov}
+\bibfield{author}{\bibinfo{person}{F. Wang} {and} \bibinfo{person}{Z. Tian}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{Evidence-bound gateway-path provenance for
+  third-party LLM inference. arXiv:2606.22560.}
+\newblock
+\newblock
+
+
+\bibitem[Wang et~al\mbox{.}(2011)]%
+        {cashier}
+\bibfield{author}{\bibinfo{person}{R. Wang}, \bibinfo{person}{S. Chen},
+  \bibinfo{person}{X. Wang}, {and} \bibinfo{person}{S. Qadeer}.}
+  \bibinfo{year}{2011}\natexlab{}.
+\newblock \bibinfo{title}{How to shop for free online -- security analysis of
+  cashier-as-a-service based web stores, in: 2011 IEEE Symposium on Security
+  and Privacy, pp.~465--480. \url{https://doi.org/10.1109/SP.2011.26}.}
+\newblock
+\newblock
+
+
+\bibitem[Warszawski and Bailis(2017)]%
+        {acidrain}
+\bibfield{author}{\bibinfo{person}{T. Warszawski} {and} \bibinfo{person}{P.
+  Bailis}.} \bibinfo{year}{2017}\natexlab{}.
+\newblock \bibinfo{title}{ACIDRain: concurrency-related attacks on
+  database-backed web applications, in: Proceedings of the 2017 ACM
+  International Conference on Management of Data, pp.~5--20.
+  \url{https://doi.org/10.1145/3035918.3064037}.}
+\newblock
+\newblock
+
+
+\bibitem[{WHATWG}(nd)]%
+        {sse}
+\bibfield{author}{\bibinfo{person}{{WHATWG}}.} \bibinfo{year}{n.d.}\natexlab{}.
+\newblock \bibinfo{title}{Server-sent events. HTML Living Standard.
+  \url{https://html.spec.whatwg.org/multipage/server-sent-events.html}.}
+\newblock
+\newblock
+
+
+\bibitem[Wilkinson et~al\mbox{.}(2016)]%
+        {fair}
+\bibfield{author}{\bibinfo{person}{M.D. Wilkinson}, \bibinfo{person}{M.
+  Dumontier}, \bibinfo{person}{I.J. Aalbersberg}, \bibinfo{person}{G.
+  Appleton}, {et~al\mbox{.}}} \bibinfo{year}{2016}\natexlab{}.
+\newblock \bibinfo{title}{The FAIR guiding principles for scientific data
+  management and stewardship. Scientific Data 3, article 160018.
+  \url{https://doi.org/10.1038/sdata.2016.18}.}
+\newblock
+\newblock
+
+
+\bibitem[Wohlin et~al\mbox{.}(2012)]%
+        {wohlin}
+\bibfield{author}{\bibinfo{person}{C. Wohlin}, \bibinfo{person}{P. Runeson},
+  \bibinfo{person}{M. H\"{o}st}, \bibinfo{person}{M.C. Ohlsson},
+  {et~al\mbox{.}}} \bibinfo{year}{2012}\natexlab{}.
+\newblock \bibinfo{title}{Experimentation in Software Engineering. Springer,
+  Berlin, Heidelberg.}
+\newblock
+\newblock
+
+
+\bibitem[Woodcock et~al\mbox{.}(2009)]%
+        {woodcock}
+\bibfield{author}{\bibinfo{person}{J. Woodcock}, \bibinfo{person}{P.G. Larsen},
+  \bibinfo{person}{J. Bicarregui}, {and} \bibinfo{person}{J. Fitzgerald}.}
+  \bibinfo{year}{2009}\natexlab{}.
+\newblock \bibinfo{title}{Formal methods: practice and experience. ACM
+  Computing Surveys 41, 1--36. \url{https://doi.org/10.1145/1592434.1592436}.}
+\newblock
+\newblock
+
+
+\bibitem[Yu et~al\mbox{.}(1999)]%
+        {tlc}
+\bibfield{author}{\bibinfo{person}{Y. Yu}, \bibinfo{person}{P. Manolios}, {and}
+  \bibinfo{person}{L. Lamport}.} \bibinfo{year}{1999}\natexlab{}.
+\newblock \bibinfo{title}{Model checking TLA+ specifications, in: Correct
+  Hardware Design and Verification Methods (CHARME), LNCS~1703, pp.~54--66.}
+\newblock
+\newblock
+
+
+\bibitem[Zhao et~al\mbox{.}(2026)]%
+        {grief}
+\bibfield{author}{\bibinfo{person}{Y. Zhao}, \bibinfo{person}{Y. Zhao},
+  \bibinfo{person}{Y. Zhang}, \bibinfo{person}{Z. Liu}, {and}
+  \bibinfo{person}{M.L. Mazurek}.} \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{Continuous discovery of vulnerabilities in LLM
+  serving systems with fuzzing. arXiv:2605.11202.}
+\newblock
+\newblock
+
+
+\bibitem[Zheng et~al\mbox{.}(2023)]%
+        {sglang}
+\bibfield{author}{\bibinfo{person}{L. Zheng}, \bibinfo{person}{L. Yin},
+  \bibinfo{person}{Z. Xie}, \bibinfo{person}{C. Sun}, {et~al\mbox{.}}}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \bibinfo{title}{SGLang: efficient execution of structured language
+  model programs. arXiv:2312.07104.}
+\newblock
+\newblock
+
+
+\bibitem[Zhong et~al\mbox{.}(2024)]%
+        {distserve}
+\bibfield{author}{\bibinfo{person}{Y. Zhong}, \bibinfo{person}{S. Liu},
+  \bibinfo{person}{J. Chen}, \bibinfo{person}{J. Hu}, {et~al\mbox{.}}}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \bibinfo{title}{DistServe: disaggregating prefill and decoding for
+  goodput-optimized large language model serving. arXiv:2401.09670.}
+\newblock
+\newblock
+
+
+\end{thebibliography}

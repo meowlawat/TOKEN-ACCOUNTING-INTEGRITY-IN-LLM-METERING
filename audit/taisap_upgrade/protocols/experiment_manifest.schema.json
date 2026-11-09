@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/taisap-upgrade/experiment-manifest.schema.json",
+  "title": "TAISAP scientific-upgrade experiment manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "experiment_id",
+    "hypothesis",
+    "metrics",
+    "sample_size",
+    "execution_status",
+    "command",
+    "started_at",
+    "finished_at",
+    "git_commit",
+    "environment",
+    "artifacts"
+  ],
+  "properties": {
+    "experiment_id": {"type": "string", "pattern": "^E[1-4]$"},
+    "hypothesis": {"type": "string", "minLength": 20},
+    "metrics": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "sample_size": {"type": "string", "minLength": 1},
+    "execution_status": {
+      "type": "string",
+      "enum": ["PROPOSED_ONLY", "EXECUTED", "FAILED", "HUMAN_APPROVAL_REQUIRED"]
+    },
+    "command": {"type": ["array", "null"], "items": {"type": "string"}},
+    "started_at": {"type": ["string", "null"], "format": "date-time"},
+    "finished_at": {"type": ["string", "null"], "format": "date-time"},
+    "git_commit": {"type": "string"},
+    "environment": {"type": "object"},
+    "artifacts": {"type": "array", "items": {"type": "string"}},
+    "exit_code": {"type": ["integer", "null"]},
+    "notes": {"type": "string"}
+  }
+}

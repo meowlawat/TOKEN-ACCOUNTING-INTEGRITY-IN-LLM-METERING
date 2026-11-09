@@ -86,7 +86,7 @@ author's Zenodo account. Everything that could be prepared has been.
 ## 2. Corresponding-author email choice — RESOLVED
 
 **Status: RESOLVED.** The author chose to list both, institutional first:
-`hardik24a12res263@iitp.ac.in` then `hardikahlawat13@gmail.com`. The institutional address
+`hardik_24a12res263@iitp.ac.in` then `hardikahlawat13@gmail.com`. The institutional address
 carries the conventional academic signal; the personal one survives graduation in 2027,
 which matters for a paper that may be in review or cited long afterwards. Both print in
 the corresponding-author footnote on page 1.

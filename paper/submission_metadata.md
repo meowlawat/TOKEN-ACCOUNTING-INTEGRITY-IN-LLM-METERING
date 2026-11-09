@@ -32,7 +32,7 @@ b. Vivekananda School of Engineering and Technology, Vivekananda Institute of
 Cybersecurity, 2024–2028), so both are listed.*
 
 ## Corresponding author
-Hardik — `hardik24a12res263@iitp.ac.in` (institutional, primary) and
+Hardik — `hardik_24a12res263@iitp.ac.in` (institutional, primary) and
 `hardikahlawat13@gmail.com` (personal, durable after graduation). Both are printed in the
 manuscript's corresponding-author footnote, institutional first.
 

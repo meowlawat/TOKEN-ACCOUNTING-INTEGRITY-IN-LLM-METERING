@@ -1,0 +1,78 @@
+[
+  {
+    "scenario": "worker_kill",
+    "unit_cost": "0.081000",
+    "requests_issued": 4,
+    "requests_served": 4,
+    "queue_depth_before_kill": {
+      "queue_depth": 4
+    },
+    "balance_during_outage": {
+      "account_id": 187,
+      "balance": "0.324000"
+    },
+    "queue_depth_after_restart_and_wait": {
+      "queue_depth": 0
+    },
+    "server_audit_record_count": 4,
+    "server_audit_served_count": 4,
+    "all_sent_request_ids_present_in_server_audit": true,
+    "server_audit_matches_client_served_count": true,
+    "balance_after_restart_and_wait": {
+      "account_id": 187,
+      "balance": "0.000000"
+    },
+    "queue_drained_to_zero": true,
+    "balance_reconciled": true,
+    "no_lost_events": true,
+    "interpretation": "OBSERVED: events queued before the worker was killed survived the outage (Redis, not the worker process, holds the queue) and were applied once the worker restarted. No lost events, no double counting (balance matches served-request-count x unit-cost exactly)."
+  },
+  {
+    "scenario": "network_partition",
+    "docker_network_used": "sepaper_default",
+    "disconnect_result": "",
+    "reconnect_result": "",
+    "requests_issued": 3,
+    "requests_served": 3,
+    "queue_depth_during_partition": {
+      "queue_depth": 3
+    },
+    "queue_depth_after_reconnect_and_wait": {
+      "queue_depth": 0
+    },
+    "balance_after_recovery": {
+      "account_id": 189,
+      "balance": "0.000000"
+    },
+    "queue_drained_to_zero": true,
+    "balance_reconciled": true,
+    "server_audit_record_count": 3,
+    "server_audit_served_count": 3,
+    "all_sent_request_ids_present_in_server_audit": true,
+    "server_audit_matches_client_served_count": true,
+    "interpretation": "OBSERVED: worker could not reach Redis/Postgres while disconnected; events already queued remained in Redis (not lost) and were applied once reconnected. This models the brief's 'network partition between A and B' at the Docker-network level, not yet at the real Azure NSG/network level -- see partition_remote_NOTE() for what the real version requires."
+  },
+  {
+    "scenario": "extreme_delay",
+    "unit_cost": "0.081000",
+    "configured_delay_ms": 10000.0,
+    "served": true,
+    "balance_immediately_after_response": {
+      "account_id": 191,
+      "balance": "0.162000"
+    },
+    "queue_depth_immediately_after_response": {
+      "queue_depth": 1
+    },
+    "interpretation": "OBSERVED: the gateway returns a successful response to the client immediately, with the balance still showing the FULL pre-debit amount and the event still sitting in the queue -- the client-visible 'success' and the actual economic commitment are now separated by up to 10 seconds. This is the exposure window itself, made deliberately extreme rather than merely inferred from the delay sweep's largest configured value."
+  },
+  {
+    "scenario": "network_partition_remote_NOT_RUN",
+    "status": "NOT MEASURED -- requires Host B to exist",
+    "what_this_would_require": [
+      "SSH to Host B and temporarily remove/override the NSG rule (or add an iptables DROP rule on Host B) blocking inbound traffic from Host A's IP on 5432/6379 for a fixed window, then restore it.",
+      "From Host A, issue B0 requests during the blocked window and confirm the gateway behaves sanely (times out or queues, does not silently corrupt state) rather than crashing or double-committing.",
+      "After restoring connectivity, confirm the worker drains the backlog and the ledger reconciles exactly as in the local Docker-network-disconnect version above."
+    ]
+  }
+]

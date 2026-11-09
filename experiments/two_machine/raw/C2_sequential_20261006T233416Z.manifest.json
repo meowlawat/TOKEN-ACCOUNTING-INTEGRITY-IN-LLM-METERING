@@ -1,0 +1,31 @@
+{
+  "run_batch_id": "C2_sequential_20261006T233416Z",
+  "git_commit": "25492002a238bea5e566d4524cdb959db48052f3",
+  "git_dirty": true,
+  "started_at_utc": "2026-10-06T23:34:16.208427+00:00",
+  "host_a_identifier": "DESKTOP-8B2NBHS",
+  "host_a_platform": "Windows-11-10.0.26300-SP0",
+  "python_version": "3.13.5",
+  "condition": "C2",
+  "arrival": "sequential",
+  "endpoint": "/async/b0/complete",
+  "base_url": "http://localhost:8000",
+  "delays_ms": [
+    0.0,
+    10.0,
+    50.0,
+    100.0,
+    500.0
+  ],
+  "repetitions_requested": 10,
+  "b0_interarrival_ms": 20.0,
+  "b0_requests": 6,
+  "b0_budget_units": 2,
+  "fault": "none",
+  "config_hash": "f39607c751d9a975",
+  "notes": "Full C2 delay sweep, sequential arrival, real two-machine topology (Host A local gateway, Host B Azure Central India Postgres/Redis/worker)",
+  "finished_at_utc": "2026-10-06T23:41:13.191090+00:00",
+  "cells_total": 50,
+  "cells_valid": 50,
+  "cells_invalid": 0
+}

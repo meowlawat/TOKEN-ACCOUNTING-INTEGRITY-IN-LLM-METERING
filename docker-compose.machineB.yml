@@ -1,0 +1,58 @@
+# Host B (the settlement/ledger machine) for the two-machine experiment.
+#
+# Runs ONLY what Host B owns per TWO_MACHINE_PLAN.md's architecture: the authoritative
+# Postgres ledger, the Redis event queue, and the standalone settlement worker
+# (app/accounting/worker_main.py, from Phase 3). No gateway/FastAPI app runs here --
+# that stays on Host A, which is the point of the experiment.
+#
+# Postgres and Redis require explicit credentials and an explicit bind address. For an
+# Internet-routed host, bind to a private/tunnel interface and retain an NSG allowlist;
+# an allowlist alone does not provide transport encryption.
+#
+# Usage (on Host B, after scripts/azure/deploy-machine-b.sh has copied this + app/):
+#   docker compose -f docker-compose.machineB.yml up -d --build
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: metering
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      POSTGRES_DB: metering
+    ports:
+      - "${HOSTB_BIND_IP:?set a private or tunnel bind address}:5432:5432"
+    volumes:
+      - pgdata_hostb:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U metering -d metering"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  redis:
+    image: redis:7-alpine
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?set REDIS_PASSWORD}
+    command: ["sh", "-c", "exec redis-server --appendonly yes --requirepass \"$$REDIS_PASSWORD\""]
+    ports:
+      - "${HOSTB_BIND_IP:?set a private or tunnel bind address}:6379:6379"
+    healthcheck:
+      test: ["CMD-SHELL", "REDISCLI_AUTH=$$REDIS_PASSWORD redis-cli ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  worker:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+asyncpg://metering:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@db:5432/metering
+      REDIS_URL: redis://:${REDIS_PASSWORD:?set REDIS_PASSWORD}@redis:6379/0
+    command: python -m app.accounting.worker_main --poll-ms 2.0 --stats-every 50 --instrument
+    restart: unless-stopped
+
+volumes:
+  pgdata_hostb:

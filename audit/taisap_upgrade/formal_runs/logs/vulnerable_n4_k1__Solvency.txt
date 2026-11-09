@@ -1,0 +1,77 @@
+TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)
+Running breadth-first search Model-Checking with fp 9 and seed 3384337953473871962 with 1 worker on 16 cores with 3577MB heap and 64MB offheap memory [pid: 29052] (Windows 11 10.0 amd64, Eclipse Adoptium 25.0.2 x86_64, MSBDiskFPSet, DiskStateQueue).
+Parsing file E:\se paper\formal\AsyncSettlementTOCTOU.tla
+Parsing file C:\Users\hardi\AppData\Local\Temp\Integers.tla
+Parsing file C:\Users\hardi\AppData\Local\Temp\FiniteSets.tla
+Parsing file C:\Users\hardi\AppData\Local\Temp\TLC.tla
+Parsing file C:\Users\hardi\AppData\Local\Temp\Naturals.tla
+Parsing file C:\Users\hardi\AppData\Local\Temp\Sequences.tla
+Semantic processing of module Naturals
+Semantic processing of module Integers
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module AsyncSettlementTOCTOU
+Starting... (2026-11-06 20:09:40)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-11-06 20:09:40.
+Error: Invariant Solvency is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ balance = 1
+/\ debited = (r1 :> 0 @@ r2 :> 0 @@ r3 :> 0 @@ r4 :> 0)
+/\ pc = (r1 :> "CREATED" @@ r2 :> "CREATED" @@ r3 :> "CREATED" @@ r4 :> "CREATED")
+
+State 2: <Authorize line 71, col 5 to line 76, col 39 of module AsyncSettlementTOCTOU>
+/\ balance = 1
+/\ debited = (r1 :> 0 @@ r2 :> 0 @@ r3 :> 0 @@ r4 :> 0)
+/\ pc = (r1 :> "ADMITTED" @@ r2 :> "CREATED" @@ r3 :> "CREATED" @@ r4 :> "CREATED")
+
+State 3: <Release line 84, col 5 to line 87, col 39 of module AsyncSettlementTOCTOU>
+/\ balance = 1
+/\ debited = (r1 :> 0 @@ r2 :> 0 @@ r3 :> 0 @@ r4 :> 0)
+/\ pc = (r1 :> "RELEASED" @@ r2 :> "CREATED" @@ r3 :> "CREATED" @@ r4 :> "CREATED")
+
+State 4: <SettlementPending line 98, col 5 to line 101, col 39 of module AsyncSettlementTOCTOU>
+/\ balance = 1
+/\ debited = (r1 :> 0 @@ r2 :> 0 @@ r3 :> 0 @@ r4 :> 0)
+/\ pc = ( r1 :> "SETTLEMENT_PENDING" @@
+  r2 :> "CREATED" @@
+  r3 :> "CREATED" @@
+  r4 :> "CREATED" )
+
+State 5: <Authorize line 71, col 5 to line 76, col 39 of module AsyncSettlementTOCTOU>
+/\ balance = 1
+/\ debited = (r1 :> 0 @@ r2 :> 0 @@ r3 :> 0 @@ r4 :> 0)
+/\ pc = ( r1 :> "SETTLEMENT_PENDING" @@
+  r2 :> "ADMITTED" @@
+  r3 :> "CREATED" @@
+  r4 :> "CREATED" )
+
+State 6: <Settle line 113, col 5 to line 117, col 41 of module AsyncSettlementTOCTOU>
+/\ balance = 0
+/\ debited = (r1 :> 1 @@ r2 :> 0 @@ r3 :> 0 @@ r4 :> 0)
+/\ pc = (r1 :> "SETTLED" @@ r2 :> "ADMITTED" @@ r3 :> "CREATED" @@ r4 :> "CREATED")
+
+State 7: <Release line 84, col 5 to line 87, col 39 of module AsyncSettlementTOCTOU>
+/\ balance = 0
+/\ debited = (r1 :> 1 @@ r2 :> 0 @@ r3 :> 0 @@ r4 :> 0)
+/\ pc = (r1 :> "SETTLED" @@ r2 :> "RELEASED" @@ r3 :> "CREATED" @@ r4 :> "CREATED")
+
+State 8: <SettlementPending line 98, col 5 to line 101, col 39 of module AsyncSettlementTOCTOU>
+/\ balance = 0
+/\ debited = (r1 :> 1 @@ r2 :> 0 @@ r3 :> 0 @@ r4 :> 0)
+/\ pc = ( r1 :> "SETTLED" @@
+  r2 :> "SETTLEMENT_PENDING" @@
+  r3 :> "CREATED" @@
+  r4 :> "CREATED" )
+
+State 9: <Settle line 113, col 5 to line 117, col 41 of module AsyncSettlementTOCTOU>
+/\ balance = -1
+/\ debited = (r1 :> 1 @@ r2 :> 1 @@ r3 :> 0 @@ r4 :> 0)
+/\ pc = (r1 :> "SETTLED" @@ r2 :> "SETTLED" @@ r3 :> "CREATED" @@ r4 :> "CREATED")
+
+806 states generated, 371 distinct states found, 130 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 4 and the 95th percentile is 3).
+Finished in 00s at (2026-11-06 20:09:40)

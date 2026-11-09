@@ -1,0 +1,16 @@
+| posture | conc | served | $-leak | trial ASR | req ASR | detect |
+|---|---|---|---|---|---|---|
+| hardened | 1 | 1.0 | 0.0000 | 0.00 | 0.000 | none |
+| hardened | 2 | 2.0 | 0.0000 | 0.00 | 0.000 | none |
+| hardened | 5 | 5.0 | 0.0000 | 0.00 | 0.000 | none |
+| hardened | 10 | 10.0 | 0.0000 | 0.00 | 0.000 | none |
+| hardened | 20 | 10.0 | 0.0000 | 0.00 | 0.000 | none |
+| hardened | 30 | 10.0 | 0.0000 | 0.00 | 0.000 | none |
+| hardened | 50 | 10.0 | 0.0000 | 0.00 | 0.000 | none |
+| vulnerable | 1 | 1.0 | 0.0000 | 0.00 | 0.000 | none |
+| vulnerable | 2 | 2.0 | 0.0990 | 1.00 | 0.500 | partial |
+| vulnerable | 5 | 5.0 | 0.3960 | 1.00 | 0.800 | partial |
+| vulnerable | 10 | 10.0 | 0.8910 | 1.00 | 0.900 | partial |
+| vulnerable | 20 | 20.0 | 1.8810 | 1.00 | 0.950 | partial |
+| vulnerable | 30 | 30.0 | 2.8710 | 1.00 | 0.967 | partial |
+| vulnerable | 50 | 50.0 | 4.8510 | 1.00 | 0.980 | partial |

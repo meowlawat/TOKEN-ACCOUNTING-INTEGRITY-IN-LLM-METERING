@@ -105,6 +105,14 @@ docker-compose.override.yml
 pgdata/
 
 # ---------------------------------------------------------------------------
+# Two-machine experiment: machine-specific/ephemeral provisioning info.
+# Reproducibility comes from the scripts, not from a committed IP address --
+# a re-run of provision-two-machine.sh regenerates this file. *.pem/ssh keys
+# are already covered by the Secrets section above.
+# ---------------------------------------------------------------------------
+experiments/two_machine/azure_vm_info.json
+
+# ---------------------------------------------------------------------------
 # Editors and OS
 # ---------------------------------------------------------------------------
 .idea/

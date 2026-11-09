@@ -27,7 +27,7 @@
 | ORCID | `0009-0001-1642-6669` |
 | Affiliation (a) | Department of Computer Science and Data Analytics, Indian Institute of Technology Patna, India |
 | Affiliation (b) | Vivekananda School of Engineering and Technology, Vivekananda Institute of Professional Studies — Technical Campus, New Delhi, India |
-| Corresponding email | `hardik24a12res263@iitp.ac.in` (primary), `hardikahlawat13@gmail.com` |
+| Corresponding email | `hardik_24a12res263@iitp.ac.in` (primary), `hardikahlawat13@gmail.com` |
 
 **Entering the name.** Put `Hardik` in the **last name** field and leave **first name
 empty**. Editorial Manager expects a given/family split; a mononym goes in the family

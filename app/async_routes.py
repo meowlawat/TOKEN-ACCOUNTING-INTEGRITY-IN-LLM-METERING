@@ -39,9 +39,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from .accounting import async_worker as aw
 from .accounting import ledger
 from .accounting.usage import CENTS, Prices, Usage, D
+from .accounting.worker_main import reconcile_outbox
 from .db import SessionLocal, get_session
 from .llm import mock
-from .models.models import Account, MRecord, MTrial
+from .models.models import Account, MRecord, MTrial, OutboxEvent
 
 router = APIRouter(tags=["async-accounting"])
 
@@ -209,19 +210,45 @@ async def async_b0_complete(
     n_out = mock.plan_completion(req.prompt, seed, 40, 80)
     cost = Usage(input_tokens=input_tokens, output_tokens=n_out).cost(prices)
 
+    # Tier-1 mechanism instrumentation (experimental-strengthening phase; see
+    # EXPERIMENTAL_STRENGTHENING_AUDIT.md). All timestamps below are intra-process
+    # perf_counter_ns() deltas -- valid and precise for same-process ordering/intervals,
+    # never compared across the gateway/worker process boundary (that comparison already
+    # exists, correctly, via ev.created_ns/deliver_after_ns in time.time_ns(), per the
+    # clock-domain fix in async_worker.py). These fields are additive: nothing existing
+    # reads them, and omitting --instrument on the worker side leaves them unjoined but
+    # harmless.
+    t1_read_start_ns = time.perf_counter_ns()
     balance = await ledger.read_balance(session, account.id) or Decimal("0")
+    t2_read_done_ns = time.perf_counter_ns()
     if balance < cost:
         return {"request_id": request_id, "served": False, "reason": "insufficient",
                 "balance_seen": str(balance)}
+    t3_decision_ns = time.perf_counter_ns()
 
     ev = aw.new_event(
         account_id=account.id, request_id=request_id, trial_id=trial.id,
         architecture="async_b0", delivered_tokens=n_out, amount=cost,
         authoritative=cost, delay_ms=req.reconcile_delay_ms,
         meta={"fault": req.fault, "balance_seen": str(balance)})
-    await _emit(request, ev, req.fault)
+    t4_event_created_ns = time.perf_counter_ns()
 
+    # DURABILITY FIX (DURABILITY_HARDENING_AUDIT.md): the outbox row is the durable
+    # source of truth for this pending debit, committed to Postgres BEFORE the event is
+    # handed to Redis at all. Previously `_emit` (the Redis push) ran first, so a process
+    # crash after the push but before this commit could leave an event in Redis with no
+    # corresponding durable record -- and, separately, a direct SIGKILL of the Redis
+    # container was shown to permanently lose a queued event with NO durable record
+    # anywhere. Reordering so Redis is the fast-path hint, not the source of truth, closes
+    # both: if this commit never happens, the crash is clean (client never saw `served`,
+    # nothing is queued anywhere); if it happens and Redis later loses the event,
+    # `reconcile_outbox` recovers it directly from this table.
     async with SessionLocal() as s:
+        s.add(OutboxEvent(
+            event_id=ev.event_id, request_id=request_id, account_id=account.id,
+            amount=cost, created_ns=ev.created_ns, deliver_after_ns=ev.deliver_after_ns,
+            status="pending",
+        ))
         s.add(MRecord(
             trial_id=trial.id, account_id=account.id, request_id=request_id,
             mechanism="async_b0", architecture="async_b0",
@@ -232,12 +259,115 @@ async def async_b0_complete(
             served=True, completed=True, invariant_ok=False,
             detection_level="D0", abort_pct=None, manipulation=None,
             extra={"fault": req.fault, "reconcile_delay_ms": req.reconcile_delay_ms,
-                   "balance_seen": str(balance), "pending_amount": str(cost)},
+                   "balance_seen": str(balance), "pending_amount": str(cost),
+                   "event_id": ev.event_id, "event_created_ns": ev.created_ns,
+                   "event_deliver_after_ns": ev.deliver_after_ns,
+                   "t1_read_start_ns": t1_read_start_ns, "t2_read_done_ns": t2_read_done_ns,
+                   "t3_decision_ns": t3_decision_ns, "t4_event_created_ns": t4_event_created_ns},
         ))
         await s.commit()
+    t4c_outbox_committed_ns = time.perf_counter_ns()
+
+    await _emit(request, ev, req.fault)
+    t4b_emitted_ns = time.perf_counter_ns()
+    t5_response_ns = time.perf_counter_ns()
 
     return {"request_id": request_id, "served": True, "cost": str(cost),
-            "balance_seen": str(balance)}
+            "balance_seen": str(balance),
+            "t1_read_start_ns": t1_read_start_ns, "t2_read_done_ns": t2_read_done_ns,
+            "t3_decision_ns": t3_decision_ns, "t4_event_created_ns": t4_event_created_ns,
+            "t4c_outbox_committed_ns": t4c_outbox_committed_ns,
+            "t4b_emitted_ns": t4b_emitted_ns, "t5_response_ns": t5_response_ns,
+            "event_id": ev.event_id}
+
+
+@router.post("/async/b0/complete-atomic")
+async def async_b0_complete_atomic(
+    req: AsyncRequest,
+    request: Request,
+    x_api_key: str = Header(..., alias="X-API-Key"),
+    session: AsyncSession = Depends(get_session),
+) -> dict:
+    """B0 with authorization atomically coupled to economic commitment (C3).
+
+    Added for the two-machine experiment (see experiments/two_machine/RESEARCH_LOG.md,
+    Phase 1 finding 3): the vulnerable `/async/b0/complete` above is, by construction, the
+    object of study -- it has no atomic-commit counterpart in the async pipeline, because
+    none was needed until this experiment asked whether atomic coupling closes the window
+    regardless of settlement delay or physical separation.
+
+    This does NOT reuse `metering/debit.py::reserve_hardened()`. That primitive is a raw
+    SQL statement scoped to the mutable backend only, whereas every other function this
+    async B0 family calls (`read_balance`, `debit_unchecked`) goes through
+    `ledger.py`'s backend-dispatched interface, which supports both the mutable and the
+    append-only ledger backends. Using `reserve_hardened()` here would silently restrict
+    this condition to one backend while the rest of the family supports both -- an
+    inconsistency, not a simplification. `ledger.reserve_atomic()` is the backend-agnostic
+    equivalent: for the mutable backend it is the identical single-statement
+    `UPDATE ... WHERE balance >= :c RETURNING balance` (verified in
+    app/accounting/backends.py::_mutable_reserve); for the ledger backend it is the
+    `SELECT ... FOR UPDATE` anchor-lock + conditional INSERT (verified in
+    app/accounting/backends.py::_ledger_reserve). Both are genuinely atomic with respect
+    to concurrent callers for the reasons documented there -- this is not "reuse because
+    it already exists," it is "use the one primitive in this codebase that is both atomic
+    AND consistent with how this family already talks to storage."
+
+    Because B0's cost is fully known at authorization time (unlike M1, where the final
+    cost depends on how much streamed before an abort), coupling authorization to
+    commitment for B0 means the debit is final the moment the request is authorized --
+    there is nothing left for the async worker to settle. No event is queued. The
+    "distributed" part of condition C3 is that this authorization still runs on Host A
+    while the ledger it debits lives on Host B, over the real network -- the measurable
+    cost H3 asks about is this synchronous round trip, not an async settlement delay.
+    """
+    account = await _account(session, x_api_key)
+    trial = await session.get(MTrial, req.trial_id)
+    if trial is None:
+        raise HTTPException(404, "trial not found")
+    prices = _prices(trial)
+    seed = req.seed if req.seed is not None else trial.model_seed
+    request_id = req.request_id or secrets.token_hex(8)
+
+    input_tokens = mock.count_prompt_tokens(req.prompt)
+    n_out = mock.plan_completion(req.prompt, seed, 40, 80)
+    cost = Usage(input_tokens=input_tokens, output_tokens=n_out).cost(prices)
+
+    # Tier-3 overhead instrumentation (experimental-strengthening phase; see
+    # EXPERIMENTAL_STRENGTHENING_AUDIT.md): same perf_counter_ns pattern as the vulnerable
+    # endpoint's T1/T2, for an apples-to-apples authorization-latency comparison. There is
+    # no T3/T4/T4b/worker side here by construction (no event is queued -- see docstring),
+    # so only the quantities that actually exist are measured.
+    t1_reserve_start_ns = time.perf_counter_ns()
+    ok, balance_after = await ledger.reserve_atomic(session, account.id, cost)
+    await session.commit()  # commit the reserve immediately, before any further work
+    t2_reserve_done_ns = time.perf_counter_ns()
+
+    if not ok:
+        return {"request_id": request_id, "served": False, "reason": "insufficient"}
+
+    balance_before = (balance_after + cost) if balance_after is not None else None
+
+    async with SessionLocal() as s:
+        s.add(MRecord(
+            trial_id=trial.id, account_id=account.id, request_id=request_id,
+            mechanism="async_b0", architecture="async_b0_atomic",
+            tokens_generated=n_out, tokens_delivered=n_out, tokens_billed=n_out,
+            authoritative_cost=cost, committed_debit=cost, refund=Decimal("0"),
+            net_debit=cost, leak=Decimal("0"),
+            balance_before=balance_before, balance_after=balance_after,
+            served=True, completed=True, invariant_ok=True,
+            detection_level="D0", abort_pct=None, manipulation=None,
+            extra={"fault": req.fault, "reconcile_delay_ms": req.reconcile_delay_ms,
+                   "atomic": True, "t1_reserve_start_ns": t1_reserve_start_ns,
+                   "t2_reserve_done_ns": t2_reserve_done_ns},
+        ))
+        await s.commit()
+    t5_response_ns = time.perf_counter_ns()
+
+    return {"request_id": request_id, "served": True, "cost": str(cost),
+            "balance_after": str(balance_after),
+            "t1_reserve_start_ns": t1_reserve_start_ns, "t2_reserve_done_ns": t2_reserve_done_ns,
+            "t5_response_ns": t5_response_ns}
 
 
 # --------------------------------------------------------------------------- #
@@ -246,9 +376,12 @@ async def async_b0_complete(
 @router.post("/admin/async/drain")
 async def async_drain(request: Request, idempotent: bool = True) -> dict:
     """Run the accounting worker until the queue is empty of due events."""
-    async def apply_debit(account_id: int, amount: Decimal) -> None:
+    async def apply_debit(account_id: int, amount: Decimal, event_id: str | None = None) -> None:
         async with SessionLocal() as s:
-            await ledger.debit_unchecked(s, account_id, amount)
+            if event_id is not None:
+                await ledger.claim_and_debit_outbox(s, event_id, account_id, amount)
+            else:
+                await ledger.debit_unchecked(s, account_id, amount)
             await s.commit()
 
     res = await aw.drain(request.app.state.redis, apply_debit, idempotent=idempotent)
@@ -284,9 +417,12 @@ async def async_reset(request: Request) -> dict:
 # flight. The window is only meaningful against a worker that is actually running, so the
 # worker runs.
 async def _worker_loop(app, poll_ms: float) -> None:
-    async def apply_debit(account_id: int, amount: Decimal) -> None:
+    async def apply_debit(account_id: int, amount: Decimal, event_id: str | None = None) -> None:
         async with SessionLocal() as s:
-            await ledger.debit_unchecked(s, account_id, amount)
+            if event_id is not None:
+                await ledger.claim_and_debit_outbox(s, event_id, account_id, amount)
+            else:
+                await ledger.debit_unchecked(s, account_id, amount)
             await s.commit()
 
     try:
@@ -298,6 +434,11 @@ async def _worker_loop(app, poll_ms: float) -> None:
                 st["duplicates_suppressed"] += res["duplicates_suppressed"]
                 st["windows_ms"].extend(res["exposure_windows_ms"])
                 st["passes"] += 1
+                # DURABILITY_HARDENING_AUDIT.md: the Redis-independent fallback, so the
+                # local/single-host topology (this in-process worker) gets the same
+                # durability property as the standalone two-machine worker
+                # (worker_main.py), not just the two-machine deployment.
+                await reconcile_outbox(st)
             except Exception as exc:  # noqa: BLE001 - a worker must not die on one event
                 app.state.async_worker_stats["errors"] += 1
                 app.state.async_worker_stats["last_error"] = str(exc)

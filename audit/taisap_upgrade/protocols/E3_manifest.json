@@ -1,0 +1,30 @@
+{
+  "experiment_id": "E3",
+  "hypothesis": "Reserve-and-reconcile with durable idempotent finalization preserves accounting integrity at all preregistered terminal-path cutpoints.",
+  "metrics": [
+    "delivered_value",
+    "reservation",
+    "debit",
+    "refund",
+    "net_committed_amount",
+    "outbox_state",
+    "duplicate_count",
+    "reconciliation_latency"
+  ],
+  "sample_size": "Proposed 1,200 trials: 12 cutpoints by five architectures by 20 fixed seeds",
+  "execution_status": "PROPOSED_ONLY",
+  "command": null,
+  "started_at": null,
+  "finished_at": null,
+  "git_commit": "6a18796",
+  "environment": {
+    "docker_client": "29.8.0",
+    "docker_daemon_available": false,
+    "error": "DockerDesktopLinuxEngine named pipe not found"
+  },
+  "artifacts": [
+    "audit/taisap_upgrade/02_preregistered_extension_plan.md"
+  ],
+  "exit_code": null,
+  "notes": "Not executed. The local Docker daemon was unavailable before any trial began; no proposed cell is represented as a result."
+}

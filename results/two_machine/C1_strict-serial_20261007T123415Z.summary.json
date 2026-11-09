@@ -1,0 +1,99 @@
+{
+  "manifest": {
+    "run_batch_id": "C1_strict-serial_20261007T123415Z",
+    "git_commit": "0a0753d68e79565ad0d2eeed8876bc2fbcb21537",
+    "git_dirty": true,
+    "started_at_utc": "2026-10-07T12:34:15.527045+00:00",
+    "host_a_identifier": "DESKTOP-8B2NBHS",
+    "host_a_platform": "Windows-11-10.0.26300-SP0",
+    "python_version": "3.13.5",
+    "condition": "C1",
+    "arrival": "strict-serial",
+    "endpoint": "/async/b0/complete",
+    "base_url": "http://localhost:8000",
+    "delays_ms": [
+      0.0,
+      500.0,
+      2000.0
+    ],
+    "repetitions_requested": 1,
+    "b0_interarrival_ms": 20.0,
+    "b0_requests": 6,
+    "b0_budget_units": 2,
+    "requests_is_default": true,
+    "budget_is_default": true,
+    "price_tier": "medium",
+    "fault": "none",
+    "config_hash": "4e5984dedd904757",
+    "notes": "validate strict-serial with balance-based confirmation",
+    "finished_at_utc": "2026-10-07T12:34:33.331455+00:00",
+    "cells_total": 3,
+    "cells_valid": 3,
+    "cells_invalid": 0
+  },
+  "cells": [
+    {
+      "run_id": "C1_strict-serial_20261007T123415Z_D0_rep0",
+      "delay_ms": 0.0,
+      "arrival": "strict-serial",
+      "rep": 0,
+      "seed": 1337,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.081000",
+      "issued": 6,
+      "served": 2,
+      "affordable": 2,
+      "over_served": 0,
+      "final_balance": "0.000000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_strict-serial_20261007T123415Z_D500_rep0",
+      "delay_ms": 500.0,
+      "arrival": "strict-serial",
+      "rep": 0,
+      "seed": 1337,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.081000",
+      "issued": 6,
+      "served": 2,
+      "affordable": 2,
+      "over_served": 0,
+      "final_balance": "0.000000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_strict-serial_20261007T123415Z_D2000_rep0",
+      "delay_ms": 2000.0,
+      "arrival": "strict-serial",
+      "rep": 0,
+      "seed": 1337,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.081000",
+      "issued": 6,
+      "served": 2,
+      "affordable": 2,
+      "over_served": 0,
+      "final_balance": "0.000000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    }
+  ]
+}

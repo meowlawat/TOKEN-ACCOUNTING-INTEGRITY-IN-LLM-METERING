@@ -5,6 +5,7 @@ No experimental number is entered by hand. Writes to results/tables/.
 
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 
@@ -16,6 +17,16 @@ TAB = ROOT / "results" / "tables"
 def _latest(pattern: str, folder: Path) -> Path | None:
     c = sorted(folder.glob(pattern))
     return max(c, key=lambda p: p.stat().st_mtime) if c else None
+
+
+def _select(explicit: Path | None, pattern: str, folder: Path) -> Path | None:
+    """Use a named evidence file, falling back to legacy latest-file selection."""
+    if explicit is None:
+        return _latest(pattern, folder)
+    selected = explicit.resolve()
+    if not selected.is_file():
+        raise FileNotFoundError(f"evidence file does not exist: {selected}")
+    return selected
 
 
 def _load(p: Path) -> dict:
@@ -151,11 +162,19 @@ def table_defense(m1: dict, m2: dict) -> None:
            rows, "Architecture safety summary across all attacks and tiers.", "tab:defense")
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
+    global TAB
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--m1", type=Path, help="exact M1 processed summary")
+    parser.add_argument("--m2", type=Path, help="exact M2 processed summary")
+    parser.add_argument("--b0", type=Path, help="exact B0 class-6 summary")
+    parser.add_argument("--output", type=Path, default=TAB, help="table output directory")
+    args = parser.parse_args(argv)
+    TAB = args.output.resolve()
     TAB.mkdir(parents=True, exist_ok=True)
-    b0 = _latest("class6_*.summary.json", ROOT / "results")
-    m1 = _latest("m1_*.summary.json", PROC)
-    m2 = _latest("m2_*.summary.json", PROC)
+    b0 = _select(args.b0, "class6_*.summary.json", ROOT / "results")
+    m1 = _select(args.m1, "m1_*.summary.json", PROC)
+    m2 = _select(args.m2, "m2_*.summary.json", PROC)
     if b0:
         table_b0(_load(b0))
     if m1:

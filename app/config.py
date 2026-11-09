@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     # --- Flaw-class posture (default at process start) ----------------------
     # 1..5 are the novel contribution; 6 is the known baseline used to validate
     # the measurement rig. Only class 6 is implemented in Phase 0.
-    class6_credit_race: Mode = Mode.vulnerable
+    class6_credit_race: Mode = Mode.hardened
 
     # --- Mock pricing (mock dollars per 1k tokens) --------------------------
     # Values are chosen so a single request's cost is exactly representable in

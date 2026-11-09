@@ -121,3 +121,23 @@ database, the network, partial failure, asynchronous reconciliation, and real pr
 functions. See `paper/scope_of_formal_claims.md` for the explicit exclusion list, and
 `paper/formal_empirical_mapping.md` for how each counterexample lines up with a measured
 result.
+
+## Addendum (post-v1.0.0): a second specification for the asynchronous-settlement race
+
+Everything above describes `TokenAccounting.tla`, which is all that existed at v1.0.0/
+v1.0.1 and all that `check.py` runs. A second, separate specification,
+`AsyncSettlementTOCTOU.tla`, was added later (commit `0a0753d`) to model a mechanistically
+different race — settlement deferred in time rather than two transactions overlapping —
+that this first specification does not cover (it assumes strongly consistent accounting
+state). It is a causal-ordering model, not a timed one, checked with hand-written configs
+in `cfg_async/` rather than through `check.py`:
+
+```bash
+java -XX:+UseParallelGC -cp formal/tools/tla2tools.jar tlc2.TLC \
+     -config formal/cfg_async/vulnerable_n6_k2.cfg -workers 1 -cleanup -deadlock \
+     formal/AsyncSettlementTOCTOU.tla
+```
+
+(substitute `atomic_n6_k2`, `vulnerable_n4_k2`, or `atomic_n4_k2` for the other three
+configs). Full results, the shortest counterexample trace, and how this contrasts with
+the table above: `FORMALIZATION_AUDIT.md` and `ARTIFACT_README.md` §14.

@@ -1,0 +1,54 @@
+{
+  "manifest": {
+    "run_batch_id": "C1_concurrent_20261007T004301Z",
+    "git_commit": "b30a3906ff704e31fbbb89d153a10c0c2be670f0",
+    "git_dirty": true,
+    "started_at_utc": "2026-10-07T00:43:01.184360+00:00",
+    "host_a_identifier": "DESKTOP-8B2NBHS",
+    "host_a_platform": "Windows-11-10.0.26300-SP0",
+    "python_version": "3.13.5",
+    "condition": "C1",
+    "arrival": "concurrent",
+    "endpoint": "/async/b0/complete",
+    "base_url": "http://localhost:8000",
+    "delays_ms": [
+      50.0
+    ],
+    "repetitions_requested": 1,
+    "b0_interarrival_ms": 20.0,
+    "b0_requests": 8,
+    "b0_budget_units": 2,
+    "requests_is_default": false,
+    "budget_is_default": true,
+    "fault": "none",
+    "config_hash": "6ec61de4aa6cefe6",
+    "notes": "concurrency/budget override smoke test",
+    "finished_at_utc": "2026-10-07T00:43:02.540921+00:00",
+    "cells_total": 1,
+    "cells_valid": 1,
+    "cells_invalid": 0
+  },
+  "cells": [
+    {
+      "run_id": "C1_concurrent_20261007T004301Z_D50_rep0",
+      "delay_ms": 50.0,
+      "arrival": "concurrent",
+      "rep": 0,
+      "seed": 1337,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.081000",
+      "issued": 8,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "final_balance": "-0.324000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    }
+  ]
+}

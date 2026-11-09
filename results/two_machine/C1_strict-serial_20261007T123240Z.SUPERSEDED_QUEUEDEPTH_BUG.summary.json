@@ -1,0 +1,165 @@
+{
+  "manifest": {
+    "run_batch_id": "C1_strict-serial_20261007T123240Z",
+    "git_commit": "0a0753d68e79565ad0d2eeed8876bc2fbcb21537",
+    "git_dirty": true,
+    "started_at_utc": "2026-10-07T12:32:40.407482+00:00",
+    "host_a_identifier": "DESKTOP-8B2NBHS",
+    "host_a_platform": "Windows-11-10.0.26300-SP0",
+    "python_version": "3.13.5",
+    "condition": "C1",
+    "arrival": "strict-serial",
+    "endpoint": "/async/b0/complete",
+    "base_url": "http://localhost:8000",
+    "delays_ms": [
+      0.0,
+      10.0,
+      50.0,
+      100.0,
+      500.0,
+      2000.0
+    ],
+    "repetitions_requested": 1,
+    "b0_interarrival_ms": 20.0,
+    "b0_requests": 6,
+    "b0_budget_units": 2,
+    "requests_is_default": true,
+    "budget_is_default": true,
+    "price_tier": "medium",
+    "fault": "none",
+    "config_hash": "8e4f7e4646c57e42",
+    "notes": "validate strict-serial true negative control, local",
+    "finished_at_utc": "2026-10-07T12:32:59.768135+00:00",
+    "cells_total": 6,
+    "cells_valid": 6,
+    "cells_invalid": 0
+  },
+  "cells": [
+    {
+      "run_id": "C1_strict-serial_20261007T123240Z_D0_rep0",
+      "delay_ms": 0.0,
+      "arrival": "strict-serial",
+      "rep": 0,
+      "seed": 1337,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.081000",
+      "issued": 6,
+      "served": 2,
+      "affordable": 2,
+      "over_served": 0,
+      "final_balance": "0.000000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_strict-serial_20261007T123240Z_D10_rep0",
+      "delay_ms": 10.0,
+      "arrival": "strict-serial",
+      "rep": 0,
+      "seed": 1337,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.081000",
+      "issued": 6,
+      "served": 2,
+      "affordable": 2,
+      "over_served": 0,
+      "final_balance": "0.000000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_strict-serial_20261007T123240Z_D50_rep0",
+      "delay_ms": 50.0,
+      "arrival": "strict-serial",
+      "rep": 0,
+      "seed": 1337,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.081000",
+      "issued": 6,
+      "served": 2,
+      "affordable": 2,
+      "over_served": 0,
+      "final_balance": "0.000000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_strict-serial_20261007T123240Z_D100_rep0",
+      "delay_ms": 100.0,
+      "arrival": "strict-serial",
+      "rep": 0,
+      "seed": 1337,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.081000",
+      "issued": 6,
+      "served": 2,
+      "affordable": 2,
+      "over_served": 0,
+      "final_balance": "0.000000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_strict-serial_20261007T123240Z_D500_rep0",
+      "delay_ms": 500.0,
+      "arrival": "strict-serial",
+      "rep": 0,
+      "seed": 1337,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.081000",
+      "issued": 6,
+      "served": 3,
+      "affordable": 2,
+      "over_served": 1,
+      "final_balance": "-0.081000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_strict-serial_20261007T123240Z_D2000_rep0",
+      "delay_ms": 2000.0,
+      "arrival": "strict-serial",
+      "rep": 0,
+      "seed": 1337,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.081000",
+      "issued": 6,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "final_balance": "-0.324000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    }
+  ]
+}

@@ -1,0 +1,161 @@
+{
+  "manifest": {
+    "run_batch_id": "C1_concurrent_20261007T005226Z",
+    "git_commit": "31bdaf29cb797352a4bd0a69aedce26e22281915",
+    "git_dirty": true,
+    "started_at_utc": "2026-10-07T00:52:26.838641+00:00",
+    "host_a_identifier": "DESKTOP-8B2NBHS",
+    "host_a_platform": "Windows-11-10.0.26300-SP0",
+    "python_version": "3.13.5",
+    "condition": "C1",
+    "arrival": "concurrent",
+    "endpoint": "/async/b0/complete",
+    "base_url": "http://localhost:8000",
+    "delays_ms": [
+      50.0,
+      500.0
+    ],
+    "repetitions_requested": 3,
+    "b0_interarrival_ms": 20.0,
+    "b0_requests": 6,
+    "b0_budget_units": 2,
+    "requests_is_default": true,
+    "budget_is_default": true,
+    "price_tier": "medium",
+    "fault": "none",
+    "config_hash": "354d203ea47ea3ec",
+    "notes": "Tier 2.6: value scaling, local C1, price_tier=medium",
+    "finished_at_utc": "2026-10-07T00:52:36.386201+00:00",
+    "cells_total": 6,
+    "cells_valid": 6,
+    "cells_invalid": 0
+  },
+  "cells": [
+    {
+      "run_id": "C1_concurrent_20261007T005226Z_D50_rep0",
+      "delay_ms": 50.0,
+      "arrival": "concurrent",
+      "rep": 0,
+      "seed": 1337,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.081000",
+      "issued": 6,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "final_balance": "-0.324000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_concurrent_20261007T005226Z_D50_rep1",
+      "delay_ms": 50.0,
+      "arrival": "concurrent",
+      "rep": 1,
+      "seed": 1338,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.094500",
+      "issued": 6,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "final_balance": "-0.378000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_concurrent_20261007T005226Z_D50_rep2",
+      "delay_ms": 50.0,
+      "arrival": "concurrent",
+      "rep": 2,
+      "seed": 1339,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.102000",
+      "issued": 6,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "final_balance": "-0.408000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_concurrent_20261007T005226Z_D500_rep0",
+      "delay_ms": 500.0,
+      "arrival": "concurrent",
+      "rep": 0,
+      "seed": 1337,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.081000",
+      "issued": 6,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "final_balance": "-0.324000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_concurrent_20261007T005226Z_D500_rep1",
+      "delay_ms": 500.0,
+      "arrival": "concurrent",
+      "rep": 1,
+      "seed": 1338,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.094500",
+      "issued": 6,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "final_balance": "-0.378000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_concurrent_20261007T005226Z_D500_rep2",
+      "delay_ms": 500.0,
+      "arrival": "concurrent",
+      "rep": 2,
+      "seed": 1339,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.102000",
+      "issued": 6,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "final_balance": "-0.408000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    }
+  ]
+}

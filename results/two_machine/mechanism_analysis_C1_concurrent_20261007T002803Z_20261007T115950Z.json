@@ -1,0 +1,165 @@
+{
+  "cells": [
+    {
+      "delay_ms": 50.0,
+      "arrival": "concurrent",
+      "rep": "0",
+      "served_count": 6,
+      "requests_with_authorization_preceding_a_sibling_settlement": 4,
+      "requests_total": 6,
+      "initial_balance": 0.162,
+      "balance_seen_sequence": [
+        {
+          "request_id": "e5b2447d789c451b84aeb22c1577684b",
+          "served": true,
+          "balance_seen": "0.081000"
+        },
+        {
+          "request_id": "e23886152b4c4745ac8f7dffa5e613e3",
+          "served": true,
+          "balance_seen": "0.162000"
+        },
+        {
+          "request_id": "0bcf786be1d94bb2bc8c2884eb505fb2",
+          "served": true,
+          "balance_seen": "0.162000"
+        },
+        {
+          "request_id": "f4561f8ff035480f85d15aee55f61d10",
+          "served": true,
+          "balance_seen": "0.162000"
+        },
+        {
+          "request_id": "39ce9efd3fd24fe0bb83b7d1a1976ebb",
+          "served": true,
+          "balance_seen": "0.162000"
+        },
+        {
+          "request_id": "6600529b160b40eda150417418b17c97",
+          "served": true,
+          "balance_seen": "0.081000"
+        }
+      ],
+      "settlements_visible_during_cell_authorization": 2,
+      "per_request": [
+        {
+          "request_id": "e5b2447d789c451b84aeb22c1577684b",
+          "instrumented": true,
+          "settled": true,
+          "served": true,
+          "t1_read_start_ns": 14813282088760,
+          "t2_read_done_ns": 14813296707787,
+          "t3_decision_ns": 14813296708617,
+          "t4_event_created_ns": 14813296736992,
+          "t4b_emitted_ns": 14813297073143,
+          "read_latency_ms": 14.619027,
+          "decision_latency_ms": 0.00083,
+          "emit_latency_ms": 0.336151,
+          "event_created_ns": 1791332884709383491,
+          "event_deliver_after_ns": 1791332884759383491,
+          "t6_worker_popped_ns": 1791332884761040866,
+          "t7_worker_applied_ns": 1791332884762571078,
+          "configured_delay_ms": 50.0,
+          "overdue_at_pop_ms": 1.657375,
+          "exposure_window_ms": 53.187587,
+          "worker_dwell_ms": 1.530212,
+          "t1_offset_ms": 102.898513,
+          "settlement_offset_ms": 83.710896
+        },
+        {
+          "request_id": "e23886152b4c4745ac8f7dffa5e613e3",
+          "instrumented": true,
+          "settled": false,
+          "served": true,
+          "t1_read_start_ns": 14813179190247,
+          "t2_read_done_ns": 14813216489596,
+          "t3_decision_ns": 14813216490587,
+          "t4_event_created_ns": 14813216524848,
+          "t4b_emitted_ns": 14813218848533,
+          "read_latency_ms": 37.299349,
+          "decision_latency_ms": 0.000991,
+          "emit_latency_ms": 2.323685,
+          "t1_offset_ms": 0.0
+        },
+        {
+          "request_id": "0bcf786be1d94bb2bc8c2884eb505fb2",
+          "instrumented": true,
+          "settled": false,
+          "served": true,
+          "t1_read_start_ns": 14813218696134,
+          "t2_read_done_ns": 14813246543897,
+          "t3_decision_ns": 14813246544705,
+          "t4_event_created_ns": 14813246577853,
+          "t4b_emitted_ns": 14813247479177,
+          "read_latency_ms": 27.847763,
+          "decision_latency_ms": 0.000808,
+          "emit_latency_ms": 0.901324,
+          "t1_offset_ms": 39.505887
+        },
+        {
+          "request_id": "f4561f8ff035480f85d15aee55f61d10",
+          "instrumented": true,
+          "settled": true,
+          "served": true,
+          "t1_read_start_ns": 14813250115316,
+          "t2_read_done_ns": 14813266182271,
+          "t3_decision_ns": 14813266184012,
+          "t4_event_created_ns": 14813266220229,
+          "t4b_emitted_ns": 14813267116869,
+          "read_latency_ms": 16.066955,
+          "decision_latency_ms": 0.001741,
+          "emit_latency_ms": 0.89664,
+          "event_created_ns": 1791332884678860182,
+          "event_deliver_after_ns": 1791332884728860182,
+          "t6_worker_popped_ns": 1791332884730355958,
+          "t7_worker_applied_ns": 1791332884732245875,
+          "configured_delay_ms": 50.0,
+          "overdue_at_pop_ms": 1.495776,
+          "exposure_window_ms": 53.385693,
+          "worker_dwell_ms": 1.889917,
+          "t1_offset_ms": 70.925069,
+          "settlement_offset_ms": 53.385693
+        },
+        {
+          "request_id": "39ce9efd3fd24fe0bb83b7d1a1976ebb",
+          "instrumented": true,
+          "settled": false,
+          "served": true,
+          "t1_read_start_ns": 14813249022140,
+          "t2_read_done_ns": 14813250565828,
+          "t3_decision_ns": 14813250566550,
+          "t4_event_created_ns": 14813250590332,
+          "t4b_emitted_ns": 14813251369564,
+          "read_latency_ms": 1.543688,
+          "decision_latency_ms": 0.000722,
+          "emit_latency_ms": 0.779232,
+          "t1_offset_ms": 69.831893
+        },
+        {
+          "request_id": "6600529b160b40eda150417418b17c97",
+          "instrumented": true,
+          "settled": true,
+          "served": true,
+          "t1_read_start_ns": 14813266760523,
+          "t2_read_done_ns": 14813281629660,
+          "t3_decision_ns": 14813281630737,
+          "t4_event_created_ns": 14813281662537,
+          "t4b_emitted_ns": 14813282654590,
+          "read_latency_ms": 14.869137,
+          "decision_latency_ms": 0.001077,
+          "emit_latency_ms": 0.992053,
+          "event_created_ns": 1791332884694305528,
+          "event_deliver_after_ns": 1791332884744305528,
+          "t6_worker_popped_ns": 1791332884746253278,
+          "t7_worker_applied_ns": 1791332884747835250,
+          "configured_delay_ms": 50.0,
+          "overdue_at_pop_ms": 1.94775,
+          "exposure_window_ms": 53.529722,
+          "worker_dwell_ms": 1.581972,
+          "t1_offset_ms": 87.570276,
+          "settlement_offset_ms": 68.975068
+        }
+      ]
+    }
+  ]
+}

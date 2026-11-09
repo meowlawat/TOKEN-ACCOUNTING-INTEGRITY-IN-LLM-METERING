@@ -1,0 +1,452 @@
+{
+  "manifest": {
+    "run_batch_id": "C0_sequential_20261005T230553Z",
+    "git_commit": "ef9b9126bab2e1254d8efb935c5f4e52de1c8e79",
+    "git_dirty": true,
+    "started_at_utc": "2026-10-05T23:05:53.044619+00:00",
+    "host_a_identifier": "DESKTOP-8B2NBHS",
+    "host_a_platform": "Windows-11-10.0.26300-SP0",
+    "python_version": "3.13.5",
+    "condition": "C0",
+    "arrival": "sequential",
+    "endpoint": "/async/b0/complete",
+    "base_url": "http://localhost:8000",
+    "delays_ms": [
+      0.0,
+      500.0
+    ],
+    "repetitions_requested": 10,
+    "b0_interarrival_ms": 20.0,
+    "b0_requests": 6,
+    "b0_budget_units": 2,
+    "fault": "none",
+    "config_hash": "8d8b6bf2ea4b3396",
+    "notes": "repeatability check, run 2 of 2 (after full app/db/redis restart)",
+    "finished_at_utc": "2026-10-05T23:06:32.114596+00:00",
+    "cells_total": 20,
+    "cells_valid": 20,
+    "cells_invalid": 0
+  },
+  "cells": [
+    {
+      "run_id": "C0_sequential_20261005T230553Z_D0_rep0",
+      "delay_ms": 0.0,
+      "arrival": "sequential",
+      "rep": 0,
+      "seed": 1337,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.081000",
+      "issued": 6,
+      "served": 2,
+      "affordable": 2,
+      "over_served": 0,
+      "final_balance": "0.000000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C0_sequential_20261005T230553Z_D0_rep1",
+      "delay_ms": 0.0,
+      "arrival": "sequential",
+      "rep": 1,
+      "seed": 1338,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.094500",
+      "issued": 6,
+      "served": 2,
+      "affordable": 2,
+      "over_served": 0,
+      "final_balance": "0.000000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C0_sequential_20261005T230553Z_D0_rep2",
+      "delay_ms": 0.0,
+      "arrival": "sequential",
+      "rep": 2,
+      "seed": 1339,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.102000",
+      "issued": 6,
+      "served": 2,
+      "affordable": 2,
+      "over_served": 0,
+      "final_balance": "0.000000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C0_sequential_20261005T230553Z_D0_rep3",
+      "delay_ms": 0.0,
+      "arrival": "sequential",
+      "rep": 3,
+      "seed": 1340,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.099000",
+      "issued": 6,
+      "served": 2,
+      "affordable": 2,
+      "over_served": 0,
+      "final_balance": "0.000000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C0_sequential_20261005T230553Z_D0_rep4",
+      "delay_ms": 0.0,
+      "arrival": "sequential",
+      "rep": 4,
+      "seed": 1341,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.070500",
+      "issued": 6,
+      "served": 2,
+      "affordable": 2,
+      "over_served": 0,
+      "final_balance": "0.000000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C0_sequential_20261005T230553Z_D0_rep5",
+      "delay_ms": 0.0,
+      "arrival": "sequential",
+      "rep": 5,
+      "seed": 1342,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.084000",
+      "issued": 6,
+      "served": 2,
+      "affordable": 2,
+      "over_served": 0,
+      "final_balance": "0.000000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C0_sequential_20261005T230553Z_D0_rep6",
+      "delay_ms": 0.0,
+      "arrival": "sequential",
+      "rep": 6,
+      "seed": 1343,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.123000",
+      "issued": 6,
+      "served": 2,
+      "affordable": 2,
+      "over_served": 0,
+      "final_balance": "0.000000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C0_sequential_20261005T230553Z_D0_rep7",
+      "delay_ms": 0.0,
+      "arrival": "sequential",
+      "rep": 7,
+      "seed": 1344,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.093000",
+      "issued": 6,
+      "served": 2,
+      "affordable": 2,
+      "over_served": 0,
+      "final_balance": "0.000000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C0_sequential_20261005T230553Z_D0_rep8",
+      "delay_ms": 0.0,
+      "arrival": "sequential",
+      "rep": 8,
+      "seed": 1345,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.115500",
+      "issued": 6,
+      "served": 2,
+      "affordable": 2,
+      "over_served": 0,
+      "final_balance": "0.000000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C0_sequential_20261005T230553Z_D0_rep9",
+      "delay_ms": 0.0,
+      "arrival": "sequential",
+      "rep": 9,
+      "seed": 1346,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.120000",
+      "issued": 6,
+      "served": 2,
+      "affordable": 2,
+      "over_served": 0,
+      "final_balance": "0.000000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C0_sequential_20261005T230553Z_D500_rep0",
+      "delay_ms": 500.0,
+      "arrival": "sequential",
+      "rep": 0,
+      "seed": 1337,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.081000",
+      "issued": 6,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "final_balance": "-0.324000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C0_sequential_20261005T230553Z_D500_rep1",
+      "delay_ms": 500.0,
+      "arrival": "sequential",
+      "rep": 1,
+      "seed": 1338,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.094500",
+      "issued": 6,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "final_balance": "-0.378000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C0_sequential_20261005T230553Z_D500_rep2",
+      "delay_ms": 500.0,
+      "arrival": "sequential",
+      "rep": 2,
+      "seed": 1339,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.102000",
+      "issued": 6,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "final_balance": "-0.408000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C0_sequential_20261005T230553Z_D500_rep3",
+      "delay_ms": 500.0,
+      "arrival": "sequential",
+      "rep": 3,
+      "seed": 1340,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.099000",
+      "issued": 6,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "final_balance": "-0.396000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C0_sequential_20261005T230553Z_D500_rep4",
+      "delay_ms": 500.0,
+      "arrival": "sequential",
+      "rep": 4,
+      "seed": 1341,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.070500",
+      "issued": 6,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "final_balance": "-0.282000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C0_sequential_20261005T230553Z_D500_rep5",
+      "delay_ms": 500.0,
+      "arrival": "sequential",
+      "rep": 5,
+      "seed": 1342,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.084000",
+      "issued": 6,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "final_balance": "-0.336000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C0_sequential_20261005T230553Z_D500_rep6",
+      "delay_ms": 500.0,
+      "arrival": "sequential",
+      "rep": 6,
+      "seed": 1343,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.123000",
+      "issued": 6,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "final_balance": "-0.492000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C0_sequential_20261005T230553Z_D500_rep7",
+      "delay_ms": 500.0,
+      "arrival": "sequential",
+      "rep": 7,
+      "seed": 1344,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.093000",
+      "issued": 6,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "final_balance": "-0.372000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C0_sequential_20261005T230553Z_D500_rep8",
+      "delay_ms": 500.0,
+      "arrival": "sequential",
+      "rep": 8,
+      "seed": 1345,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.115500",
+      "issued": 6,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "final_balance": "-0.462000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C0_sequential_20261005T230553Z_D500_rep9",
+      "delay_ms": 500.0,
+      "arrival": "sequential",
+      "rep": 9,
+      "seed": 1346,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.120000",
+      "issued": 6,
+      "served": 6,
+      "affordable": 2,
+      "over_served": 4,
+      "final_balance": "-0.480000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    }
+  ]
+}

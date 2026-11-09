@@ -1,0 +1,121 @@
+{
+  "manifest": {
+    "run_batch_id": "C2_sequential_20261006T233215Z",
+    "git_commit": "25492002a238bea5e566d4524cdb959db48052f3",
+    "git_dirty": true,
+    "started_at_utc": "2026-10-06T23:32:15.598837+00:00",
+    "host_a_identifier": "DESKTOP-8B2NBHS",
+    "host_a_platform": "Windows-11-10.0.26300-SP0",
+    "python_version": "3.13.5",
+    "condition": "C2",
+    "arrival": "sequential",
+    "endpoint": "E:/Git/async/b0/complete",
+    "base_url": "http://localhost:8000",
+    "delays_ms": [
+      0.0
+    ],
+    "repetitions_requested": 10,
+    "b0_interarrival_ms": 20.0,
+    "b0_requests": 6,
+    "b0_budget_units": 2,
+    "fault": "none",
+    "config_hash": "b316ac43246f9f73",
+    "notes": "D=0 mandatory control, real two-machine topology (Host A local gateway -> Host B Azure Postgres/Redis/worker)",
+    "finished_at_utc": "2026-10-06T23:32:30.075538+00:00",
+    "cells_total": 10,
+    "cells_valid": 0,
+    "cells_invalid": 10
+  },
+  "cells": [
+    {
+      "run_id": "C2_sequential_20261006T233215Z_D0_rep0",
+      "delay_ms": 0.0,
+      "arrival": "sequential",
+      "rep": 0,
+      "seed": 1337,
+      "valid": false,
+      "invalid_reason": "cell raised: RuntimeError(\"could not establish unit cost (probe={'request_id': '7332e59afad74ec18ec38a2689d543fb', 'http_status': 404, 'sent_at_utc': '2026-10-06T23:32:17.732025+00:00', 'received_at_utc': '2026-10-06T23:32:17.734109+00:00', 'served': None, 'reason': None, 'cost': None, 'balance_seen': None, 'balance_after': None, 'error': None})\")"
+    },
+    {
+      "run_id": "C2_sequential_20261006T233215Z_D0_rep1",
+      "delay_ms": 0.0,
+      "arrival": "sequential",
+      "rep": 1,
+      "seed": 1338,
+      "valid": false,
+      "invalid_reason": "cell raised: RuntimeError(\"could not establish unit cost (probe={'request_id': 'bbe8ce0381484a9f94cafe07215b5563', 'http_status': 404, 'sent_at_utc': '2026-10-06T23:32:19.112428+00:00', 'received_at_utc': '2026-10-06T23:32:19.114247+00:00', 'served': None, 'reason': None, 'cost': None, 'balance_seen': None, 'balance_after': None, 'error': None})\")"
+    },
+    {
+      "run_id": "C2_sequential_20261006T233215Z_D0_rep2",
+      "delay_ms": 0.0,
+      "arrival": "sequential",
+      "rep": 2,
+      "seed": 1339,
+      "valid": false,
+      "invalid_reason": "cell raised: RuntimeError(\"could not establish unit cost (probe={'request_id': '87fcc03dd7454a23bc0cb0b38dcd957a', 'http_status': 404, 'sent_at_utc': '2026-10-06T23:32:20.543763+00:00', 'received_at_utc': '2026-10-06T23:32:20.545527+00:00', 'served': None, 'reason': None, 'cost': None, 'balance_seen': None, 'balance_after': None, 'error': None})\")"
+    },
+    {
+      "run_id": "C2_sequential_20261006T233215Z_D0_rep3",
+      "delay_ms": 0.0,
+      "arrival": "sequential",
+      "rep": 3,
+      "seed": 1340,
+      "valid": false,
+      "invalid_reason": "cell raised: RuntimeError(\"could not establish unit cost (probe={'request_id': '358a3fbbaf154884ab2f808df1aa4570', 'http_status': 404, 'sent_at_utc': '2026-10-06T23:32:21.861465+00:00', 'received_at_utc': '2026-10-06T23:32:21.863089+00:00', 'served': None, 'reason': None, 'cost': None, 'balance_seen': None, 'balance_after': None, 'error': None})\")"
+    },
+    {
+      "run_id": "C2_sequential_20261006T233215Z_D0_rep4",
+      "delay_ms": 0.0,
+      "arrival": "sequential",
+      "rep": 4,
+      "seed": 1341,
+      "valid": false,
+      "invalid_reason": "cell raised: RuntimeError(\"could not establish unit cost (probe={'request_id': 'e40695b731c74891be2f7f59fea3d3d7', 'http_status': 404, 'sent_at_utc': '2026-10-06T23:32:23.307199+00:00', 'received_at_utc': '2026-10-06T23:32:23.309206+00:00', 'served': None, 'reason': None, 'cost': None, 'balance_seen': None, 'balance_after': None, 'error': None})\")"
+    },
+    {
+      "run_id": "C2_sequential_20261006T233215Z_D0_rep5",
+      "delay_ms": 0.0,
+      "arrival": "sequential",
+      "rep": 5,
+      "seed": 1342,
+      "valid": false,
+      "invalid_reason": "cell raised: RuntimeError(\"could not establish unit cost (probe={'request_id': '1de06a9aebb24fd198f54cbf45656764', 'http_status': 404, 'sent_at_utc': '2026-10-06T23:32:24.655530+00:00', 'received_at_utc': '2026-10-06T23:32:24.658196+00:00', 'served': None, 'reason': None, 'cost': None, 'balance_seen': None, 'balance_after': None, 'error': None})\")"
+    },
+    {
+      "run_id": "C2_sequential_20261006T233215Z_D0_rep6",
+      "delay_ms": 0.0,
+      "arrival": "sequential",
+      "rep": 6,
+      "seed": 1343,
+      "valid": false,
+      "invalid_reason": "cell raised: RuntimeError(\"could not establish unit cost (probe={'request_id': 'e26072c9dfed4a26a3c9df1ce470fdd0', 'http_status': 404, 'sent_at_utc': '2026-10-06T23:32:26.042907+00:00', 'received_at_utc': '2026-10-06T23:32:26.044764+00:00', 'served': None, 'reason': None, 'cost': None, 'balance_seen': None, 'balance_after': None, 'error': None})\")"
+    },
+    {
+      "run_id": "C2_sequential_20261006T233215Z_D0_rep7",
+      "delay_ms": 0.0,
+      "arrival": "sequential",
+      "rep": 7,
+      "seed": 1344,
+      "valid": false,
+      "invalid_reason": "cell raised: RuntimeError(\"could not establish unit cost (probe={'request_id': '1461f94c81b04afc9bf29154fc048ede', 'http_status': 404, 'sent_at_utc': '2026-10-06T23:32:27.400810+00:00', 'received_at_utc': '2026-10-06T23:32:27.402152+00:00', 'served': None, 'reason': None, 'cost': None, 'balance_seen': None, 'balance_after': None, 'error': None})\")"
+    },
+    {
+      "run_id": "C2_sequential_20261006T233215Z_D0_rep8",
+      "delay_ms": 0.0,
+      "arrival": "sequential",
+      "rep": 8,
+      "seed": 1345,
+      "valid": false,
+      "invalid_reason": "cell raised: RuntimeError(\"could not establish unit cost (probe={'request_id': '58e2a27fb2ad403b8e2b9fecc1a049d8', 'http_status': 404, 'sent_at_utc': '2026-10-06T23:32:28.750114+00:00', 'received_at_utc': '2026-10-06T23:32:28.751794+00:00', 'served': None, 'reason': None, 'cost': None, 'balance_seen': None, 'balance_after': None, 'error': None})\")"
+    },
+    {
+      "run_id": "C2_sequential_20261006T233215Z_D0_rep9",
+      "delay_ms": 0.0,
+      "arrival": "sequential",
+      "rep": 9,
+      "seed": 1346,
+      "valid": false,
+      "invalid_reason": "cell raised: RuntimeError(\"could not establish unit cost (probe={'request_id': '670cc58264104301852e0689c7f5aa75', 'http_status': 404, 'sent_at_utc': '2026-10-06T23:32:30.073712+00:00', 'received_at_utc': '2026-10-06T23:32:30.075235+00:00', 'served': None, 'reason': None, 'cost': None, 'balance_seen': None, 'balance_after': None, 'error': None})\")"
+    }
+  ]
+}

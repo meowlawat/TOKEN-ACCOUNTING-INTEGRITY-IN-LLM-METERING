@@ -1,0 +1,17 @@
+[
+  {
+    "scenario": "extreme_delay_remote",
+    "topology": "real two-machine (Host A gateway -> Azure Host B worker/db/redis)",
+    "unit_cost": "0.081000",
+    "configured_delay_ms": 10000.0,
+    "served": true,
+    "balance_immediately_after_response": {
+      "account_id": 339,
+      "balance": "0.162000"
+    },
+    "queue_depth_immediately_after_response": {
+      "queue_depth": 1
+    },
+    "interpretation": "OBSERVED over the real network: the gateway returns a successful response immediately, with the balance still showing the full pre-debit amount and the event still queued on the remote Host B -- the client-visible 'success' and the actual economic commitment are separated by up to 10 seconds across the real network boundary."
+  }
+]

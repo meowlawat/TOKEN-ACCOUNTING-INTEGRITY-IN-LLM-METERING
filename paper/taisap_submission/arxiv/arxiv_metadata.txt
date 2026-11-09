@@ -1,0 +1,95 @@
+ARXIV SUBMISSION METADATA (draft -- not submitted)
+=====================================================
+
+Title:
+Accounting Integrity in Metered LLM-Serving Infrastructure: Verified Conditions
+Against Client-Side Under-Payment
+
+Authors (exactly as requested):
+Hardik, Natasha Kaila
+
+Primary category:
+cs.CR (Cryptography and Security)
+
+Cross-list category:
+cs.DC (Distributed, Parallel, and Cluster Computing) -- justified: the paper's
+synchronization/settlement results are stated and verified as a distributed-systems
+problem (TLA+ specification of a distributed accounting lifecycle, a network-separated
+two-machine deployment, an asynchronous event pipeline), not only a cryptography/security
+result. cs.LG was considered and NOT added: the paper does not study model training,
+architecture, or learning-theoretic properties -- LLM inference serving is used only as
+the concrete workload, and adding cs.LG would overstate the paper's relationship to
+machine-learning research itself.
+
+Abstract (1,571 characters, under the 1,920-character limit you specified; condensed
+from the paper's own abstract -- every number below is copied verbatim from the paper,
+nothing added or changed):
+
+Metered AI-inference services stream computational value to the client before the charge
+is settled, placing the usage-metering and billing boundary inside the security perimeter
+of the AI-serving infrastructure itself. We study this boundary's integrity against an
+authenticated client that seeks to pay less than it owes for inference it received.
+Modeling a metered request as a lifecycle with a single integrity property, V(r) <= N(r),
+we localize failures to three architectural placements: state synchronization (B0),
+commitment timing (M1), and usage authority (M2). We verify the lifecycle exhaustively in
+TLA+/TLC across ten configurations and four invariants, and validate it on a testbed
+spanning three execution topologies, three accounting families, and a third-party serving
+stack. An architecture that recounts usage accurately but bills the client-declared value
+leaks 58.3% of delivered value in a controlled setting and 69.0% against a real serving
+stack, while server-authoritative billing eliminates the leak; asynchronous settlement
+reproduces over-serving under strictly sequential arrivals with no concurrency at all, so
+the condition concerns whether authorization is atomically coupled to economic
+commitment, not concurrency. The strongest defense against usage-authority manipulation
+costs under 0.1% of end-to-end time with real inference. The contribution is a systematic
+security analysis of deployed AI-serving infrastructure: B0 is a known baseline, and
+M1/M2 systematize, formalize, and measure mechanisms with prior individual precedent.
+
+License recommendation:
+CC BY 4.0 (arXiv's standard open-reuse license). This is independent of whatever rights
+option you select with ACM at acceptance (Permission to Publish + CC-BY or CC-BY-NC-ND,
+per ACM's current open-access transition) -- the arXiv preprint license and the ACM
+version-of-record license are two separate decisions. I did not find an ACM statement
+specifically addressing whether an arXiv CC-BY preprint conflicts with their rights
+process; this is a minor loose end you may want to confirm with ACM directly (or ask in
+the pre-submission email) rather than something I verified.
+
+=====================================================
+IMPORTANT RISKS NOT RESOLVED BY THIS DRAFT -- READ BEFORE USING
+=====================================================
+
+1. DOUBLE-ANONYMOUS REVIEW CONFLICT -- CONFIRMED, NOT JUST SUSPECTED (updated 2026-11-01).
+   TAISAP's own author-guidelines page, retrieved directly, requires double-anonymous
+   review and states plainly: "Papers that do not follow the anonymity guidelines, or
+   otherwise potentially reveal the identity of the authors, are subject to immediate
+   rejection." Posting this exact manuscript to arXiv under your real names WHILE it is
+   under review at TAISAP risks exactly that. This is no longer a maybe -- see
+   verification_log.md #10. ACM's own
+   general policy (verified via WebSearch, not page-read) says preprints are allowed but
+   "authors are encouraged to refrain from uploading versions of their submitted
+   manuscripts to pre-publication servers... during the reviewing period," and an
+   existing preprint does not need to be removed before submitting. Safest option: hold
+   off posting to arXiv until after the TAISAP decision, or at minimum don't link it from
+   anywhere discoverable during review.
+
+2. XELATEX SUPPORT ON ARXIV IS VERY RECENT AND UNCONFIRMED IN THE SUBMISSION UI. An
+   official arXiv blog post (dated 2025-11-05) announced XeLaTeX support, which this
+   paper's fonts (acmart's Libertine OpenType fonts via fontspec) require -- pdfLaTeX
+   will not compile this source correctly. A comment on that same post, dated
+   2025-11-26, reports the XeLaTeX option was not yet visible in arXiv's own "Select
+   Compiler" submission step. I could not confirm whether this has since been fixed.
+   **Recommend doing an arXiv test/preview submission before relying on this package**,
+   and watching for a compiler-selection step; if XeLaTeX isn't selectable, this source
+   will likely fail to build on arXiv even though it builds cleanly locally.
+
+3. A REAL BUG WAS FOUND AND FIXED IN THIS PACKAGE DURING PREPARATION: the first version
+   of this tarball (main.tex + main.bbl + figures only, matching arXiv's literal
+   instruction that only the .bbl is needed) silently lost its entire bibliography when
+   tectonic auto-detected the \bibliography command and tried to rerun BibTeX without
+   the .bib file present, producing a 29-page build with an empty References section
+   instead of the correct 32 pages. Confirmed by direct inspection of the rendered PDF,
+   not assumed. Fixed by including references_taisap.bib alongside main.bbl as a safety
+   net (now in this tarball) -- re-tested and confirmed to produce the correct 32-page
+   output with all 81 references present. This was a genuine defect caught by testing,
+   not a hypothetical one; I'm flagging it because arXiv's own engine might behave
+   differently from tectonic's, so **please still verify the reference list is complete
+   in whatever preview arXiv generates**, even though local testing now passes.

@@ -10,21 +10,24 @@ services:
   db:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: metering
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
       POSTGRES_DB: metering
     volumes:
       - pgdata_dist:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d metering"]
+      test: ["CMD-SHELL", "pg_isready -U metering -d metering"]
       interval: 3s
       timeout: 3s
       retries: 30
 
   redis:
     image: redis:7-alpine
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}
+    command: ["sh", "-c", "exec redis-server --appendonly yes --requirepass \"$$REDIS_PASSWORD\""]
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD-SHELL", "REDISCLI_AUTH=$$REDIS_PASSWORD redis-cli ping"]
       interval: 3s
       timeout: 3s
       retries: 30
@@ -35,9 +38,9 @@ services:
       db: {condition: service_healthy}
       redis: {condition: service_healthy}
     environment:
-      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/metering
-      REDIS_URL: redis://redis:6379/0
-      CLASS6_CREDIT_RACE: vulnerable
+      DATABASE_URL: postgresql+asyncpg://metering:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@db:5432/metering
+      REDIS_URL: redis://:${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}@redis:6379/0
+      CLASS6_CREDIT_RACE: ${CLASS6_CREDIT_RACE:-hardened}
       TIKTOKEN_CACHE_DIR: /tokcache/tiktoken
       HF_HOME: /tokcache/hf
       HF_HUB_OFFLINE: "1"
@@ -51,9 +54,9 @@ services:
   gateway_b:
     <<: *gw
     environment:
-      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/metering
-      REDIS_URL: redis://redis:6379/0
-      CLASS6_CREDIT_RACE: vulnerable
+      DATABASE_URL: postgresql+asyncpg://metering:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@db:5432/metering
+      REDIS_URL: redis://:${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}@redis:6379/0
+      CLASS6_CREDIT_RACE: ${CLASS6_CREDIT_RACE:-hardened}
       TIKTOKEN_CACHE_DIR: /tokcache/tiktoken
       HF_HOME: /tokcache/hf
       HF_HUB_OFFLINE: "1"
@@ -64,7 +67,7 @@ services:
     image: nginx:1.27-alpine
     depends_on: [gateway_a, gateway_b]
     ports:
-      - "8002:80"
+      - "127.0.0.1:8002:80"
     volumes:
       - ./deploy/nginx.distributed.conf:/etc/nginx/conf.d/default.conf:ro
 

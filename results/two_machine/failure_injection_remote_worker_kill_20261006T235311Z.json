@@ -1,0 +1,33 @@
+[
+  {
+    "scenario": "worker_kill_remote",
+    "topology": "real two-machine (Host A gateway -> Azure Host B worker/db/redis)",
+    "unit_cost": "0.081000",
+    "requests_issued": 4,
+    "requests_served": 4,
+    "queue_depth_before_kill": {
+      "queue_depth": 3
+    },
+    "balance_during_outage": {
+      "account_id": 333,
+      "balance": "0.081000"
+    },
+    "queue_depth_after_restart_and_wait": {
+      "queue_depth": 0
+    },
+    "server_audit_record_count": 4,
+    "server_audit_served_count": 4,
+    "all_sent_request_ids_present_in_server_audit": true,
+    "server_audit_matches_client_served_count": true,
+    "balance_after_restart_and_wait": {
+      "account_id": 333,
+      "balance": "0.000000"
+    },
+    "queue_drained_to_zero": true,
+    "balance_reconciled": true,
+    "no_lost_events": true,
+    "remote_stop_output": "Container llm-metering-worker-1 Stopping \n Container llm-metering-worker-1 Stopped",
+    "remote_start_output": "Container llm-metering-redis-1 Waiting \n Container llm-metering-db-1 Waiting \n Container llm-metering-redis-1 Healthy \n Container llm-metering-db-1 Healthy \n Container llm-metering-worker-1 Starting \n Container llm-metering-worker-1 Started",
+    "interpretation": "OBSERVED: events queued before the REAL remote worker (on Azure Host B) was killed survived the outage (Host B's Redis, not the worker process, holds the queue) and were applied once the worker restarted, over the real network. No lost events, no double counting."
+  }
+]

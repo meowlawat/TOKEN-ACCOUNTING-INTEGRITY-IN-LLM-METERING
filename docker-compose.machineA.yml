@@ -1,0 +1,25 @@
+# Host A (gateway/client side) for the two-machine experiment.
+#
+# Runs ONLY the gateway -- no local db/redis/worker, per TWO_MACHINE_PLAN.md's
+# architecture. The two connection URLs must be supplied explicitly and must use an
+# authorized encrypted tunnel or service TLS; raw public-IP defaults are intentionally
+# absent. The cross-host hop remains part of the experiment when carried by a tunnel.
+#
+# Usage:
+#   MACHINE_A_DATABASE_URL=... MACHINE_A_REDIS_URL=... docker compose -f docker-compose.machineA.yml up -d --build
+services:
+  app:
+    build: .
+    environment:
+      DATABASE_URL: ${MACHINE_A_DATABASE_URL:?use a TLS URL or authorized SSH tunnel}
+      REDIS_URL: ${MACHINE_A_REDIS_URL:?use a TLS URL or authorized SSH tunnel}
+      CLASS6_CREDIT_RACE: ${CLASS6_CREDIT_RACE:-hardened}
+      TIKTOKEN_CACHE_DIR: /tokcache/tiktoken
+      HF_HOME: /tokcache/hf
+      HF_HUB_OFFLINE: "1"
+      TRANSFORMERS_OFFLINE: "1"
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./tokenizer_cache:/tokcache:ro
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000

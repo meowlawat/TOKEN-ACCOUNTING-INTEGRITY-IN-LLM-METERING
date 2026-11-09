@@ -1,0 +1,225 @@
+{
+  "manifest": {
+    "run_batch_id": "C1_concurrent_20261007T005152Z",
+    "git_commit": "31bdaf29cb797352a4bd0a69aedce26e22281915",
+    "git_dirty": true,
+    "started_at_utc": "2026-10-07T00:51:52.433216+00:00",
+    "host_a_identifier": "DESKTOP-8B2NBHS",
+    "host_a_platform": "Windows-11-10.0.26300-SP0",
+    "python_version": "3.13.5",
+    "condition": "C1",
+    "arrival": "concurrent",
+    "endpoint": "/async/b0/complete",
+    "base_url": "http://localhost:8000",
+    "delays_ms": [
+      10.0,
+      50.0,
+      500.0
+    ],
+    "repetitions_requested": 3,
+    "b0_interarrival_ms": 20.0,
+    "b0_requests": 32,
+    "b0_budget_units": 8,
+    "requests_is_default": false,
+    "budget_is_default": false,
+    "price_tier": "medium",
+    "fault": "none",
+    "config_hash": "655f7b6ffea95283",
+    "notes": "Tier 2.5: budget scaling, local C1, budget=8 concurrency=32",
+    "finished_at_utc": "2026-10-07T00:52:04.990609+00:00",
+    "cells_total": 9,
+    "cells_valid": 9,
+    "cells_invalid": 0
+  },
+  "cells": [
+    {
+      "run_id": "C1_concurrent_20261007T005152Z_D10_rep0",
+      "delay_ms": 10.0,
+      "arrival": "concurrent",
+      "rep": 0,
+      "seed": 1337,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.081000",
+      "issued": 32,
+      "served": 23,
+      "affordable": 8,
+      "over_served": 15,
+      "final_balance": "-1.215000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_concurrent_20261007T005152Z_D10_rep1",
+      "delay_ms": 10.0,
+      "arrival": "concurrent",
+      "rep": 1,
+      "seed": 1338,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.094500",
+      "issued": 32,
+      "served": 27,
+      "affordable": 8,
+      "over_served": 19,
+      "final_balance": "-1.795500",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_concurrent_20261007T005152Z_D10_rep2",
+      "delay_ms": 10.0,
+      "arrival": "concurrent",
+      "rep": 2,
+      "seed": 1339,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.102000",
+      "issued": 32,
+      "served": 19,
+      "affordable": 8,
+      "over_served": 11,
+      "final_balance": "-1.122000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_concurrent_20261007T005152Z_D50_rep0",
+      "delay_ms": 50.0,
+      "arrival": "concurrent",
+      "rep": 0,
+      "seed": 1337,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.081000",
+      "issued": 32,
+      "served": 32,
+      "affordable": 8,
+      "over_served": 24,
+      "final_balance": "-1.944000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_concurrent_20261007T005152Z_D50_rep1",
+      "delay_ms": 50.0,
+      "arrival": "concurrent",
+      "rep": 1,
+      "seed": 1338,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.094500",
+      "issued": 32,
+      "served": 32,
+      "affordable": 8,
+      "over_served": 24,
+      "final_balance": "-2.268000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_concurrent_20261007T005152Z_D50_rep2",
+      "delay_ms": 50.0,
+      "arrival": "concurrent",
+      "rep": 2,
+      "seed": 1339,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.102000",
+      "issued": 32,
+      "served": 31,
+      "affordable": 8,
+      "over_served": 23,
+      "final_balance": "-2.346000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_concurrent_20261007T005152Z_D500_rep0",
+      "delay_ms": 500.0,
+      "arrival": "concurrent",
+      "rep": 0,
+      "seed": 1337,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.081000",
+      "issued": 32,
+      "served": 32,
+      "affordable": 8,
+      "over_served": 24,
+      "final_balance": "-1.944000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_concurrent_20261007T005152Z_D500_rep1",
+      "delay_ms": 500.0,
+      "arrival": "concurrent",
+      "rep": 1,
+      "seed": 1338,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.094500",
+      "issued": 32,
+      "served": 32,
+      "affordable": 8,
+      "over_served": 24,
+      "final_balance": "-2.268000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    },
+    {
+      "run_id": "C1_concurrent_20261007T005152Z_D500_rep2",
+      "delay_ms": 500.0,
+      "arrival": "concurrent",
+      "rep": 2,
+      "seed": 1339,
+      "fault": "none",
+      "endpoint": "/async/b0/complete",
+      "unit_cost": "0.102000",
+      "issued": 32,
+      "served": 32,
+      "affordable": 8,
+      "over_served": 24,
+      "final_balance": "-2.448000",
+      "queue_state_after": {
+        "queue_depth": 0
+      },
+      "error_count": 0,
+      "valid": true,
+      "invalid_reason": null
+    }
+  ]
+}
